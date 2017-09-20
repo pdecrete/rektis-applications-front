@@ -24,7 +24,7 @@ class m170919_103746_initdb extends Migration
             'id' => $this->primaryKey(),
             'specialty' => $this->string(8)->notNull(),
             'count' => $this->smallInteger()->notNull(),
-            'position' => $this->string(500)->notNull(),
+            'position' => $this->string(150)->notNull(),
             'reference' => $this->text()->notNull()
             ], $tableOptions);
         $this->createIndex('idx_choice_unique', '{{%choice}}', ['specialty', 'position'], true);
