@@ -19,8 +19,8 @@ $this->title = 'Αιτήσεις';
         <div class="row">
             <div class="col-lg-4">
                 <h2>Καταχώρηση</h2>
-                <p>Κείμενο υπό αναθεώρηση.</p>
-                <p><a class="btn btn-default disabled" href="#">Υπό ανάπτυξη</a></p>
+                <p>Υποβάλλετε την αίτησή σας εδώ.</p>
+                <p><?= Html::a('Υποβολή', Url::to(['application/create']), ['class' => 'btn btn-success']) ?></p>
             </div>
             <div class="col-lg-4">
                 <h2>Τροποποίηση</h2>
