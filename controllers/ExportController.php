@@ -20,6 +20,9 @@ class ExportController extends \yii\web\Controller
                     [
                         'allow' => true,
                         'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
                     ],
                 ],
             ],

@@ -1,15 +1,15 @@
 <?php
-
 namespace app\models;
 
 class User extends \yii\base\Object implements \yii\web\IdentityInterface
 {
+
     public $id;
     public $username;
     public $password;
     public $authKey;
     public $accessToken;
-
+    public $role;
     private static $users = [
         '100' => [
             'id' => '100',
@@ -17,6 +17,7 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
             'password' => 'admin',
             'authKey' => 'test100key',
             'accessToken' => '100-token',
+            'role' => 'admin'
         ],
         '101' => [
             'id' => '101',
@@ -24,9 +25,9 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
             'password' => 'demo',
             'authKey' => 'test101key',
             'accessToken' => '101-token',
+            'role' => 'user'
         ],
     ];
-
 
     /**
      * @inheritdoc
@@ -100,5 +101,14 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $password;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
