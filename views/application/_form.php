@@ -8,11 +8,11 @@ use wbraganca\dynamicform\DynamicFormWidget;
 /* @var $models app\models\Application[] */
 /* @var $form yii\widgets\ActiveForm */
 
-$model0 = $models[0];
+$model0 = reset($models);
 
 ?>
 
-<div class="application-form">
+<div class="application-form-container">
 
     <div class="row item">
         <div class="col-sm-4">
@@ -26,7 +26,7 @@ $model0 = $models[0];
         </div>
     </div>
 
-    <?php $form = ActiveForm::begin(['id' => 'application-dynamic-form', 'layout' => 'horizontal']); ?>
+    <?php $form = ActiveForm::begin(['id' => 'application-form', 'layout' => 'horizontal']); ?>
 
     <?php
     DynamicFormWidget::begin([
@@ -38,7 +38,7 @@ $model0 = $models[0];
         'insertButton' => '.add-item',
         'deleteButton' => '.remove-item',
         'model' => $model0,
-        'formId' => 'application-dynamic-form',
+        'formId' => 'application-form',
         'formFields' => [
             'choice_id',
             'order',
@@ -48,7 +48,7 @@ $model0 = $models[0];
     ?>
     <div class="container-items">
         <div class="row text-right">
-            <button type="button" class="add-item btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Προσθήκη επιλογής</button>
+            <button type="button" class="add-item btn btn-success btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Προσθήκη επιλογής</button>
             <p>&nbsp;</p> 
         </div>
         <?php foreach ($models as $index => $model): ?>
@@ -57,10 +57,8 @@ $model0 = $models[0];
                     <?= $form->field($model, "[{$index}]choice_id")->textInput() ?>
                     <?php
                     if (!$model->isNewRecord) {
-//                        echo Html::activeHiddenInput($model, "[{$index}]id");
                         echo $form->field($model, "[{$index}]id")->hiddenInput()->label(false);
                     }
-                    echo $form->field($model, "[{$index}]applicant_id")->hiddenInput()->label(false)->hint(false);
 
                     ?>
                 </div>
@@ -68,7 +66,7 @@ $model0 = $models[0];
                     <?= $form->field($model, "[{$index}]order")->textInput() ?>
                 </div>
                 <div class="col-sm-1">
-                    <button type="button" class="pull-right remove-item btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></button>
+                    <button type="button" class="pull-right remove-item btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                 </div>
             </div>
         <?php endforeach; ?>

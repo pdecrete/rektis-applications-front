@@ -9,6 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\models\Applicant;
+use app\models\Model;
 
 /**
  * ApplicationController implements the CRUD actions for Application model.
@@ -77,19 +78,66 @@ class ApplicationController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Application();
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
         $models = [new Application()];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-//                    'model' => $model,
-                    'models' => $models,
-                    'user' => Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username])
-                
-            ]);
+        if (\Yii::$app->request->isPost) {
+            $models = Model::createMultiple(Application::classname());
+
+            Model::loadMultiple($models, Yii::$app->request->post());
+            array_walk($models, function ($m, $k) use ($user) {
+                $m->applicant_id = $user->id;
+                $m->deleted = 0;
+            });
+
+            $valid = Model::validateMultiple($models);
+
+            // check unique ordering 
+            $ordering = array_map(function ($m) {
+                return $m->order;
+            }, $models);
+            if (count(array_unique($ordering)) != count($ordering)) {
+                $valid = false;
+                $m = reset($models);
+                $m->addError('order', "Το πεδίο σειράς επιλογής πρέπει να είναι μοναδικό");
+            }
+            
+            // check unique choices 
+            $choices = array_map(function ($m) {
+                return $m->choice_id;
+            }, $models);
+            if (count(array_unique($choices)) != count($choices)) {
+                $valid = false;
+                $m = reset($models);
+                $m->addError('choice_id', "Η κάθε επιλογή μπορεί να γίνει μόνο μία φορά");
+            }
+
+            if ($valid) {
+                // save all or none
+                $transaction = \Yii::$app->db->beginTransaction();
+
+                try {
+                    foreach ($models as $idx => $m) {
+                        if ($m->save() === false) {
+                            throw new \Exception();
+                        }
+                    }
+
+                    $transaction->commit();
+                    Yii::$app->session->addFlash('success', "Οι επιλογές σας έχουν αποθηκευτεί.");
+                    return $this->redirect(['view', 'id' => 0]);
+                } catch (\Exception $e) {
+                    Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση των επιλογών σας. Παρακαλώ προσπαθήστε ξανά.");
+                    $transaction->rollBack();
+                }
+            } else {
+                Yii::$app->session->addFlash('danger', "Παρακαλώ διορθώστε τα λάθη που υπάρχουν στις επιλογές και δοκιμάστε ξανά.");
+            }
         }
+        return $this->render('create', [
+                'models' => $models,
+                'user' => $user
+        ]);
     }
 
     /**
