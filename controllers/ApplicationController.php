@@ -33,10 +33,19 @@ class ApplicationController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
+                        'actions' => ['my-application', 'apply', 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
                             return false === \Yii::$app->user->identity->isAdmin();
+                        }
+                    ],
+                    [
+                        'actions' => ['index', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return true === \Yii::$app->user->identity->isAdmin();
                         }
                     ],
                 ],
@@ -64,10 +73,25 @@ class ApplicationController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionMyApplication()
     {
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        $choices = $user->applications;
+        // if no application exists, forward to create
+        if (count($choices) == 0) {
+            Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
+            return $this->redirect(['apply']);
+        }
+
+        $provider = new \yii\data\ArrayDataProvider([
+            'allModels' => $choices,
+            'pagination' => [
+                'pageSize' => 100,
+            ],
+        ]);
         return $this->render('view', [
-                'model' => $this->findModel($id),
+                'user' => $user,
+                'dataProvider' => $provider
         ]);
     }
 
@@ -76,9 +100,16 @@ class ApplicationController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionApply()
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+
+        // one application per user only; forward to delete confirmation page
+        if ($user->applications) {
+            Yii::$app->session->addFlash('warning', "Μόνο μία αίτηση μπορεί να καταχωρηθεί. Φαίνεται πως έχετε ήδη καταχωρήσει αίτηση. <strong>Εάν θέλετε να καταχωρήσετε νέα, πρέπει πρώτα να διαγράψετε την ήδη καταχωρημένη αίτηση.</strong>");
+            return $this->redirect(['delete-my-application']);
+        }
+
         $models = [new Application()];
 
         if (\Yii::$app->request->isPost) {
@@ -92,21 +123,34 @@ class ApplicationController extends Controller
 
             $valid = Model::validateMultiple($models);
 
+            $models_cnt = count($models);
+            // check max number of applications 
+            if ($models_cnt > ($max_cnt = \Yii::$app->params['max-application-items'])) {
+                $valid = false;
+                $m = reset($models);
+                $m->addError('choice_id', "Το μέγιστο πλήθος επιλογών είναι {$max_cnt}");
+            }
+
             // check unique ordering 
             $ordering = array_map(function ($m) {
                 return $m->order;
             }, $models);
-            if (count(array_unique($ordering)) != count($ordering)) {
+            if (count(array_unique($ordering)) != $models_cnt) {
                 $valid = false;
                 $m = reset($models);
                 $m->addError('order', "Το πεδίο σειράς επιλογής πρέπει να είναι μοναδικό");
             }
-            
+            if (max($ordering) != $models_cnt) {
+                $valid = false;
+                $m = reset($models);
+                $m->addError('order', "Η σειρά επιλογής πρέπει να ξεκινά από τον αριθμό 1 και να αυξάνεται κατά ένα για κάθε επόμενη επιλογή");
+            }
+
             // check unique choices 
             $choices = array_map(function ($m) {
                 return $m->choice_id;
             }, $models);
-            if (count(array_unique($choices)) != count($choices)) {
+            if (count(array_unique($choices)) != $models_cnt) {
                 $valid = false;
                 $m = reset($models);
                 $m->addError('choice_id', "Η κάθε επιλογή μπορεί να γίνει μόνο μία φορά");
@@ -125,7 +169,7 @@ class ApplicationController extends Controller
 
                     $transaction->commit();
                     Yii::$app->session->addFlash('success', "Οι επιλογές σας έχουν αποθηκευτεί.");
-                    return $this->redirect(['view', 'id' => 0]);
+                    return $this->redirect(['my-application']);
                 } catch (\Exception $e) {
                     Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση των επιλογών σας. Παρακαλώ προσπαθήστε ξανά.");
                     $transaction->rollBack();
@@ -134,29 +178,31 @@ class ApplicationController extends Controller
                 Yii::$app->session->addFlash('danger', "Παρακαλώ διορθώστε τα λάθη που υπάρχουν στις επιλογές και δοκιμάστε ξανά.");
             }
         }
-        return $this->render('create', [
+        return $this->render('apply', [
                 'models' => $models,
                 'user' => $user
         ]);
     }
 
-    /**
-     * Updates an existing Application model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
+    public function actionDeleteMyApplication()
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                    'model' => $model,
-            ]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        // if user has made no choices, forward to index
+        if (count($user->applications) == 0) {
+            Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
+            return $this->redirect(['site/index']);
         }
+
+        return $this->render('delete_my_application');
+    }
+
+    public function actionMyDelete()
+    {
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
+
+        Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");
+        return $this->redirect(['site/index']);
     }
 
     /**
@@ -169,7 +215,7 @@ class ApplicationController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['my-application']);
     }
 
     /**

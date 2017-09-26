@@ -20,12 +20,12 @@ $this->title = 'Αιτήσεις';
             <div class="col-lg-4">
                 <h2>Καταχώρηση</h2>
                 <p>Υποβάλλετε την αίτησή σας εδώ.</p>
-                <p><?= Html::a('Υποβολή', Url::to(['application/create']), ['class' => 'btn btn-success']) ?></p>
+                <p><?= Html::a('Υποβολή', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
             </div>
             <div class="col-lg-4">
-                <h2>Τροποποίηση</h2>
-                <p>Κείμενο υπό αναθεώρηση.</p>
-                <p><a class="btn btn-default disabled" href="#">Υπό ανάπτυξη</a></p>
+                <h2>Προβολή</h2>
+                <p>Προβάλλετε την αίτηση σας εδώ.</p>
+                <p><?= Html::a('Προβολή', Url::to(['application/my-application']), ['class' => 'btn btn-primary']) ?></p>
             </div>
             <div class="col-lg-4">
                 <h2>Εξαγωγή</h2>

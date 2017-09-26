@@ -1,14 +1,22 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use wbraganca\dynamicform\DynamicFormWidget;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $models app\models\Application[] */
 /* @var $form yii\widgets\ActiveForm */
 
 $model0 = reset($models);
+
+$notification_js = '$(".dynamicform_wrapper").on("limitReached", function (e) {
+    alert("Έχετε φτάσει στο μέγιστο ότιο διαθέσιμων επιλογών");
+    return true;
+});
+';
+$this->registerJs($notification_js);
 
 ?>
 
@@ -33,7 +41,7 @@ $model0 = reset($models);
         'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
         'widgetBody' => '.container-items', // required: css class selector
         'widgetItem' => '.item', // required: css class
-        'limit' => 10,
+        'limit' => \Yii::$app->params['max-application-items'],
         'min' => 1,
         'insertButton' => '.add-item',
         'deleteButton' => '.remove-item',
@@ -53,8 +61,9 @@ $model0 = reset($models);
         </div>
         <?php foreach ($models as $index => $model): ?>
             <div class="row item">
-                <div class="col-sm-7">
-                    <?= $form->field($model, "[{$index}]choice_id")->textInput() ?>
+                <div class="col-sm-6">
+                    <?= $form->field($model, "[{$index}]choice_id")->dropdownList(ArrayHelper::map($user->choices, 'id', 'position'), ['prompt' => 'Επιλέξτε...'])->label('Επιλογή κενού') ?>
+                    <?= ''; // $form->field($model, "[{$index}]choice_id")->textInput() ?>
                     <?php
                     if (!$model->isNewRecord) {
                         echo $form->field($model, "[{$index}]id")->hiddenInput()->label(false);
@@ -62,8 +71,11 @@ $model0 = reset($models);
 
                     ?>
                 </div>
-                <div class="col-sm-4">
-                    <?= $form->field($model, "[{$index}]order")->textInput() ?>
+                <div class="col-sm-5">
+                    <?=
+                    $form->field($model, "[{$index}]order")->textInput()->label('Σειρά επιλογής', ['class' => 'col-sm-4'])
+
+                    ?>
                 </div>
                 <div class="col-sm-1">
                     <button type="button" class="pull-right remove-item btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>

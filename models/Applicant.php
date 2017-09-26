@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use app\models\Choice;
@@ -17,6 +16,7 @@ use app\models\Application;
  */
 class Applicant extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -66,7 +66,9 @@ class Applicant extends \yii\db\ActiveRecord
      */
     public function getApplications()
     {
-        return $this->hasMany(Application::className(), ['applicant_id' => 'id']);
+        return $this->hasMany(Application::className(), ['applicant_id' => 'id'])
+                ->andOnCondition(['deleted' => 0])
+                ->orderBy(['order' => 'ASC']);
     }
 
     /**

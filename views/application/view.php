@@ -1,40 +1,47 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Application */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Applications', 'url' => ['index']];
+$this->title = 'Η αίτηση μου';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="application-view">
 
+    <?= Html::a('Διαγαφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']) ?>
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="row item">
+        <div class="col-sm-4">
+            <h2><?= $user->specialty ?> <small>Ειδικότητα</small></h2>
+        </div>
+        <div class="col-sm-4">
+            <h2><?= $user->vat ?> <small>Α.Φ.Μ.</small></h2>
+        </div>
+        <div class="col-sm-4">
+            <h2><?= $user->identity ?> <small>Ταυτότητα</small></h2>
+        </div>
+    </div>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'applicant_id',
-            'choice_id',
-            'order',
-            'updated',
-            'deleted',
-        ],
-    ]) ?>
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <th>Σειρά προτίμησης</th>
+        <th>Κενό προτίμησης</th>
+        </thead>
+        <tbody>
+            <?=
+            ListView::widget([
+                'dataProvider' => $dataProvider,
+                'itemView' => '_myapplication_item',
+                'summary' => '<h3>{totalCount} προτιμήσεις</h3>'
+            ]);
+
+            ?>
+        </tbody>
+    </table>
 
 </div>

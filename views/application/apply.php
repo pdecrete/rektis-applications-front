@@ -6,7 +6,6 @@ use yii\helpers\Html;
 /* @var $model app\models\Application */
 
 $this->title = 'Νέα αίτηση';
-$this->params['breadcrumbs'][] = ['label' => 'Αιτήσεις', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
