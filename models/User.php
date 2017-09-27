@@ -6,9 +6,6 @@ use \yii\web\IdentityInterface;
 
 class User extends Applicant implements IdentityInterface
 {
-    //public $id;
-    //public $username;
-    //public $password;
     public $authKey;
     public $accessToken;
     public $role;
@@ -65,8 +62,6 @@ class User extends Applicant implements IdentityInterface
                 return new static($user);
             }
         }
-		//if(strcasecmp(self::$users['-1']['username'], $username) === 0)
-		//	return new static(self::$users['-1']);
 		
 		return static::findOne(['vat' => $username]);
     }
