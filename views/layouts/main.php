@@ -65,6 +65,18 @@ AppAsset::register($this);
                 ])
 
                 ?>
+                <?php
+                foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
+                    if (!is_array($message)) {
+                        $messages = array($message);
+                    } else {
+                        $messages = $message;
+                    }
+                    echo '<div class="alert alert-' . $key . '">' . implode('<br/>', $messages) . '</div>';
+                }
+
+                ?>
+
                 <?= $content ?>
             </div>
         </div>

@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use Yii;
@@ -12,6 +11,7 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -80,7 +80,7 @@ class SiteController extends Controller
             return $this->goBack();
         }
         return $this->render('login', [
-            'model' => $model,
+                'model' => $model,
         ]);
     }
 
@@ -110,7 +110,7 @@ class SiteController extends Controller
             return $this->refresh();
         }
         return $this->render('contact', [
-            'model' => $model,
+                'model' => $model,
         ]);
     }
 

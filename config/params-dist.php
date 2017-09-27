@@ -3,7 +3,7 @@
 return [
     'companyName' => 'Η υπηρεσία μου',
     'adminEmail' => 'admin@example.com',
-        'users' => [
+    'users' => [
         '-1' => [
             'id' => '-1',
             'username' => 'admin',
@@ -12,5 +12,6 @@ return [
             'accessToken' => '100-token',
             'role' => 'admin'
         ]
-	]
+    ],
+    'max-application-items' => 10
 ];

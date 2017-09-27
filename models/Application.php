@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -19,6 +18,7 @@ use Yii;
  */
 class Application extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -34,7 +34,7 @@ class Application extends \yii\db\ActiveRecord
     {
         return [
             [['applicant_id', 'choice_id', 'order', 'updated', 'deleted'], 'integer'],
-            [['order', 'updated'], 'required'],
+            [['applicant_id', 'choice_id', 'order'], 'required'],
             [['applicant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Applicant::className(), 'targetAttribute' => ['applicant_id' => 'id']],
             [['choice_id'], 'exist', 'skipOnError' => true, 'targetClass' => Choice::className(), 'targetAttribute' => ['choice_id' => 'id']],
         ];
@@ -53,6 +53,19 @@ class Application extends \yii\db\ActiveRecord
             'updated' => 'Updated',
             'deleted' => 'Deleted',
         ];
+    }
+
+    /**
+     * 
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        $this->updated = new \yii\db\Expression('UNIX_TIMESTAMP()');
+        return true;
     }
 
     /**

@@ -47,10 +47,10 @@ class Choice extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'specialty' => 'Specialty',
-            'count' => 'Count',
-            'position' => 'Position',
-            'reference' => 'Reference',
+            'specialty' => 'Ειδικότητα',
+            'count' => 'Αριθμός κενών',
+            'position' => 'Θέση',
+            'reference' => 'Αναφορά προγραμματιστή',
         ];
     }
 
