@@ -75,7 +75,7 @@ class ApplicationController extends Controller
      */
     public function actionMyApplication()
     {
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat]);
         $choices = $user->applications;
         // if no application exists, forward to create
         if (count($choices) == 0) {
@@ -102,7 +102,7 @@ class ApplicationController extends Controller
      */
     public function actionApply()
     {
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat]);
 
         // one application per user only; forward to delete confirmation page
         if ($user->applications) {
@@ -186,7 +186,7 @@ class ApplicationController extends Controller
 
     public function actionDeleteMyApplication()
     {
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat]);
         // if user has made no choices, forward to index
         if (count($user->applications) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
@@ -198,7 +198,7 @@ class ApplicationController extends Controller
 
     public function actionMyDelete()
     {
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->username]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat]);
         Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
 
         Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");

@@ -9,7 +9,6 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
-
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -47,7 +46,7 @@ AppAsset::register($this);
                         '<li>'
                         . Html::beginForm(['/site/logout'], 'post')
                         . Html::submitButton(
-                            'Αποσύνδεση (' . Yii::$app->user->identity->username . ')', ['class' => 'btn btn-link logout']
+                            'Αποσύνδεση (' . Yii::$app->user->identity->vat . ')', ['class' => 'btn btn-link logout']
                         )
                         . Html::endForm()
                         . '</li>'
