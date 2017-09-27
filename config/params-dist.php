@@ -6,12 +6,12 @@ return [
     'users' => [
         '-1' => [
             'id' => '-1',
-            'username' => 'admin',
-            'password' => 'admin',
+            'vat' => 'admin',
+            'identity' => 'admin',
             'authKey' => 'test100key',
             'accessToken' => '100-token',
             'role' => 'admin'
-        ]
-    ],
+        ],
+	],
     'max-application-items' => 10
 ];
