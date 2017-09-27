@@ -61,13 +61,8 @@ class LoginForm extends Model
     {
         if ($this->validate())
         {
-			$tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-/*			if(Yii::$app->user->isGuest == false)
-				echo "User is logged in";
-			else
-				echo "User is guest";
-			die();*/
-			return $tmp;
+            $tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            return $tmp;
         }
         return false;
     }
@@ -81,10 +76,6 @@ class LoginForm extends Model
     {
         if ($this->_user === false) {
             $this->_user = User::findByUsername($this->username);
-            
-           // var_dump($this->_user);
-           // die();
-            
         }
 
         return $this->_user;
