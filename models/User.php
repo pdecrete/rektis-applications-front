@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use Yii;
 use \yii\web\IdentityInterface;
 
 class User extends Applicant implements IdentityInterface
@@ -11,16 +12,6 @@ class User extends Applicant implements IdentityInterface
     public $authKey;
     public $accessToken;
     public $role;
-    private static $users = [
-        '-1' => [
-            'id' => '-1',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-            'role' => 'admin'
-        ]
-    ];
 
 
     public static function tableName()
@@ -41,7 +32,8 @@ class User extends Applicant implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
+		$users = Yii::$app->params['users'];
+        foreach ($users as $user) {
             if ($user['accessToken'] === $token) {
                 return new static($user);
             }
@@ -58,7 +50,8 @@ class User extends Applicant implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-		foreach (self::$users as $user) {
+		$users = Yii::$app->params['users'];
+		foreach ($users as $user) {
             if ($user['username'] === $username) {
                 return new static($user);
             }
@@ -105,6 +98,7 @@ class User extends Applicant implements IdentityInterface
     
     public function validateAdmin($password)
     {
-		return strcasecmp(self::$users['-1']['password'], $password) === 0;
+		$users = Yii::$app->params['users'];
+		return strcasecmp($users['-1']['password'], $password) === 0;
 	}
 }
