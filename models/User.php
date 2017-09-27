@@ -6,9 +6,9 @@ use \yii\web\IdentityInterface;
 
 class User extends Applicant implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
+    //public $id;
+    //public $username;
+    //public $password;
     public $authKey;
     public $accessToken;
     public $role;
@@ -24,7 +24,16 @@ class User extends Applicant implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id]);
+		$users = Yii::$app->params['users'];
+		foreach ($users as $user) {
+            if ($user['id'] === $id) {
+                return new static($user);
+            }
+        }
+
+		$tmp = static::findOne(['id' => $id]);
+		//if(!$tmp) echo "NULL"; die();
+        return $tmp;
     }
 
     /**
@@ -52,7 +61,7 @@ class User extends Applicant implements IdentityInterface
     {
 		$users = Yii::$app->params['users'];
 		foreach ($users as $user) {
-            if ($user['username'] === $username) {
+            if ($user['vat'] === $username) {
                 return new static($user);
             }
         }
@@ -99,6 +108,6 @@ class User extends Applicant implements IdentityInterface
     public function validateAdmin($password)
     {
 		$users = Yii::$app->params['users'];
-		return strcasecmp($users['-1']['password'], $password) === 0;
+		return strcasecmp($users['-1']['identity'], $password) === 0;
 	}
 }

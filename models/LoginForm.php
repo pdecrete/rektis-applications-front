@@ -49,9 +49,7 @@ class LoginForm extends Model
             if (!$user || ($this->_user->identity !== null) && (strcasecmp($this->_user->identity, ($this->password)) !== 0) 
 				|| ($this->_user->identity === null && !$user->validateAdmin($this->password))){
 				$this->addError($attribute, 'Incorrect username or password.');
-            }
-            
-            
+            }       
         }
     }
 
@@ -62,8 +60,15 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate())
-			return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-        
+        {
+			$tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+/*			if(Yii::$app->user->isGuest == false)
+				echo "User is logged in";
+			else
+				echo "User is guest";
+			die();*/
+			return $tmp;
+        }
         return false;
     }
 
