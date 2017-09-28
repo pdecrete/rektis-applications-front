@@ -32,10 +32,12 @@ AppAsset::register($this);
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
-            ]); 
-            $exportLabel = array(array('label' => 'Εξαγωγή', 'url' => ['/export/index']));
+            ]);
             $itemsLabels = [
                     ['label' => 'Αρχική', 'url' => ['/site/index']],
+                    ['label' => 'Εξαγωγή', 'url' => ['/export/index'], 
+					 'visible' => (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin())
+					],
                     ['label' => 'Σχετικά', 'url' => ['/site/about']],
                     Yii::$app->user->isGuest ? (
                         ['label' => 'Σύνδεση', 'url' => ['/site/login']]
@@ -49,9 +51,7 @@ AppAsset::register($this);
                         . '</li>'
                         )
                 ];
-            if(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin())
-				array_splice($itemsLabels, 1, 0, $exportLabel);
-				
+            
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => $itemsLabels,
