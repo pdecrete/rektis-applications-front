@@ -36,7 +36,15 @@ class Application extends \yii\db\ActiveRecord
             [['applicant_id', 'choice_id', 'order', 'updated', 'deleted'], 'integer'],
             [['applicant_id', 'choice_id', 'order'], 'required'],
             [['applicant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Applicant::className(), 'targetAttribute' => ['applicant_id' => 'id']],
-            [['choice_id'], 'exist', 'skipOnError' => true, 'targetClass' => Choice::className(), 'targetAttribute' => ['choice_id' => 'id']],
+            [
+                ['choice_id'], 'exist', 'skipOnError' => true,
+                'targetClass' => Choice::className(),
+                'targetAttribute' => ['choice_id' => 'id'],
+                'filter' => function ($query) {
+                    // check on submitted choice violation; must much applicant specialty
+                    $query->andWhere(['specialty' => $this->applicant->specialty]);
+                }
+            ],
         ];
     }
 
