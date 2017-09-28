@@ -32,7 +32,7 @@ AppAsset::register($this);
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
-            ]);
+            ]); 
             $exportLabel = array(array('label' => 'Εξαγωγή', 'url' => ['/export/index']));
             $itemsLabels = [
                     ['label' => 'Αρχική', 'url' => ['/site/index']],
