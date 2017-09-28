@@ -33,13 +33,10 @@ AppAsset::register($this);
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => [
+            $exportLabel = array(array('label' => 'Εξαγωγή', 'url' => ['/export/index']));
+            $itemsLabels = [
                     ['label' => 'Αρχική', 'url' => ['/site/index']],
-                    ['label' => 'Εξαγωγή', 'url' => ['/export/index']],
                     ['label' => 'Σχετικά', 'url' => ['/site/about']],
-                    ['label' => 'Επικοινωνία', 'url' => ['/site/contact']],
                     Yii::$app->user->isGuest ? (
                         ['label' => 'Σύνδεση', 'url' => ['/site/login']]
                         ) : (
@@ -51,7 +48,13 @@ AppAsset::register($this);
                         . Html::endForm()
                         . '</li>'
                         )
-                ],
+                ];
+            if(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin())
+				array_splice($itemsLabels, 1, 0, $exportLabel);
+				
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav navbar-right'],
+                'items' => $itemsLabels,
             ]);
             NavBar::end();
 
