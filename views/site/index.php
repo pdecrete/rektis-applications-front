@@ -17,6 +17,7 @@ $this->title = 'Αιτήσεις';
     <div class="body-content">
 
         <div class="row">
+	    <?php if(Yii::$app->user->isGuest || (!Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin())) : ?>
             <div class="col-lg-4">
                 <h2>Καταχώρηση</h2>
                 <p>Υποβάλλετε την αίτησή σας εδώ.</p>
@@ -27,11 +28,14 @@ $this->title = 'Αιτήσεις';
                 <p>Προβάλλετε την αίτηση σας εδώ.</p>
                 <p><?= Html::a('Προβολή', Url::to(['application/my-application']), ['class' => 'btn btn-primary']) ?></p>
             </div>
+            <?php endif; ?>
+            <?php if(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin()) : ?>
             <div class="col-lg-4">
                 <h2>Εξαγωγή</h2>
                 <p>Η εξαγωγή είναι διαθέσιμη μόνο στους διαχειριστές.</p>
                 <p><?= Html::a('Εξαγωγή', Url::to(['export/index']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
             </div>
+            <?php endif; ?>
         </div>
 
     </div>
