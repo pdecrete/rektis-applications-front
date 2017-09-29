@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -13,11 +12,11 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
+
     public $username;
     public $password;
     public $rememberMe = true;
     private $_user = false;
-
 
     /**
      * @return array the validation rules.
@@ -35,6 +34,17 @@ class LoginForm extends Model
     }
 
     /**
+     * @inheritdoc 
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Α.Φ.Μ.',
+            'password' => 'Α.Δ.Τ.',
+            'rememberMe' => 'Να με θυμάσαι'
+        ];
+    }
+    /**
      * Validates the password.
      * This method serves as the inline validation for password.
      *
@@ -45,11 +55,10 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
- 
-            if (!$user || ($this->_user->identity !== null) && (strcasecmp($this->_user->identity, ($this->password)) !== 0) 
-				|| ($this->_user->identity === null && !$user->validateAdmin($this->password))){
-				$this->addError($attribute, 'Incorrect username or password.');
-            }       
+
+            if (!$user || ($this->_user->identity !== null) && (strcasecmp($this->_user->identity, ($this->password)) !== 0) || ($this->_user->identity === null && !$user->validateAdmin($this->password))) {
+                $this->addError($attribute, 'Λανθασμένα στοιχεία πρόσβασης.');
+            }
         }
     }
 
@@ -59,9 +68,8 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate())
-        {
-            $tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+        if ($this->validate()) {
+            $tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
             return $tmp;
         }
         return false;
