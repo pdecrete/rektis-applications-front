@@ -33,7 +33,7 @@ $this->title = 'Αιτήσεις';
             <div class="col-lg-4">
                 <h2>Εξαγωγή</h2>
                 <p>Η εξαγωγή είναι διαθέσιμη μόνο στους διαχειριστές.</p>
-                <p><?= Html::a('Εξαγωγή', Url::to(['export/index']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
+                <p><?= Html::a('Εξαγωγή', Url::to(['admin/export']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
             </div>
             <?php endif; ?>
         </div>

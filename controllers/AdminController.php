@@ -5,7 +5,7 @@ use yii\filters\AccessControl;
 use app\models\Application;
 use League\Csv\Writer;
 
-class ExportController extends \yii\web\Controller
+class AdminController extends \yii\web\Controller
 {
 
     /**
@@ -34,7 +34,12 @@ class ExportController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionCsv()
+    public function actionOverview()
+    {
+        throw new \Exception('Η λειτουργία δεν είναι προς το παρόν υλοποιημένη');
+    }
+
+    public function actionExportCsv()
     {
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
         $csv->insertOne([

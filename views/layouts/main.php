@@ -35,7 +35,7 @@ AppAsset::register($this);
             ]);
             $itemsLabels = [
                     ['label' => 'Αρχική', 'url' => ['/site/index']],
-                    ['label' => 'Εξαγωγή', 'url' => ['/export/index'], 
+                    ['label' => 'Διαχείριση', 'url' => ['/admin/index'], 
 					 'visible' => (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin())
 					],
                     ['label' => 'Σχετικά', 'url' => ['/site/about']],
