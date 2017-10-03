@@ -65,7 +65,11 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->render('index-guest');
         } else {
-            return $this->render('index');
+            if (\Yii::$app->user->identity->isAdmin()) {
+                return $this->redirect(['admin/index']);
+            } else {
+                return $this->render('index');
+            }
         }
     }
 
