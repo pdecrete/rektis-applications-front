@@ -65,7 +65,9 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->render('index-guest');
         } else {
-            return $this->render('index');
+            return $this->render('index', [
+                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+            ]);
         }
     }
 

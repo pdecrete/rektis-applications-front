@@ -22,7 +22,7 @@ class ApplicationController extends Controller
      */
     public function behaviors()
     {
-	
+
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -37,17 +37,17 @@ class ApplicationController extends Controller
                         'actions' => ['my-application'],
                         'allow' => true,
                         'roles' => ['@'],
-                        'matchCallback' => function ($rule, $action) {						
+                        'matchCallback' => function ($rule, $action) {
                             return false === \Yii::$app->user->identity->isAdmin();
                         }
                     ],
-					[
+                    [
                         'actions' => ['apply', 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
-                        'matchCallback' => function ($rule, $action) {						
-                            return (false === \Yii::$app->user->identity->isAdmin()) && 
-                            (1 == \Yii::$app->db->createCommand('SELECT enable_applications FROM config WHERE id=1')->queryColumn()[0]);
+                        'matchCallback' => function ($rule, $action) {
+                            return (false === \Yii::$app->user->identity->isAdmin()) &&
+                                (1 === \app\models\Config::getConfig('enable_applications'));
                         }
                     ],
                     [

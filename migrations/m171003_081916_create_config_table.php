@@ -7,6 +7,7 @@ use yii\db\Migration;
  */
 class m171003_081916_create_config_table extends Migration
 {
+
     /**
      * @inheritdoc
      */
@@ -14,10 +15,17 @@ class m171003_081916_create_config_table extends Migration
     {
         $this->createTable('{{%config}}', [
             'id' => $this->primaryKey(),
-            'enable_applications' => $this->boolean()->notNull()->defaultValue(false)
+            'name' => $this->string(256)->notNull(),
+            'type' => $this->string(256)->notNull()->defaultValue('string'),
+            'value' => $this->string(512)->notNull()->defaultValue('')
         ]);
-        
-        $this->insert('{{%config}}', ['id' => 1, 'enable_applications' => TRUE]);
+
+        $this->insert('{{%config}}', [
+            'id' => 1,
+            'name' => 'enable_applications',
+            'type' => 'int',
+            'value' => '1'
+        ]);
     }
 
     /**
