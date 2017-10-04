@@ -30,6 +30,16 @@ $this->title = 'Αιτήσεις';
             </div>
             <?php endif; ?>
             <?php if(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin()) : ?>
+			<div class="col-lg-4">
+                <h2>Ενεργοποίηση αιτήσεων</h2>
+                <?php if(1 == \Yii::$app->db->createCommand('SELECT enable_applications FROM config WHERE id=1')->queryColumn()[0]):?>
+					<p>Η υποβολή των αιτήσεων είναι <strong><span class="text-success">ενεργοποιημένη.</span></strong>.</p>
+					<p><?= Html::a('Απενεργοποίηση', Url::to(['enable-applications/confirm-enable']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
+                <?php else: ?>
+					<p>Η υποβολή των αιτήσεων είναι <strong><span class="text-danger">απενεργοποιημένη.</span></strong></p>
+					<p><?= Html::a('Ενεργοποίηση', Url::to(['enable-applications/confirm-enable']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
+				<?php endif; ?>
+            </div>
             <div class="col-lg-4">
                 <h2>Εξαγωγή</h2>
                 <p>Η εξαγωγή είναι διαθέσιμη μόνο στους διαχειριστές.</p>
