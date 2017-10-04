@@ -31,14 +31,15 @@ class EnableApplicationsController extends \yii\web\Controller
 
     public function actionEnable()
     {
-		\Yii::$app->db->createCommand('UPDATE config SET enable_applications = 1 WHERE id=1');
+		
+		Yii::$app->db->createCommand('UPDATE config SET enable_applications = 1 WHERE id=1')->execute();
 		Yii::$app->session->addFlash('info', "Ενεργοποιήθηκε η δυνατότητα υποβολής αιτήσεων για τους εκπαιδευτικούς.");
         return $this->redirect(['site/index']);
     }
     
    public function actionDisable()
     {
-		\Yii::$app->db->createCommand('UPDATE config SET enable_applications = 1 WHERE id=1');
+		Yii::$app->db->createCommand('UPDATE config SET enable_applications = 0 WHERE id=1')->execute();
 		Yii::$app->session->addFlash('info', "Απενεργοποιήθηκε η δυνατότητα υποβολής αιτήσεων για τους εκπαιδευτικούς.");
         return $this->redirect(['site/index']);
     }
