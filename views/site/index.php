@@ -20,7 +20,12 @@ $this->title = 'Αιτήσεις';
                 <div class="col-lg-4">
                     <h2>Καταχώρηση</h2>
                     <p>Υποβάλλετε την αίτησή σας εδώ.</p>
-                    <p><?= Html::a('Υποβολή', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
+                    <?php if ($enable_applications === true) : ?>
+                        <p><?= Html::a('Υποβολή', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
+                    <?php else: ?>
+                        <p><?= Html::a('Υποβολή', '#', ['class' => 'btn btn-success disabled', 'disabled' => 'disabled']) ?></p>
+                        <p class="text-danger">Η υποβολή αιτήσεων δεν είναι διαθέσιμη.</p>
+                    <?php endif; ?>
                 </div>
                 <div class="col-lg-4">
                     <h2>Προβολή</h2>

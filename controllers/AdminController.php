@@ -33,7 +33,9 @@ class AdminController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', [
+                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+        ]);
     }
 
     public function actionOverview()

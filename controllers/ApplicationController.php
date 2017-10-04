@@ -101,7 +101,8 @@ class ApplicationController extends Controller
         ]);
         return $this->render('view', [
                 'user' => $user,
-                'dataProvider' => $provider
+                'dataProvider' => $provider,
+                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
         ]);
     }
 

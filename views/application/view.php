@@ -12,7 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="application-view">
 
-    <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']) ?>
+    <?php if ($enable_applications === true) : ?>
+        <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']) ?>
+    <?php endif; ?>
+
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="row item">
