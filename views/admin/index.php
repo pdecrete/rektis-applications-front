@@ -37,4 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Εκκαθάριση στοιχείων</h2>
+            <p>Η επιλογή αυτή θα διαγράψει όλα τα δεδομένα που αφορούν <strong>αιτήσεις</strong>, <strong>αιτούντες</strong>, <strong>κενά</strong> και <strong>περιφερειακές ενότητες</strong>.</p>
+            <p class="text-danger">Προσοχή! Η ενέργεια αυτή είναι <strong>μή αναστρέψιμη</strong>!</p>
+            <p><?= Html::a(Html::icon('trash') . ' Εκκαθάριση', Url::to(['admin/clear-data']), ['class' => 'btn btn-danger', 'data-method' => 'post', 'data-confirm' => 'Η ενέργεια αυτή είναι μη αναστρέψιμη! Είστε βέβαιοι;']) ?></p>
+        </div>
+    </div>
+
 </div>

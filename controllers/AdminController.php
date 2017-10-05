@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use app\models\Application;
 use app\models\Applicant;
 use League\Csv\Writer;
@@ -16,6 +17,12 @@ class AdminController extends \yii\web\Controller
     public function behaviors()
     {
         return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'clear-data' => ['post'],
+                ],
+            ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
@@ -36,6 +43,23 @@ class AdminController extends \yii\web\Controller
         return $this->render('index', [
                 'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
         ]);
+    }
+
+    public function actionClearData()
+    {
+        try {
+            \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
+            \Yii::$app->db->createCommand()->truncateTable('{{%application}}')->execute();
+            \Yii::$app->db->createCommand()->truncateTable('{{%choice}}')->execute();
+            \Yii::$app->db->createCommand()->truncateTable('{{%applicant}}')->execute();
+            \Yii::$app->db->createCommand()->truncateTable('{{%prefecture}}')->execute();
+            \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
+
+            Yii::$app->session->addFlash('success', "Ολοκληρώθηκε η εκκαθάριση των στοιχείων.");
+        } catch (\Exception $e) {
+            Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την εκκαθάριση των στοιχείων. <strong>Παρακαλώ ελέγξτε τα στοιχεία!</strong>. Το μύνημα λάθους από τη βάση δεδομένων ήταν: " . $e->getMessage());
+        }
+        return $this->redirect(['index']);
     }
 
     public function actionOverview()
