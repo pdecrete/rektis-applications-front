@@ -6,6 +6,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\Application;
 use app\models\Applicant;
+use app\models\Choice;
 use League\Csv\Writer;
 
 class AdminController extends \yii\web\Controller
@@ -97,7 +98,11 @@ class AdminController extends \yii\web\Controller
                 'pageSize' => 10000,
             ],
         ]);
-        return $this->render('overview', compact(['dataProvider', 'applicants', 'applications']));
+
+        $choices = Choice::find()
+            ->count();
+
+        return $this->render('overview', compact(['dataProvider', 'applicants', 'applications', 'choices']));
     }
 
     public function actionExportCsv()

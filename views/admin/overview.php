@@ -22,6 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-4">
             <h2>Σύνολο εγγεγραμμένων <span class="label label-info"><?= $applicants ?></span></h2>
         </div>
+        <div class="col-sm-4">
+            <h2>Εγγραφές κενών <span class="label label-info"><?= $choices ?></span></h2>
+        </div>
     </div>
 
     <h2>Πλήθος αιτήσεων ανά πλήθος προτιμήσεων</h2>
