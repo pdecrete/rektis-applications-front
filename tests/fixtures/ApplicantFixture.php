@@ -7,9 +7,6 @@ class ApplicantFixture extends ActiveFixture
 {
 
     public $tableName = '{{%applicant}}';
-    public $depends = [
-        'app\tests\fixtures\ChoiceFixture'
-    ];
 
     protected function getData()
     {

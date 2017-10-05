@@ -6,7 +6,7 @@
 από το ριζικό φάκελο την εντολή:
 
 ```
-./yii fixture/load Applicant --namespace='app\tests\fixtures'
+./yii fixture/load Application --namespace='app\tests\fixtures'
 ```
 
 > Η παραπάνω εντολή θα εγκαταστήσει δοκιμαστικά δεδομένα στους πίνακες 
