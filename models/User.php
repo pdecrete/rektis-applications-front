@@ -54,7 +54,7 @@ class User extends Applicant implements IdentityInterface
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername($username)
+    public static function findByUsername($username, $specialty)
     {
 		$users = Yii::$app->params['users'];
 		foreach ($users as $user) {
@@ -63,7 +63,7 @@ class User extends Applicant implements IdentityInterface
             }
         }
 		
-		return static::findOne(['vat' => $username]);
+		return static::findOne(['vat' => $username, 'specialty' => $specialty]);
     }
     
 

@@ -5,7 +5,7 @@ $db = require(__DIR__ . '/db.php');
 
 $config = [
     'id' => 'aplicationsbasichandler',
-    'language' => 'el',
+    'language' => 'el', //Make the change in web.php too
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [

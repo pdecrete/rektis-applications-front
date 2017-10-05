@@ -15,6 +15,7 @@ class LoginForm extends Model
 
     public $username;
     public $password;
+    public $specialty;
     public $rememberMe = true;
     private $_user = false;
 
@@ -25,7 +26,7 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required'],
+            [['username', 'password', 'specialty'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -41,6 +42,7 @@ class LoginForm extends Model
         return [
             'username' => 'Α.Φ.Μ.',
             'password' => 'Α.Δ.Τ.',
+            'specialty' => 'Ειδικότητα',
             'rememberMe' => 'Να με θυμάσαι'
         ];
     }
@@ -83,7 +85,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByUsername($this->username, $this->specialty);
         }
 
         return $this->_user;
