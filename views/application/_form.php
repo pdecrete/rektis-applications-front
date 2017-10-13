@@ -12,24 +12,26 @@ use app\models\Choice;
 ?>
 
 <div class="application-form-container">
-
+   <div class="well well-sm">
     <div class="row item">
         <div class="col-sm-4">
-            <h2><?= $user->specialty ?> <small>Ειδικότητα</small></h2>
+            <h2><?= $user->specialty ?> <small>(Ειδικότητα)</small></h2>
         </div>
         <div class="col-sm-4">
-            <h2><?= $user->vat ?> <small>Α.Φ.Μ.</small></h2>
+            <h2><?= $user->vat ?> <small>(Α.Φ.Μ.)</small></h2>
         </div>
         <div class="col-sm-4">
-            <h2><?= $user->identity ?> <small>Ταυτότητα</small></h2>
+            <h2><?= $user->identity ?> <small>(Ταυτότητα)</small></h2>
         </div>
     </div>
+  </div>
 
     <div class="well">
         <h4>Οδηγίες συμπλήρωσης αίτησης</h4>
         <ul>
-            <li>Μπορείτε να προσθέσετε <strong>από 1 έως <?= Yii::$app->params['max-application-items'] ?></strong> επιλογές</li>
-            <li>Όταν ολοκληρώσετε τις επιλογές σας, πατήστε το κουμπί <strong>Αποθήκευση</strong></li>
+            <li>Οι νομοί παρουσιάζονται με τη σειρά προτίμησης που έχετε ήδη δηλώσει.</li>
+            <li>Επιλέξτε <strong>όλα</strong> τα σχολεία για κάθε νομό με τη σειρά προτίμησης που επιθυμείτε.</li>
+            <li>Όταν ολοκληρώσετε τις επιλογές σας, πατήστε το κουμπί <strong>"Αποθήκευση"</strong>.</li>
         </ul>
     </div>
 
@@ -59,7 +61,7 @@ use app\models\Choice;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Αποθήκευση', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Αποθήκευση', ['class' => 'btn btn-success btn-lg pull-right']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
