@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <thead>
         <th>Σειρά προτίμησης</th>
         <th>Κενό προτίμησης</th>
-        <th>Νομός</th>
+        <th>Περιφερειακή ενότητα</th>
         <th>Περιφέρεια</th>
         </thead>
         <tbody>
