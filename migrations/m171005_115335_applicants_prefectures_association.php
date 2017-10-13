@@ -11,10 +11,10 @@ class m171005_115335_applicants_prefectures_association extends Migration
             'prefect_id' => $this->integer(),
             'applicant_id' => $this->integer(),
             'order' => $this->smallInteger()->notNull()
-        ]);		
+        ]);
         $this->addForeignKey('fk_prefect_preference_applicant_id', '{{%prefectures_preference}}', 'applicant_id', '{{%applicant}}', 'id', 'SET NULL', 'CASCADE');
         $this->addForeignKey('fk_prefect_preference_id', '{{%prefectures_preference}}', 'prefect_id', '{{%prefecture}}', 'id', 'SET NULL', 'CASCADE');
-
+        $this->createIndex('idx_prefect_preference_unique', '{{%prefectures_preference}}', ['prefect_id', 'applicant_id', 'order'], true);
     }
 
     public function safeDown()

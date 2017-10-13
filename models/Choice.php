@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "choice".
  *
@@ -61,7 +59,7 @@ class Choice extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Application::className(), ['choice_id' => 'id']);
     }
-    
+
 
     /**
      * @inheritdoc
@@ -71,9 +69,9 @@ class Choice extends \yii\db\ActiveRecord
     {
         return new ChoiceQuery(get_called_class());
     }
-    
+
     public static function getChoices($prefecture_id, $specialty)
     {
-        return Choice::find()->where(['prefecture_id' => $prefecture_id, 'specialty' => $specialty])->all();
-    }		
+        return static::find()->where(['prefecture_id' => $prefecture_id, 'specialty' => $specialty])->all();
+    }
 }

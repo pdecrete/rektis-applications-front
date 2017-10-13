@@ -232,7 +232,6 @@ class ApplicationController extends Controller
     public function actionMyDelete()
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' =>\Yii::$app->user->getIdentity()->specialty]);
-        //echo($user->id);die();
         Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
 
         Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");
