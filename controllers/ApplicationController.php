@@ -132,11 +132,17 @@ class ApplicationController extends Controller
      * @return mixed
      */
     public function actionApply()
-    {
+    {		
 		$user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' =>\Yii::$app->user->getIdentity()->specialty]);
-		$prefectrs_choices_model = Choice::classname();
 		$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
-		
+		//print_r($prefectrs_prefrnc_model); die();
+		if (count($prefectrs_prefrnc_model) == 0) {
+            Yii::$app->session->addFlash('info', "Δεν υπάρχουν νομοί προτιμήσης.");
+            return $this->redirect(['site/index']);
+        }
+        
+		$prefectrs_choices_model = Choice::classname();
+				
         // one application per user only; forward to delete confirmation page
         if ($user->applications) {
             Yii::$app->session->addFlash('warning', "Μόνο μία αίτηση μπορεί να καταχωρηθεί. Φαίνεται πως έχετε ήδη καταχωρήσει αίτηση. <strong>Εάν θέλετε να καταχωρήσετε νέα, πρέπει πρώτα να διαγράψετε την ήδη καταχωρημένη αίτηση.</strong>");
