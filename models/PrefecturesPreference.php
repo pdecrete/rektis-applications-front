@@ -45,9 +45,9 @@ class PrefecturesPreference extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'prefect_id' => 'Prefect ID',
-            'applicant_id' => 'Applicant ID',
-            'order' => 'Order',
+            'prefect_id' => 'Περιφερειακή ενότητα',
+            'applicant_id' => 'Αιτούσα/Αιτών',
+            'order' => 'Σειρά προτίμησης',
         ];
     }
 

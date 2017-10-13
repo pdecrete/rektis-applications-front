@@ -25,7 +25,6 @@ class ApplicationController extends Controller
      */
     public function behaviors()
     {
-
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -110,8 +109,6 @@ class ApplicationController extends Controller
         ]);
     }
 
-
-
     /**
      * Creates a new Application model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -119,107 +116,100 @@ class ApplicationController extends Controller
      */
     public function actionApply()
     {
-		$user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' =>\Yii::$app->user->getIdentity()->specialty]);
-		//$prefectrs_model = Prefecture::find()->all();
-		$prefectrs_choices_model = Choice::classname();
-		$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
-		
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+        $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
+
         // one application per user only; forward to delete confirmation page
         if ($user->applications) {
             Yii::$app->session->addFlash('warning', "Μόνο μία αίτηση μπορεί να καταχωρηθεί. Φαίνεται πως έχετε ήδη καταχωρήσει αίτηση. <strong>Εάν θέλετε να καταχωρήσετε νέα, πρέπει πρώτα να διαγράψετε την ήδη καταχωρημένη αίτηση.</strong>");
             return $this->redirect(['delete-my-application']);
         }
 
-        $models = array();
-        $prefectures_choices = array();
-        
-	    $counter = 1;
-	    foreach ($prefectrs_prefrnc_model as $preference){ 	  
-		   $choices = $prefectrs_choices_model::getChoices($preference->prefect_id, $user->specialty);
-		   $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
-		   foreach($choices as $choice){
-			  $models[$preference->getPrefectureName()][$counter] = new Application();
-			  $helper = $models[$preference->getPrefectureName()][$counter];
-			  $helper->applicant_id = $user->id;
-			  $helper->deleted = 0;
-			  $counter++;
-		   }
-	    }
+        $models = [];
+        $prefectures_choices = [];
+
+        $counter = 1;
+        foreach ($prefectrs_prefrnc_model as $preference) {
+            $choices = Choice::getChoices($preference->prefect_id, $user->specialty);
+            $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
+            foreach ($choices as $choice) {
+                $models[$preference->getPrefectureName()][$counter] = new Application();
+                $helper = $models[$preference->getPrefectureName()][$counter];
+                $helper->applicant_id = $user->id;
+                $helper->deleted = 0;
+                $counter++;
+            }
+        }
 
         if (\Yii::$app->request->isPost) {
-			
-	      foreach (array_keys($models) as $pr)
-		 	  Model::loadMultiple($models[$pr], Yii::$app->request->post());
+            foreach (array_keys($models) as $pr) {
+                Model::loadMultiple($models[$pr], Yii::$app->request->post());
+            }
 
-           $counter = 1;
-           foreach (array_keys($models) as $pr)
-              foreach ($models[$pr] as $choice)
-                 $choice->order = $counter++;               	       
+            $order_counter = 1;
+            foreach (array_keys($models) as $pr) {
+                foreach ($models[$pr] as $choice) {
+                    $choice->order = $order_counter++;
+                }
+            }
+            $models_cnt = $order_counter - 1;
 
-           $valid = true;
-           foreach (array_keys($models) as $pr)
-			   if(!Model::validateMultiple($models[$pr]))
-                   $valid = false;
+            $valid = true;
+            foreach (array_keys($models) as $pr) {
+                if (!Model::validateMultiple($models[$pr])) {
+                    $valid = false;
+                }
+            }
 
-           $models_cnt = 0;
-           foreach (array_keys($models) as $pr)
-               foreach ($models[$pr] as $choice)
-		           $models_cnt++;
+            // check unique choices
+            $unique_choices_cnt = 0;
+            foreach (array_keys($models) as $pr) {
+                $choices = array_map(function ($m) {
+                    return $m->choice_id;
+                }, $models[$pr]);
+                $unique_choices_cnt += count(array_unique($choices));
+            }
 
-           // check unique choices 
-           $unique_choices_cnt = 0;
-           foreach (array_keys($models) as $pr){
-               $choices = array_map(function ($m) {
-                   return $m->choice_id;
-               }, $models[$pr]);
-               $unique_choices_cnt += count(array_unique($choices));
-		   }
-           
-           if ($unique_choices_cnt != $models_cnt) {
-              $valid = false;
-              Yii::$app->session->addFlash('danger', "Η κάθε επιλογή μπορεί να γίνει μόνο μία φορά");
-              return $this->render('apply', [
-                 'models' => $models,
-                 'user' => $user,
-                 'prefectures_choices' => $prefectures_choices,
-                 'prefectrs_choices_model' => $prefectrs_choices_model
-                ]);        
-           }
-            
-           if ($valid) {
-              // save all or none
-              $transaction = \Yii::$app->db->beginTransaction();
- 
-              try {
-                 foreach (array_keys($models) as $pr)
-                    foreach($models[$pr] as $index => $app)
-                       if ($app->save() === false)
-                          throw new \Exception();
-                            
+            if ($unique_choices_cnt != $models_cnt) {
+                $valid = false;
+                Yii::$app->session->addFlash('danger', "Η κάθε επιλογή μπορεί να γίνει μόνο μία φορά.");
+            }
+
+            if ($valid) {
+                // save all or none
+                $transaction = \Yii::$app->db->beginTransaction();
+
+                try {
+                    foreach (array_keys($models) as $pr) {
+                        foreach ($models[$pr] as $index => $app) {
+                            if ($app->save() === false) {
+                                throw new \Exception();
+                            }
+                        }
+                    }
+
                     $transaction->commit();
                     Yii::$app->session->addFlash('success', "Οι επιλογές σας έχουν αποθηκευτεί.");
                     return $this->redirect(['my-application']);
-              } 
-              catch (\Exception $e) {
-                   Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση των επιλογών σας. Παρακαλώ προσπαθήστε ξανά.");
-                   $transaction->rollBack();
-              }
-           } 
-           else 
-              Yii::$app->session->addFlash('danger', "Παρακαλώ διορθώστε τα λάθη που υπάρχουν στις επιλογές και δοκιμάστε ξανά.");
-         }
-        
-         return $this->render('apply', [
-                 'models' => $models,
-                 'user' => $user,
-                 'prefectures_choices' => $prefectures_choices,
-                 'prefectrs_choices_model' => $prefectrs_choices_model
-                ]);
+                } catch (\Exception $e) {
+                    Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση των επιλογών σας. Παρακαλώ προσπαθήστε ξανά.");
+                    $transaction->rollBack();
+                }
+            } else {
+                Yii::$app->session->addFlash('danger', "Παρακαλώ διορθώστε τα λάθη που υπάρχουν στις επιλογές και δοκιμάστε ξανά.");
+            }
+        }
+
+        return $this->render('apply', [
+                'models' => $models,
+                'user' => $user,
+                'prefectures_choices' => $prefectures_choices,
+        ]);
     }
 
     public function actionDeleteMyApplication()
     {
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' =>\Yii::$app->user->getIdentity()->specialty]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         // if user has made no choices, forward to index
         if (count($user->applications) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
@@ -231,7 +221,7 @@ class ApplicationController extends Controller
 
     public function actionMyDelete()
     {
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' =>\Yii::$app->user->getIdentity()->specialty]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
 
         Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");

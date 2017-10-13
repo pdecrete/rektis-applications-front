@@ -45,9 +45,9 @@ class Prefecture extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'region' => 'Region',
-            'prefecture' => 'Prefecture',
-            'reference' => 'Reference',
+            'region' => 'Περιφέρεια',
+            'prefecture' => 'Περιφερειακή ενότητα',
+            'reference' => 'Αναφορά προγραμματιστή',
         ];
     }
 

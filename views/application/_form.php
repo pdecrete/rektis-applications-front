@@ -3,20 +3,12 @@
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-use app\models\Application;
+use app\models\Choice;
 
 /* @var $this yii\web\View */
 /* @var $models app\models\Application[] */
 /* @var $form yii\widgets\ActiveForm */
 
-//$model0 = reset($models);
-
-$notification_js = '$(".dynamicform_wrapper").on("limitReached", function (e) {
-    alert("Έχετε φτάσει στο μέγιστο ότιο διαθέσιμων επιλογών");
-    return true;
-});
-';
-$this->registerJs($notification_js);
 ?>
 
 <div class="application-form-container">
@@ -42,30 +34,29 @@ $this->registerJs($notification_js);
     </div>
 
     <?php $form = ActiveForm::begin(['id' => 'application-form', 'layout' => 'horizontal']); ?>
-	
-	<div class="container-items">
-		<div class="panel-group">
-			<?php 
-			foreach($models as $prefect_name => $choices): ?>
-			<div class="panel panel-info">
-				<div class="panel-heading"><?php echo 'ΝΟΜΟΣ ' . $prefect_name ?></div>
-				<div class="panel-body">
-					<?php
-					$options = ArrayHelper::map($prefectrs_choices_model::getChoices($prefectures_choices[$prefect_name], $user->specialty), 'id', 'position');
-					$counter = 1;
-					foreach($choices as $index => $choice):	   
-					   echo $form->field($choice, "[{$index}]choice_id")->dropdownList($options, ['prompt' => 'Επιλέξτε...'])->label('Επιλογή ' . $counter++ . 'ου κενού');
-					   if (!$choice->isNewRecord) {
-                          echo $form->field($choice, "[{$index}]id")->hiddenInput()->label(false);
-                    }
-					endforeach;
-					?>
-					    
+
+    <div class="container-items">
+        <div class="panel-group">
+            <?php foreach ($models as $prefect_name => $choices): ?>
+                <div class="panel panel-info">
+                    <div class="panel-heading"><?php echo 'ΝΟΜΟΣ ', $prefect_name ?></div>
+                    <div class="panel-body">
+                        <?php
+                        $options = ArrayHelper::map(Choice::getChoices($prefectures_choices[$prefect_name], $user->specialty), 'id', 'position');
+                        $counter = 1;
+                        foreach ($choices as $index => $choice) {
+                            echo $form->field($choice, "[{$index}]choice_id")->dropdownList($options, ['prompt' => 'Επιλέξτε...'])->label('Επιλογή ' . $counter++ . 'ου κενού');
+                            if (!$choice->isNewRecord) {
+                                echo $form->field($choice, "[{$index}]id")->hiddenInput()->label(false);
+                            }
+                        }
+
+                        ?>
+                    </div>
                 </div>
-			</div>
-			<?php endforeach; ?>
-		</div>
-	</div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton('Αποθήκευση', ['class' => 'btn btn-success']) ?>

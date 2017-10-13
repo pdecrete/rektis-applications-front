@@ -55,11 +55,11 @@ class Application extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'applicant_id' => 'Applicant ID',
-            'choice_id' => 'Choice ID',
-            'order' => 'Order',
-            'updated' => 'Updated',
-            'deleted' => 'Deleted',
+            'applicant_id' => 'Αιτούσα/Αιτών',
+            'choice_id' => 'Επιλογή',
+            'order' => 'Σειρά προτίμησης',
+            'updated' => 'Ενημέρωση',
+            'deleted' => 'Διαγραφή',
         ];
     }
 
