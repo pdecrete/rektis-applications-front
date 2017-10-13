@@ -47,9 +47,9 @@ class Applicant extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'vat' => 'Vat',
-            'identity' => 'Identity',
-            'specialty' => 'Specialty',
+            'vat' => 'Α.Φ.Μ.',
+            'identity' => 'Α.Δ.Τ.',
+            'specialty' => 'Ειδικότητα',
         ];
     }
 

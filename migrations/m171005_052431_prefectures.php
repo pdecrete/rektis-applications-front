@@ -22,8 +22,8 @@ class m171005_052431_prefectures extends Migration
 
         $this->createTable('{{%prefecture}}', [
             'id' => $this->primaryKey(),
-            'region' => $this->string(256)->notNull()->defaultValue(''),
-            'prefecture' => $this->string(256)->notNull()->unique(),
+            'region' => $this->string(150)->notNull()->defaultValue(''),
+            'prefecture' => $this->string(150)->notNull()->unique(),
             'reference' => $this->text()->notNull() // για αναφορά στο backend σύστημα 
             ], $tableOptions);
 
@@ -43,6 +43,7 @@ class m171005_052431_prefectures extends Migration
      */
     public function safeDown()
     {
+		$this->dropForeignKey('fk_prefecture_id', '{{%choice}}');
         $this->dropColumn('{{%choice}}', 'prefecture_id');
         $this->dropTable('{{%prefecture}}');
     }
