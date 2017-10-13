@@ -29,11 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2><?= $user->identity ?> <small>Ταυτότητα</small></h2>
         </div>
     </div>
-
+    <?php //echo "<pre>"; var_dump($dataProvider); echo "</pre>"; ?>
     <table class="table table-bordered table-hover table-striped">
         <thead>
         <th>Σειρά προτίμησης</th>
         <th>Κενό προτίμησης</th>
+        <th>Νομός</th>
+        <th>Περιφέρεια</th>
         </thead>
         <tbody>
             <?=

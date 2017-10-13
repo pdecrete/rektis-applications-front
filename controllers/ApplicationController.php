@@ -14,6 +14,7 @@ use app\models\Prefecture;
 use app\models\PrefecturesPreference;
 use app\models\Choice;
 
+
 /**
  * ApplicationController implements the CRUD actions for Application model.
  */
@@ -90,15 +91,28 @@ class ApplicationController extends Controller
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         $choices = $user->applications;
-
+        //$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
+        //$prefectrs_choices_model = Choice::classname();
+        
         // if no application exists, forward to create
         if (count($choices) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
             return $this->redirect(['apply']);
         }
+        
+        $choicesArray = \yii\helpers\ArrayHelper::toArray($choices);
+        
+		for($i = 0; $i < count($choicesArray); $i++){
+		   $choiceActRec = Choice::findOne(['id' => $choicesArray[$i]['choice_id']]);
+		   $prefectureId = $choiceActRec->prefecture_id;
+		   $choicesArray[$i]['Position'] = $choiceActRec->position;
+		   $choicesArray[$i]['PrefectureName'] = Prefecture::findOne(['id' => $prefectureId])->prefecture;
+		   $choicesArray[$i]['RegionName'] = Prefecture::findOne(['id' => $prefectureId])->region;
+	    }
+        //echo "<pre>"; print_r($choicesArray); echo "</pre>"; die();
 
         $provider = new \yii\data\ArrayDataProvider([
-            'allModels' => $choices,
+            'allModels' => $choicesArray,
             'pagination' => [
                 'pageSize' => 100,
             ],
@@ -120,7 +134,6 @@ class ApplicationController extends Controller
     public function actionApply()
     {
 		$user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' =>\Yii::$app->user->getIdentity()->specialty]);
-		//$prefectrs_model = Prefecture::find()->all();
 		$prefectrs_choices_model = Choice::classname();
 		$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
 		
