@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\ListView;
 
@@ -17,16 +16,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="row item">
-        <div class="col-sm-4">
-            <h2><?= $user->specialty ?> <small>Ειδικότητα</small></h2>
-        </div>
-        <div class="col-sm-4">
-            <h2><?= $user->vat ?> <small>Α.Φ.Μ.</small></h2>
-        </div>
-        <div class="col-sm-4">
-            <h2><?= $user->identity ?> <small>Ταυτότητα</small></h2>
+    <div class="well well-sm">
+        <div class="row item">
+            <div class="col-sm-4">
+                <h2><?= $user->specialty ?> <small>(Ειδικότητα)</small></h2>
+            </div>
+            <div class="col-sm-4">
+                <h2><?= $user->vat ?> <small>(Α.Φ.Μ.)</small></h2>
+            </div>
+            <div class="col-sm-4">
+                <h2><?= $user->identity ?> <small>(Ταυτότητα)</small></h2>
+            </div>
         </div>
     </div>
     <?php //echo "<pre>"; var_dump($dataProvider); echo "</pre>"; ?>
