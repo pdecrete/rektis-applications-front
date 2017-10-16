@@ -26,6 +26,9 @@ AppAsset::register($this);
 
         <div class="wrap">
             <?php
+            $specialty = '';
+            if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin())
+                $specialty = ' - ' . Yii::$app->user->identity->specialty;
             NavBar::begin([
                 'brandLabel' => Yii::$app->params['companyName'],
                 'brandUrl' => Yii::$app->homeUrl,
@@ -45,7 +48,7 @@ AppAsset::register($this);
                         '<li>'
                         . Html::beginForm(['/site/logout'], 'post')
                         . Html::submitButton(
-                            'Αποσύνδεση (' . Yii::$app->user->identity->vat . ' - ' . Yii::$app->user->identity->specialty . ')', ['class' => 'btn btn-link logout']
+                            'Αποσύνδεση (' . Yii::$app->user->identity->vat . $specialty . ')', ['class' => 'btn btn-link logout']
                         )
                         . Html::endForm()
                         . '</li>'

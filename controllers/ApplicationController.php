@@ -123,6 +123,7 @@ class ApplicationController extends Controller
         ]);
     }
 
+
     /**
      * Creates a new Application model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -137,27 +138,35 @@ class ApplicationController extends Controller
             return $this->redirect(['site/index']);
         }
         
-		$prefectrs_choices_model = Choice::classname();
-				
-        // one application per user only; forward to delete confirmation page
-        if ($user->applications) {
-            Yii::$app->session->addFlash('warning', "Μόνο μία αίτηση μπορεί να καταχωρηθεί. Φαίνεται πως έχετε ήδη καταχωρήσει αίτηση. <strong>Εάν θέλετε να καταχωρήσετε νέα, πρέπει πρώτα να διαγράψετε την ήδη καταχωρημένη αίτηση.</strong>");
-            return $this->redirect(['delete-my-application']);
-        }
-
+		$prefectrs_choices_model = Choice::classname();	
         $models = [];
         $prefectures_choices = [];
-
-        $counter = 1;
-        foreach ($prefectrs_prefrnc_model as $preference) {
-            $choices = Choice::getChoices($preference->prefect_id, $user->specialty);
-            $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
-            foreach ($choices as $choice) {
-                $models[$preference->getPrefectureName()][$counter] = new Application();
-                $helper = $models[$preference->getPrefectureName()][$counter];
-                $helper->applicant_id = $user->id;
-                $helper->deleted = 0;
-                $counter++;
+        $counter = 1;			
+        
+        if($user->applications){
+			foreach ($prefectrs_prefrnc_model as $preference) {
+			    $userChoices = $user->getApplications()->all();
+                $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
+                foreach ($userChoices as $userChoice) {
+					$choice = Choice::findOne($userChoice->choice_id);
+					if($choice->prefecture_id ===  $preference->prefect_id){
+                        $models[$preference->getPrefectureName()][$counter] = $userChoice;
+                        $counter++;
+				    }
+                }
+            }
+		}
+		else{
+            foreach ($prefectrs_prefrnc_model as $preference) {
+                $choices = Choice::getChoices($preference->prefect_id, $user->specialty);
+                $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
+                foreach ($choices as $choice) {
+                    $models[$preference->getPrefectureName()][$counter] = new Application();
+                    $helper = $models[$preference->getPrefectureName()][$counter];
+                    $helper->applicant_id = $user->id;
+                    $helper->deleted = 0;
+                    $counter++;
+                }
             }
         }
 
