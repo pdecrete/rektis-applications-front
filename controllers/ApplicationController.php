@@ -130,7 +130,7 @@ class ApplicationController extends Controller
             'mode' => Pdf::MODE_UTF8, 
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT, 
-            'filename' => 'test.pdf',
+            'filename' => 'aitisi.pdf',
             'destination' => Pdf::DEST_DOWNLOAD,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
@@ -138,7 +138,7 @@ class ApplicationController extends Controller
             'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
             'methods' => [ 
                 'SetHeader'=>['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'], 
-                'SetFooter'=>['Σελίδα: {PAGENO}'],
+                'SetFooter'=>['Σελίδα: {PAGENO} από {nb}'],
                 ]
             ]);
     
