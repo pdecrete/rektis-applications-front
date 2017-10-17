@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if ($enable_applications === true) : ?>
         <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']) ?>
+        <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
     <?php endif; ?>
 
     <h1><?= Html::encode($this->title) ?></h1>

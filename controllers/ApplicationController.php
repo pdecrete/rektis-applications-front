@@ -13,6 +13,7 @@ use app\models\Model;
 use app\models\Prefecture;
 use app\models\PrefecturesPreference;
 use app\models\Choice;
+use kartik\mpdf\Pdf;
 
 
 /**
@@ -86,8 +87,8 @@ class ApplicationController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionMyApplication()
-    {
+    public function actionMyApplication($printMode = 0)
+    {     
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         $choices = $user->applications;
         //$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
@@ -116,6 +117,35 @@ class ApplicationController extends Controller
                 'pageSize' => 100,
             ],
         ]);
+    
+        if($printMode == 1){
+			$content = $this->renderPartial('print', [
+                'user' => $user,
+                'dataProvider' => $provider,
+                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+            ]);
+            
+            // setup kartik\mpdf\Pdf component
+            $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8, 
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            'filename' => 'test.pdf',
+            'destination' => Pdf::DEST_DOWNLOAD,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+            'methods' => [ 
+                'SetHeader'=>['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'], 
+                'SetFooter'=>['Σελίδα: {PAGENO}'],
+                ]
+            ]);
+    
+            // return the pdf output as per the destination setting
+            return $pdf->render();
+	    }
+        
         return $this->render('view', [
                 'user' => $user,
                 'dataProvider' => $provider,
