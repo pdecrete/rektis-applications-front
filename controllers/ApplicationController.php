@@ -40,7 +40,7 @@ class ApplicationController extends Controller
                     [
                         'actions' => ['my-application'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], 
                         'matchCallback' => function ($rule, $action) {
                             return false === \Yii::$app->user->identity->isAdmin();
                         }
@@ -89,10 +89,9 @@ class ApplicationController extends Controller
      */
     public function actionMyApplication($printMode = 0)
     {     
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);  
+        
         $choices = $user->applications;
-        //$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
-        //$prefectrs_choices_model = Choice::classname();
         
         // if no application exists, forward to create
         if (count($choices) == 0) {
@@ -109,20 +108,16 @@ class ApplicationController extends Controller
 		   $choicesArray[$i]['PrefectureName'] = Prefecture::findOne(['id' => $prefectureId])->prefecture;
 		   $choicesArray[$i]['RegionName'] = Prefecture::findOne(['id' => $prefectureId])->region;
 	    }
-        //echo "<pre>"; print_r($choicesArray); echo "</pre>"; die();
 
         $provider = new \yii\data\ArrayDataProvider([
-            'allModels' => $choicesArray,
-            'pagination' => [
-                'pageSize' => 100,
-            ],
+            'allModels' => $choicesArray
         ]);
     
         if($printMode == 1){
+			$data[0]['user'] = $user;
+			$data[0]['provider'] = $provider;
 			$content = $this->renderPartial('print', [
-                'user' => $user,
-                'dataProvider' => $provider,
-                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+                'data' => $data,
             ]);
             
             // setup kartik\mpdf\Pdf component
@@ -141,8 +136,7 @@ class ApplicationController extends Controller
                 'SetFooter'=>['Σελίδα: {PAGENO} από {nb}'],
                 ]
             ]);
-    
-            // return the pdf output as per the destination setting
+
             return $pdf->render();
 	    }
         
@@ -173,7 +167,7 @@ class ApplicationController extends Controller
         $prefectures_choices = [];
         $counter = 1;			
         
-        if($user->applications){
+        if($user->applications){ // Edit, if the user has already applied
 			foreach ($prefectrs_prefrnc_model as $preference) {
 			    $userChoices = $user->getApplications()->all();
                 $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
@@ -186,7 +180,7 @@ class ApplicationController extends Controller
                 }
             }
 		}
-		else{
+		else{ // Make new application, if the user has not already applied
             foreach ($prefectrs_prefrnc_model as $preference) {
                 $choices = Choice::getChoices($preference->prefect_id, $user->specialty);
                 $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;

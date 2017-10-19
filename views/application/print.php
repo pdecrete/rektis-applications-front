@@ -9,15 +9,21 @@ $this->title = 'Αίτηση - Δήλωση';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
+    <?php 
+    $putpagebreak = false;
+    foreach($data as $userdata):
+       if($putpagebreak === true) echo "<pagebreak />";
+       $putpagebreak = true;   
+    ?>   
     <h3 style="text-align: center;"><?= Html::encode($this->title) ?></h3>
     <table style="border: 1px solid grey; width: 100%;border-spacing: 10px; padding: 5px; background-color: WhiteSmoke;">
 		<tr>
 			<td style="border-bottom: 1px solid grey;"><h4>Ονοματεπώνυμο: </h4></td>
-			<td style="border-bottom: 1px solid grey;"><h4>Ειδικότητα: <?= $user->specialty ?></h4></td>
+			<td style="border-bottom: 1px solid grey;"><h4>Ειδικότητα: <?= $userdata['user']->specialty ?></h4></td>
 		</tr>
 		<tr>
-			<td style="border-bottom: 1px solid grey;"><h4>Α.Φ.Μ.: <?= $user->vat ?></h4></td>
-			<td style="border-bottom: 1px solid grey;"><h4>Ταυτότητα: <?= $user->identity ?></h4></td>
+			<td style="border-bottom: 1px solid grey;"><h4>Α.Φ.Μ.: <?= $userdata['user']->vat ?></h4></td>
+			<td style="border-bottom: 1px solid grey;"><h4>Ταυτότητα: <?= $userdata['user']->identity ?></h4></td>
 	    </tr>
 	    <tr>
 			<td style="border-bottom: 1px solid grey;"><h4>Τηλ: </h4></td>
@@ -28,7 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
 			<td><h4>..................., .... /.... /<?= date("Y") ?></h4></td>
 	    </tr>
     </table>
- 
     <?php //echo "<pre>"; var_dump($dataProvider); echo "</pre>"; ?>
     <h3 style="text-align: center">Προτιμήσεις</h3>
     <table style="border: 1px solid grey;">
@@ -41,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <tbody>
             <?=
             ListView::widget([
-                'dataProvider' => $dataProvider,
+                'dataProvider' => $userdata['provider'],//$dataProvider,
                 'itemView' => '_myapplication_item',
                 'summary' => '<h3>{totalCount} προτιμήσεις</h3>'
             ]);
@@ -52,3 +57,4 @@ $this->params['breadcrumbs'][] = $this->title;
     <table style="width: 100%; border: none; padding: 15px;">
 		<tr><td style="width: 50%">&nbsp;</td><td style="font-weight:bold; text-align: center; width: 50%;">Ο αιτών / Η αιτούσα<br /><br /><br />(υπογραφή)</td></tr>
     </table>
+    <?php endforeach;?>
