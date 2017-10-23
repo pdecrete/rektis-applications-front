@@ -104,7 +104,7 @@ class AdminController extends \yii\web\Controller
 
         $choices = Choice::find()
             ->count();
-            
+
         return $this->render('overview', compact(['dataProvider', 'applicants', 'applications', 'choices']));
     }
 
@@ -155,79 +155,77 @@ class AdminController extends \yii\web\Controller
         $csv->output('ΑΙΤΗΣΕΙΣ-' . date('Y-m-d') . '.csv');
         \Yii::$app->end();
     }
-    
+
     public function actionViewApplications()
     {
-	    $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->joinWith([
-                                               'applications' => function (\yii\db\ActiveQuery $query) {
-                                                                   $query->andWhere(['deleted' => 0])->count() >0; 
-                                                               }
-                                                               ])->all()]);
+        $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->joinWith([
+                'applications' => function (\yii\db\ActiveQuery $query) {
+                    $query->andWhere(['deleted' => 0])->count() > 0;
+                }
+            ])->all()]);
 
-	    return $this->render('view-applications', ['users' => $dataProvider,
-                                                   'pagination' => ['pageSize' => 100],
-                                                   'sort' => ['attributes' => ['vat', 'identity', 'specialty']],
-                                                  ]);
+        return $this->render('view-applications', ['users' => $dataProvider,
+                'pagination' => ['pageSize' => 100],
+                'sort' => ['attributes' => ['vat', 'identity', 'specialty']],
+        ]);
     }
-	
-	public function actionPrintApplications($applicantId = null)
-	{
-		if(isset($applicantId) && is_numeric($applicantId) && intval($applicantId))
-		   $users[0] = Applicant::findOne(['id' => $applicantId]);
-		else
-		   $users = Applicant::find()->joinWith(['applications' => function (\yii\db\ActiveQuery $query) {
-                                                                   $query->andWhere(['deleted' => 0])->count() >0;}])->all();
-			
-	    for($j = 0; $j < count($users); $j++){
-			$choices = $users[$j]->applications;
-			
-						// if no application exists, forward to create
-						if (count($choices) == 0) {
-							Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
-							return $this->redirect(['apply']);
-						}
-			
-			$choicesArray = \yii\helpers\ArrayHelper::toArray($choices);
-			
-			for($i = 0; $i < count($choicesArray); $i++){
-			   $choiceActRec = Choice::findOne(['id' => $choicesArray[$i]['choice_id']]);
-			   $prefectureId = $choiceActRec->prefecture_id;
-			   $choicesArray[$i]['Position'] = $choiceActRec->position;
-			   $choicesArray[$i]['PrefectureName'] = Prefecture::findOne(['id' => $prefectureId])->prefecture;
-			   $choicesArray[$i]['RegionName'] = Prefecture::findOne(['id' => $prefectureId])->region;
-			}
 
-			$provider = new \yii\data\ArrayDataProvider([
-				'allModels' => $choicesArray
-			]);
-		
-			
-			$data[$j]['user'] = $users[$j];
-			$data[$j]['provider'] = $provider;
-		}
-		
-		$content = $this->renderPartial('../application/print', ['data' => $data]);
-		// setup kartik\mpdf\Pdf component
-		$pdf = new Pdf([
-		'mode' => Pdf::MODE_UTF8, 
-		'format' => Pdf::FORMAT_A4,
-		'orientation' => Pdf::ORIENT_PORTRAIT, 
-		'filename' => 'aitisi.pdf',
-		'destination' => Pdf::DEST_DOWNLOAD,
-		'content' => $content,
-		'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
-		'cssInline' => '.kv-heading-1{font-size:18px}',
-		'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
-		'methods' => [ 
-			'SetHeader'=>['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'], 
-			'SetFooter'=>['Σελίδα: {PAGENO} από {nb}'],
-			]
-		]);
+    public function actionPrintApplications($applicantId = null)
+    {
+        if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
+            $users = [ Applicant::findOne(['id' => $applicantId]) ];
+        } else {
+            $users = Applicant::find()->joinWith(['applications' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere(['deleted' => 0])->count() > 0;
+            }])->all();
+        }
 
-		return $pdf->render();	
-	}
-	
-	private function printApplications($applicants)
-	{
-	}
+        for ($j = 0; $j < count($users); $j++) {
+            $choices = $users[$j]->applications;
+
+            // if no application exists, forward to create
+            if (count($choices) == 0) {
+                Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
+                return $this->redirect(['apply']);
+            }
+
+            $choicesArray = \yii\helpers\ArrayHelper::toArray($choices);
+
+            for ($i = 0; $i < count($choicesArray); $i++) {
+                $choiceActRec = Choice::findOne(['id' => $choicesArray[$i]['choice_id']]);
+                $prefectureId = $choiceActRec->prefecture_id;
+                $choicesArray[$i]['Position'] = $choiceActRec->position;
+                $choicesArray[$i]['PrefectureName'] = Prefecture::findOne(['id' => $prefectureId])->prefecture;
+                $choicesArray[$i]['RegionName'] = Prefecture::findOne(['id' => $prefectureId])->region;
+            }
+
+            $provider = new \yii\data\ArrayDataProvider([
+                'allModels' => $choicesArray
+            ]);
+
+
+            $data[$j]['user'] = $users[$j];
+            $data[$j]['provider'] = $provider;
+        }
+
+        $content = $this->renderPartial('../application/print', ['data' => $data]);
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'filename' => 'aitisi.pdf',
+            'destination' => Pdf::DEST_DOWNLOAD,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+            'methods' => [
+                'SetHeader' => ['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+                'SetFooter' => ['Σελίδα: {PAGENO} από {nb}'],
+            ]
+        ]);
+
+        return $pdf->render();
+    }
 }

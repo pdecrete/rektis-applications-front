@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
        <?php if ($enable_applications === true) : ?>
             <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']);?>
        <?php endif; ?>
-            <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1', 'userId' => $user->id], ['class' => 'pull-right btn btn-primary']) ?>
+            <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
     </div>
     
 
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-    <?php //echo "<pre>"; var_dump($dataProvider); echo "</pre>"; ?>
+
     <table class="table table-bordered table-hover table-striped">
         <thead>
         <th>Σειρά προτίμησης</th>
