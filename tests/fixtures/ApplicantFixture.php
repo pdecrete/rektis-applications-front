@@ -10,11 +10,26 @@ class ApplicantFixture extends ActiveFixture
 
     protected function getData()
     {
-        return [
-            ['vat' => '012345678', 'identity' => 'ΑΑ1234', 'specialty' => 'ΠΕ 19'],
-            ['vat' => '112345678', 'identity' => 'ΒΒ5678', 'specialty' => 'ΠΕ 60'],
-            ['vat' => '212345678', 'identity' => 'ΑΒ9874', 'specialty' => 'ΠΕ 60'],
-            ['vat' => '012345678', 'identity' => 'ΑΑ1234', 'specialty' => 'ΠΕ 20'],
+        $common_ref = [
+            'sid' => 1,
+            'msg' => 'None'
         ];
+
+        $data = [
+            ['vat' => '012345678', 'identity' => 'ΑΑ1234', 'specialty' => 'ΠΕ 19', 'reference' => ''],
+            ['vat' => '112345678', 'identity' => 'ΒΒ5678', 'specialty' => 'ΠΕ 60', 'reference' => ''],
+            ['vat' => '212345678', 'identity' => 'ΑΒ9874', 'specialty' => 'ΠΕ 60', 'reference' => ''],
+            ['vat' => '012345678', 'identity' => 'ΑΑ1234', 'specialty' => 'ΠΕ 20', 'reference' => ''],
+        ];
+
+        array_walk($data, function (&$v, $k) use ($common_ref) {
+            $v['reference'] = json_encode(array_merge($common_ref, [
+                'firstname' => "{$v['identity']}-firstname",
+                'lastname' => "{$v['identity']}-lastname",
+                'email' => "{$v['identity']}@email",
+            ]));
+        });
+
+        return $data;
     }
 }
