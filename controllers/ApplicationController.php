@@ -13,7 +13,7 @@ use app\models\Model;
 use app\models\Prefecture;
 use app\models\PrefecturesPreference;
 use app\models\Choice;
-
+use kartik\mpdf\Pdf;
 
 /**
  * ApplicationController implements the CRUD actions for Application model.
@@ -82,47 +82,69 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Displays a single Application model.
-     * @param integer $id
+     * 
+     * @param int $printMode
      * @return mixed
      */
-    public function actionMyApplication()
+    public function actionMyApplication($printMode = 0)
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+
         $choices = $user->applications;
-        //$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
-        //$prefectrs_choices_model = Choice::classname();
-        
+
         // if no application exists, forward to create
         if (count($choices) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
             return $this->redirect(['apply']);
         }
-        
+
         $choicesArray = \yii\helpers\ArrayHelper::toArray($choices);
-        
-		for($i = 0; $i < count($choicesArray); $i++){
-		   $choiceActRec = Choice::findOne(['id' => $choicesArray[$i]['choice_id']]);
-		   $prefectureId = $choiceActRec->prefecture_id;
-		   $choicesArray[$i]['Position'] = $choiceActRec->position;
-		   $choicesArray[$i]['PrefectureName'] = Prefecture::findOne(['id' => $prefectureId])->prefecture;
-		   $choicesArray[$i]['RegionName'] = Prefecture::findOne(['id' => $prefectureId])->region;
-	    }
-        //echo "<pre>"; print_r($choicesArray); echo "</pre>"; die();
+
+        for ($i = 0; $i < count($choicesArray); $i++) {
+            $choiceActRec = Choice::findOne(['id' => $choicesArray[$i]['choice_id']]);
+            $prefectureId = $choiceActRec->prefecture_id;
+            $choicesArray[$i]['Position'] = $choiceActRec->position;
+            $choicesArray[$i]['PrefectureName'] = Prefecture::findOne(['id' => $prefectureId])->prefecture;
+            $choicesArray[$i]['RegionName'] = Prefecture::findOne(['id' => $prefectureId])->region;
+        }
 
         $provider = new \yii\data\ArrayDataProvider([
-            'allModels' => $choicesArray,
-            'pagination' => [
-                'pageSize' => 100,
-            ],
+            'allModels' => $choicesArray
         ]);
-        return $this->render('view', [
-                'user' => $user,
-                'dataProvider' => $provider,
-                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
-        ]);
-    }
 
+        if ($printMode == 1) {
+            $data[0]['user'] = $user;
+            $data[0]['provider'] = $provider;
+            $content = $this->renderPartial('print', [
+                'data' => $data,
+            ]);
+
+            // setup kartik\mpdf\Pdf component
+            $pdf = new Pdf([
+                'mode' => Pdf::MODE_UTF8,
+                'format' => Pdf::FORMAT_A4,
+                'orientation' => Pdf::ORIENT_PORTRAIT,
+                'filename' => 'aitisi.pdf',
+                'destination' => Pdf::DEST_DOWNLOAD,
+                'content' => $content,
+                'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+                'cssInline' => '.kv-heading-1{font-size:18px}',
+                'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+                'methods' => [
+                    'SetHeader' => ['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+                    'SetFooter' => ['Σελίδα: {PAGENO} από {nb}'],
+                ]
+            ]);
+
+            return $pdf->render();
+        } else {
+            return $this->render('view', [
+                    'user' => $user,
+                    'dataProvider' => $provider,
+                    'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+            ]);
+        }
+    }
 
     /**
      * Creates a new Application model.
@@ -130,33 +152,32 @@ class ApplicationController extends Controller
      * @return mixed
      */
     public function actionApply()
-    {		
+    {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-		$prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
-		if (count($prefectrs_prefrnc_model) == 0) {
+        $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
+        if (count($prefectrs_prefrnc_model) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχουν νομοί προτιμήσης.");
             return $this->redirect(['site/index']);
         }
-        
-		$prefectrs_choices_model = Choice::classname();	
+
+        $prefectrs_choices_model = Choice::classname();
         $models = [];
         $prefectures_choices = [];
-        $counter = 1;			
-        
-        if($user->applications){
-			foreach ($prefectrs_prefrnc_model as $preference) {
-			    $userChoices = $user->getApplications()->all();
+        $counter = 1;
+
+        if ($user->applications) { // Edit, if the user has already applied
+            foreach ($prefectrs_prefrnc_model as $preference) {
+                $userChoices = $user->getApplications()->all();
                 $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
                 foreach ($userChoices as $userChoice) {
-					$choice = Choice::findOne($userChoice->choice_id);
-					if($choice->prefecture_id ===  $preference->prefect_id){
+                    $choice = Choice::findOne($userChoice->choice_id);
+                    if ($choice->prefecture_id === $preference->prefect_id) {
                         $models[$preference->getPrefectureName()][$counter] = $userChoice;
                         $counter++;
-				    }
+                    }
                 }
             }
-		}
-		else{
+        } else { // Make new application, if the user has not already applied
             foreach ($prefectrs_prefrnc_model as $preference) {
                 $choices = Choice::getChoices($preference->prefect_id, $user->specialty);
                 $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;

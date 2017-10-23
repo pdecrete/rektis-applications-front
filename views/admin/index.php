@@ -44,6 +44,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <p class="text-danger">Προσοχή! Η ενέργεια αυτή είναι <strong>μή αναστρέψιμη</strong>!</p>
             <p><?= Html::a(Html::icon('trash') . ' Εκκαθάριση', Url::to(['admin/clear-data']), ['class' => 'btn btn-danger', 'data-method' => 'post', 'data-confirm' => 'Η ενέργεια αυτή είναι μη αναστρέψιμη! Είστε βέβαιοι;']) ?></p>
         </div>
+        <div class="col-lg-4">
+            <h2>Εκτύπωση αιτήσεων</h2>
+            <p>Η λειτουργία αυτή εκτυπώνει όλες τις υποβληθείσες αιτήσεις.</p>
+            <p><?= Html::a(Html::icon('print') . ' Εκτύπωση', Url::to(['admin/print-applications']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?></p>
+        </div>        
+        <div class="col-lg-4">
+            <h2>Προβολή Αιτήσεων</h2>
+            <p>Προβολή αιτήσεων που έχουν υποβληθεί.</p>
+            <p><?= Html::a('Προβολή', Url::to(['admin/view-applications']), ['class' => 'btn btn-primary', 'data-method' => 'post']) ?></p>
+        </div>
     </div>
 
 </div>

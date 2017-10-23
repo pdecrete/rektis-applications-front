@@ -5,15 +5,19 @@ use yii\widgets\ListView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Application */
 
-$this->title = 'Η αίτηση μου';
+$this->title = 'Η αίτησή μου';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div class="application-view">
 
-    <?php if ($enable_applications === true) : ?>
-        <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']) ?>
-    <?php endif; ?>
+    <div class="btn-toolbar">
+       <?php if ($enable_applications === true) : ?>
+            <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']);?>
+       <?php endif; ?>
+            <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
+    </div>
+    
 
     <h1><?= Html::encode($this->title) ?></h1>
     <div class="well well-sm">
@@ -29,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-    <?php //echo "<pre>"; var_dump($dataProvider); echo "</pre>"; ?>
+
     <table class="table table-bordered table-hover table-striped">
         <thead>
         <th>Σειρά προτίμησης</th>
