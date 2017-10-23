@@ -7,7 +7,10 @@ $config = [
     'id' => 'aplicationsbasichandler',
     'language' => 'el', //Make the change in web.php too
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'crypt'
+    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -40,6 +43,10 @@ $config = [
             ],
         ],
         'db' => $db,
+        'crypt' => [
+            'class' => 'app\components\Crypt',
+            'cryptKeyFile' => $params['crypt-key-file']
+        ]
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

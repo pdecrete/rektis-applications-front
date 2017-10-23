@@ -20,7 +20,8 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "league/csv": "^9.0",
         "wbraganca/yii2-dynamicform": "dev-master",
-        "kartik-v/yii2-mpdf": "*"
+        "kartik-v/yii2-mpdf": "*",
+        "defuse/php-encryption": "^2.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

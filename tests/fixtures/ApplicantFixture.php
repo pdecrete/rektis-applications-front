@@ -23,12 +23,16 @@ class ApplicantFixture extends ActiveFixture
         ];
 
         array_walk($data, function (&$v, $k) use ($common_ref) {
-            $v['reference'] = json_encode(array_merge($common_ref, [
+            $v['reference'] = \Yii::$app->crypt->encrypt(
+                json_encode(
+                    array_merge($common_ref, [
                 'firstname' => "{$v['identity']}-firstname",
                 'lastname' => "{$v['identity']}-lastname",
                 'email' => "{$v['identity']}@email",
                 'phone' => "2810{$v['vat']}",
-            ]));
+                    ])
+                )
+            );
         });
 
         return $data;

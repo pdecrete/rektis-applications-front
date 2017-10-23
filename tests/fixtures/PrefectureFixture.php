@@ -10,7 +10,7 @@ class PrefectureFixture extends ActiveFixture
 
     protected function getData()
     {
-        $common_ref = json_encode(['sid' => -1]);
+        $common_ref = \Yii::$app->crypt->encrypt(json_encode(['sid' => -1]));
 
         return [
             ['region' => 'ΚΡΗΤΗΣ', 'prefecture' => 'ΗΡΑΚΛΕΙΟΥ', 'reference' => $common_ref],

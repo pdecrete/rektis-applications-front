@@ -13,8 +13,8 @@ namespace app\models;
  */
 class Applicant extends \yii\db\ActiveRecord
 {
-
     /* the following properties should be separated from the model in th final version */
+
     public $firstname;
     public $lastname;
     public $email;
@@ -63,13 +63,18 @@ class Applicant extends \yii\db\ActiveRecord
         $this->email = '';
         $this->phone = '';
 
-        $more_data = json_decode($this->reference, true);
-        if ($more_data) {
-            foreach (['firstname', 'lastname', 'email', 'phone'] as $fieldname) {
-                $this->$fieldname = isset($more_data[$fieldname]) ? $more_data[$fieldname] : '-';
+        try {
+            $reference = \Yii::$app->crypt->decrypt($this->reference);
+            $more_data = json_decode($reference, true);
+            if ($more_data) {
+                foreach (['firstname', 'lastname', 'email', 'phone'] as $fieldname) {
+                    $this->$fieldname = isset($more_data[$fieldname]) ? $more_data[$fieldname] : '-';
+                }
             }
+        } catch (Exception $e) {
+            // leave unhandled; TODO 
+            throw $e;
         }
-
     }
 
     /**

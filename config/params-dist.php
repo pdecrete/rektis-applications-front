@@ -13,5 +13,6 @@ return [
             'role' => 'admin'
         ],
 	],
+    'crypt-key-file' => __DIR__ . "/path/to/your/key.file",
     'max-application-items' => 10
 ];

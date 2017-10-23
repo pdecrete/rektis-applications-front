@@ -1,12 +1,14 @@
 <?php
-
 $params = require(__DIR__ . '/params.php');
 $db = require(__DIR__ . '/db.php');
 
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'crypt'
+    ],
     'controllerNamespace' => 'app\commands',
     'components' => [
         'cache' => [
@@ -21,15 +23,12 @@ $config = [
             ],
         ],
         'db' => $db,
+        'crypt' => [
+            'class' => 'app\components\Crypt',
+            'cryptKeyFile' => $params['crypt-key-file']
+        ]
     ],
     'params' => $params,
-    /*
-    'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
-        ],
-    ],
-    */
 ];
 
 if (YII_ENV_DEV) {
