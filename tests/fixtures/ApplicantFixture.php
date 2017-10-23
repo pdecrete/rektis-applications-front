@@ -27,6 +27,7 @@ class ApplicantFixture extends ActiveFixture
                 'firstname' => "{$v['identity']}-firstname",
                 'lastname' => "{$v['identity']}-lastname",
                 'email' => "{$v['identity']}@email",
+                'phone' => "2810{$v['vat']}",
             ]));
         });
 

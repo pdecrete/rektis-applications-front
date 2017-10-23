@@ -10,7 +10,6 @@ class User extends Applicant implements IdentityInterface
     public $accessToken;
     public $role;
 
-
     public static function tableName()
     {
         return '{{%applicant}}';
@@ -21,15 +20,15 @@ class User extends Applicant implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-		$users = Yii::$app->params['users'];
-		foreach ($users as $user) {
+        $users = Yii::$app->params['users'];
+        foreach ($users as $user) {
             if ($user['id'] === $id) {
                 return new static($user);
             }
         }
 
-		$tmp = static::findOne(['id' => $id]);
-		//if(!$tmp) echo "NULL"; die();
+        $tmp = static::findOne(['id' => $id]);
+        //if(!$tmp) echo "NULL"; die();
         return $tmp;
     }
 
@@ -38,7 +37,7 @@ class User extends Applicant implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-		$users = Yii::$app->params['users'];
+        $users = Yii::$app->params['users'];
         foreach ($users as $user) {
             if ($user['accessToken'] === $token) {
                 return new static($user);
@@ -56,16 +55,15 @@ class User extends Applicant implements IdentityInterface
      */
     public static function findByUsername($username, $specialty)
     {
-		$users = Yii::$app->params['users'];
-		foreach ($users as $user) {
+        $users = Yii::$app->params['users'];
+        foreach ($users as $user) {
             if ($user['vat'] === $username) {
                 return new static($user);
             }
         }
-		
-		return static::findOne(['vat' => $username, 'specialty' => $specialty]);
+
+        return static::findOne(['vat' => $username, 'specialty' => $specialty]);
     }
-    
 
     /**
      * @inheritdoc
@@ -92,17 +90,17 @@ class User extends Applicant implements IdentityInterface
     }
 
     /**
-     * 
+     *
      * @return boolean
      */
     public function isAdmin()
     {
         return $this->role === 'admin';
     }
-    
+
     public function validateAdmin($password)
     {
-		$users = Yii::$app->params['users'];
-		return strcasecmp($users['-1']['identity'], $password) === 0;
-	}
+        $users = Yii::$app->params['users'];
+        return strcasecmp($users['-1']['identity'], $password) === 0;
+    }
 }

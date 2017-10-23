@@ -20,7 +20,7 @@ foreach ($data as $idx => $userdata):
     <h3 style="text-align: center;"><?= Html::encode($this->title) ?></h3>
     <table style="border: 1px solid grey; width: 100%;border-spacing: 10px; padding: 5px; background-color: #efefef;">
         <tr>
-            <td style="border-bottom: 1px solid grey;"><h4>Ονοματεπώνυμο: </h4></td>
+            <td style="border-bottom: 1px solid grey;"><h4>Ονοματεπώνυμο: <?= $userdata['user']->firstname ?> <?= $userdata['user']->lastname ?></h4></td>
             <td style="border-bottom: 1px solid grey;"><h4>Ειδικότητα: <?= $userdata['user']->specialty ?></h4></td>
         </tr>
         <tr>
@@ -28,8 +28,8 @@ foreach ($data as $idx => $userdata):
             <td style="border-bottom: 1px solid grey;"><h4>Ταυτότητα: <?= $userdata['user']->identity ?></h4></td>
         </tr>
         <tr>
-            <td style="border-bottom: 1px solid grey;"><h4>Τηλ: </h4></td>
-            <td style="border-bottom: 1px solid grey;"><h4>E-mail: </h4></td>
+            <td style="border-bottom: 1px solid grey;"><h4>Τηλ: <?= $userdata['user']->phone ?></h4></td>
+            <td style="border-bottom: 1px solid grey;"><h4>E-mail: <?= $userdata['user']->email ?></h4></td>
         </tr>
         <tr>
             <td><h4>Θέμα: Δήλωση Τοποθέτησης Αναπληρωτή/τριας</h4></td>

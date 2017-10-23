@@ -1,9 +1,6 @@
 <?php
 namespace app\models;
 
-use app\models\Choice;
-use app\models\Application;
-
 /**
  * This is the model class for table "{{%applicant}}".
  *
@@ -16,6 +13,12 @@ use app\models\Application;
  */
 class Applicant extends \yii\db\ActiveRecord
 {
+
+    /* the following properties should be separated from the model in th final version */
+    public $firstname;
+    public $lastname;
+    public $email;
+    public $phone;
 
     /**
      * @inheritdoc
@@ -51,6 +54,22 @@ class Applicant extends \yii\db\ActiveRecord
             'identity' => 'Α.Δ.Τ.',
             'specialty' => 'Ειδικότητα',
         ];
+    }
+
+    public function afterFind()
+    {
+        $this->firstname = '';
+        $this->lastname = '';
+        $this->email = '';
+        $this->phone = '';
+
+        $more_data = json_decode($this->reference, true);
+        if ($more_data) {
+            foreach (['firstname', 'lastname', 'email', 'phone'] as $fieldname) {
+                $this->$fieldname = isset($more_data[$fieldname]) ? $more_data[$fieldname] : '-';
+            }
+        }
+
     }
 
     /**
