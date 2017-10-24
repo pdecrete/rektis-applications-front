@@ -16,7 +16,8 @@ foreach ($data as $idx => $userdata):
         echo "<pagebreak />";
     }
 
-    ?>   
+    ?>
+    <br /><br /><br /> 
     <h3 style="text-align: center;"><?= Html::encode($this->title) ?></h3>
     <table style="border: 1px solid grey; width: 100%;border-spacing: 10px; padding: 5px; background-color: #efefef;">
         <tr>

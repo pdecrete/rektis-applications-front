@@ -207,9 +207,10 @@ class AdminController extends \yii\web\Controller
             $data[$j]['user'] = $users[$j];
             $data[$j]['provider'] = $provider;
         }
-
-        $content = $this->renderPartial('../application/print', ['data' => $data]);
-        // setup kartik\mpdf\Pdf component
+            $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
+            $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
+			$content = $this->renderPartial('../application/print', ['data' => $data]);
+				// setup kartik\mpdf\Pdf component
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
@@ -221,8 +222,8 @@ class AdminController extends \yii\web\Controller
             'cssInline' => '.kv-heading-1{font-size:18px}',
             'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
             'methods' => [
-                'SetHeader' => ['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
-                'SetFooter' => ['Σελίδα: {PAGENO} από {nb}'],
+                      'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                      'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
             ]
         ]);
 

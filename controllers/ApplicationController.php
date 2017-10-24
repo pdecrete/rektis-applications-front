@@ -118,7 +118,9 @@ class ApplicationController extends Controller
             $content = $this->renderPartial('print', [
                 'data' => $data,
             ]);
-
+            
+            $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
+            $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
             // setup kartik\mpdf\Pdf component
             $pdf = new Pdf([
                 'mode' => Pdf::MODE_UTF8,
@@ -131,8 +133,8 @@ class ApplicationController extends Controller
                 'cssInline' => '.kv-heading-1{font-size:18px}',
                 'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
                 'methods' => [
-                    'SetHeader' => ['Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
-                    'SetFooter' => ['Σελίδα: {PAGENO} από {nb}'],
+                     'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                    'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
                 ]
             ]);
 
