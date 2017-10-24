@@ -3,6 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use himiklab\yii2\recaptcha\ReCaptchaValidator;
 
 /**
  * LoginForm is the model behind the login form.
@@ -16,6 +17,7 @@ class LoginForm extends Model
     public $username;
     public $password;
     public $specialty;
+    public $captchavalidation;
     public $rememberMe = true;
     private $_user = false;
 
@@ -31,6 +33,7 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            ['captchavalidation', ReCaptchaValidator::className(), 'uncheckedMessage' => 'Παρακαλώ επιβεβαιώστε ότι είστε άνθρωπος.']
         ];
     }
 
@@ -43,7 +46,8 @@ class LoginForm extends Model
             'username' => 'Α.Φ.Μ.',
             'password' => 'Α.Δ.Τ.',
             'specialty' => 'Ειδικότητα',
-            'rememberMe' => 'Να με θυμάσαι'
+            'rememberMe' => 'Να με θυμάσαι',
+            'captchavalidation' => 'Κωδικός επιβεβαίωσης'
         ];
     }
     /**

@@ -1,5 +1,4 @@
 <?php
-
 $params = require(__DIR__ . '/params.php');
 $db = require(__DIR__ . '/db.php');
 
@@ -46,15 +45,21 @@ $config = [
         'crypt' => [
             'class' => 'app\components\Crypt',
             'cryptKeyFile' => $params['crypt-key-file']
-        ]
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
         ],
-        */
+        'reCaptcha' => [
+            'name' => 'reCaptcha',
+            'class' => 'himiklab\yii2\recaptcha\ReCaptcha',
+            'siteKey' => 'yourSiteKey',
+            'secret' => 'yourSecretKey',
+        ],
+    /*
+      'urlManager' => [
+      'enablePrettyUrl' => true,
+      'showScriptName' => false,
+      'rules' => [
+      ],
+      ],
+     */
     ],
     'params' => $params,
 ];
