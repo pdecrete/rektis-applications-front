@@ -6,6 +6,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use app\models\Choice;
+use himiklab\yii2\recaptcha\ReCaptcha;
 
 $this->title = 'Σύνδεση';
 $this->params['breadcrumbs'][] = $this->title;
@@ -31,15 +32,26 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
     <?= $form->field($model, 'password')->passwordInput() ?>
-    
-    <?php 
+
+    <?php
     $temp_array = Choice::find()->select('specialty')->distinct()->orderBy('specialty')->indexBy('specialty')->asArray()->all();
-    $specialties = array("-"=>"-");
-    foreach($temp_array as $key=>$value)
-        $specialties[$key]  = $key;
+    $specialties = ["-" => "-"];
+    foreach ($temp_array as $key => $value) {
+        $specialties[$key] = $key;
+    }
     echo $form->field($model, 'specialty')->dropDownList($specialties);
+
     ?>
-    
+
+    <?=
+    $form->field($model, 'captchavalidation', [
+        'template' => "<div class=\"col-lg-offset-1 col-lg-11\">{input} {label}</div>\n<div class=\"col-lg-7 col-lg-offset-1\">{error}</div>",
+    ])->widget(
+        \himiklab\yii2\recaptcha\ReCaptcha::className()
+    )->label(false)
+
+    ?>
+
     <?=
     $form->field($model, 'rememberMe')->checkbox([
         'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
