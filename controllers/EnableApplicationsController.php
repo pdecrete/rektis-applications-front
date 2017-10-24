@@ -43,8 +43,10 @@ class EnableApplicationsController extends \yii\web\Controller
 
         $config->value = '1';
         if ($config->save()) {
+            Yii::trace('Applications enabled successfully', 'admin');
             Yii::$app->session->addFlash('info', "Ενεργοποιήθηκε η δυνατότητα υποβολής αιτήσεων για τους εκπαιδευτικούς.");
         } else {
+            Yii::trace('Applications not enabled due to error', 'admin');
             Yii::$app->session->addFlash('danger', "Δεν ενεργοποιήθηκε η δυνατότητα υποβολής αιτήσεων για τους εκπαιδευτικούς.");
         }
         return $this->redirect(['site/index']);
@@ -59,8 +61,10 @@ class EnableApplicationsController extends \yii\web\Controller
 
         $config->value = '0';
         if ($config->save()) {
+            Yii::trace('Applications disabled successfully', 'admin');
             Yii::$app->session->addFlash('info', "Απενεργοποιήθηκε η δυνατότητα υποβολής αιτήσεων για τους εκπαιδευτικούς.");
         } else {
+            Yii::trace('Applications not disabled due to error', 'admin');
             Yii::$app->session->addFlash('danger', "Δεν απενεργοποιήθηκε η δυνατότητα υποβολής αιτήσεων για τους εκπαιδευτικούς.");
         }
         return $this->redirect(['site/index']);
