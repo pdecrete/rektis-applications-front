@@ -14,14 +14,7 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'log' => [
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
+        'log' => require(__DIR__ . '/log.php'),
         'db' => $db,
         'crypt' => [
             'class' => 'app\components\Crypt',
