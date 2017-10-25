@@ -11,6 +11,14 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         [
+            'label' => 'Επώνυμο',
+            'attribute' => 'lastname'
+        ],
+        [
+            'label' => 'Όνομα',
+            'attribute' => 'firstname'
+        ],
+        [
             'label' => 'Α.Φ.Μ.',
             'attribute' => 'vat'
         ],
