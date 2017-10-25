@@ -162,7 +162,15 @@ class AdminController extends \yii\web\Controller
                 'applications' => function (\yii\db\ActiveQuery $query) {
                     $query->andWhere(['deleted' => 0])->count() > 0;
                 }
-            ])->all()]);
+            ])->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all(),
+            'sort' => ['attributes' => [
+                                        'points'=> [
+                                            'asc' => ['specialty' => SORT_DESC],
+                                            'desc' => ['specialty' => SORT_ASC]],
+                                        'specialty'=> [
+                                            'asc' => ['points' => SORT_DESC],
+                                            'desc' => ['points' => SORT_DESC]],
+                                        'lastname', 'firstname', 'vat', 'identity', 'specialty']]]);
 
         return $this->render('view-applications', ['users' => $dataProvider,
                 'pagination' => ['pageSize' => 100],
@@ -174,8 +182,6 @@ class AdminController extends \yii\web\Controller
     public function actionViewDenials()
     {
         $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->where(['state' => 1])->all()]);
-        //echo "<pre>"; print_r($dataProvider); echo "</pre>";
-        //die();
         return $this->render('view-denials', ['users' => $dataProvider,
                 'pagination' => ['pageSize' => 100],
                 'sort' => ['attributes' => ['vat', 'identity', 'specialty']],
@@ -189,7 +195,7 @@ class AdminController extends \yii\web\Controller
         } else {
             $users = Applicant::find()->joinWith(['applications' => function (\yii\db\ActiveQuery $query) {
                 $query->andWhere(['deleted' => 0])->count() > 0;
-            }])->all();
+            }])->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all();
         }
 
         for ($j = 0; $j < count($users); $j++) {

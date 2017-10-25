@@ -32,6 +32,10 @@ echo GridView::widget([
             'attribute' => 'specialty'
         ],
         [
+            'label' => 'Μόρια',
+            'attribute' => 'points'
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Προβολή',
             'template' => '{printButton}',
