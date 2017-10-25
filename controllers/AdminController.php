@@ -211,7 +211,7 @@ class AdminController extends \yii\web\Controller
             $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
 			$content = $this->renderPartial('../application/print', ['data' => $data]);
 				// setup kartik\mpdf\Pdf component
-        $pdf = new Pdf([
+			$pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
