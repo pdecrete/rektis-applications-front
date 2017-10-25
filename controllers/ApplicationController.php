@@ -73,7 +73,7 @@ class ApplicationController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {
+    {        
         $searchModel = new ApplicationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -91,7 +91,10 @@ class ApplicationController extends Controller
     public function actionMyApplication($printMode = 0)
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-
+        
+        if($user->state == Applicant::DENIED_TO_APPLY)
+		    return $this->render('denied-application');
+        
         $choices = $user->applications;
 
         // if no application exists, forward to create
@@ -158,6 +161,8 @@ class ApplicationController extends Controller
     public function actionApply()
     {		
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+        if($user->state == Applicant::DENIED_TO_APPLY)
+		    return $this->render('denied-application');
         $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
         if (count($prefectrs_prefrnc_model) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχουν νομοί προτιμήσης.");

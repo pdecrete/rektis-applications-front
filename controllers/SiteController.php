@@ -9,6 +9,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 //use app\models\ContactForm;
 use yii\web\GoneHttpException;
+use app\models\Applicant;
 
 class SiteController extends Controller
 {
@@ -68,6 +69,9 @@ class SiteController extends Controller
             if (\Yii::$app->user->identity->isAdmin()) {
                 return $this->redirect(['admin/index']);
             } else {
+				$user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+				if($user->state == Applicant::DENIED_TO_APPLY)
+					return $this->render('denied-application');
                 return $this->render('index', [
                         'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
                 ]);

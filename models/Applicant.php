@@ -15,6 +15,7 @@ class Applicant extends \yii\db\ActiveRecord
 {
     /* the following properties should be separated from the model in th final version */
 
+    const DENIED_TO_APPLY = "1";
     public $firstname;
     public $lastname;
     public $email;
