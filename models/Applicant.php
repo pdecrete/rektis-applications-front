@@ -13,8 +13,8 @@ namespace app\models;
  */
 class Applicant extends \yii\db\ActiveRecord
 {
+    public $last_submit_str;
     /* the following properties should be separated from the model in th final version */
-
     public $firstname;
     public $lastname;
     public $email;
@@ -53,6 +53,7 @@ class Applicant extends \yii\db\ActiveRecord
             'vat' => 'Α.Φ.Μ.',
             'identity' => 'Α.Δ.Τ.',
             'specialty' => 'Ειδικότητα',
+            'last_submit_str' => 'Υποβολή αίτησης'
         ];
     }
 
@@ -72,8 +73,15 @@ class Applicant extends \yii\db\ActiveRecord
                 }
             }
         } catch (Exception $e) {
-            // leave unhandled; TODO 
+            // leave unhandled; TODO
             throw $e;
+        }
+
+        $last_submit_model = AuditLog::find()->withUserId($this->id)->applicationSubmits()->one();
+        if ($last_submit_model !== null) {
+            $this->last_submit_str = "<strong>{$last_submit_model->log_time_str}</strong>";
+        } else {
+            $this->last_submit_str = '<span class="label label-danger">Δεν εντοπίστηκε</span>';
         }
     }
 

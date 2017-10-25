@@ -24,6 +24,10 @@ echo GridView::widget([
             'attribute' => 'specialty'
         ],
         [
+            'attribute' => 'last_submit_str',
+            'format' => 'html'
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Προβολή',
             'template' => '{printButton}',

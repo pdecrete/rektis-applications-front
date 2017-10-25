@@ -77,7 +77,7 @@ class AuditLog extends \yii\db\ActiveRecord
                 break;
         }
 
-        $this->log_time_str = date("Y-m-d H:i:s", $this->log_time);
+        $this->log_time_str = date("d-m-Y H:i:s", $this->log_time);
         $prefix_parts = explode('][', $this->prefix, 3);
         $this->ip = (isset($prefix_parts[0]) ? substr($prefix_parts[0], 1) : '-');
         $this->user_id = (isset($prefix_parts[1]) ? $prefix_parts[1] : '-');

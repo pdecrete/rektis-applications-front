@@ -38,6 +38,15 @@ foreach ($data as $idx => $userdata):
         </tr>
     </table>
 
+    <div class="alert alert-info">
+        Ημερομηνία υποβολής: 
+        <?php if ($userdata['last_submit_model'] !== null) : ?>
+            <strong><?= $userdata['last_submit_model']->log_time_str; ?></strong>
+        <?php else: ?>
+            <span class="label label-danger">Δεν εντοπίστηκε</span>
+        <?php endif; ?>
+    </div>
+
     <h3 style="text-align: center">Προτιμήσεις</h3>
     <table class="table table-bordered table-striped">
         <tr>

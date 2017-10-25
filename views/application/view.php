@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\ListView;
 
@@ -12,12 +13,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="application-view">
 
     <div class="btn-toolbar">
-       <?php if ($enable_applications === true) : ?>
-            <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']);?>
-       <?php endif; ?>
-            <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
+        <?php if ($enable_applications === true) : ?>
+            <?= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']); ?>
+        <?php endif; ?>
+        <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
     </div>
-    
+
 
     <h1><?= Html::encode($this->title) ?></h1>
     <div class="well well-sm">
@@ -45,6 +46,15 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+    <div class="alert alert-info">
+        Ημερομηνία υποβολής: 
+        <?php if ($last_submit_model !== null) : ?>
+            <strong><?= $last_submit_model->log_time_str; ?></strong>
+        <?php else: ?>
+            <span class="label label-danger">Δεν εντοπίστηκε</span>
+        <?php endif; ?>
+    </div>
+
     <table class="table table-bordered table-hover table-striped">
         <thead>
         <th>Σειρά προτίμησης</th>
@@ -63,9 +73,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
         </tbody>
     </table>
-	<div style="display: block; margin: auto; width:50%;">
- 		<?php 
- 		$actionlogo = realpath(dirname(__FILE__). '/../../web/images/logo.jpg');
-		echo Html::img('images/logo.jpg') ?>
- 	</div>
+    <div style="display: block; margin: auto; width:50%;">
+        <?php
+        $actionlogo = realpath(dirname(__FILE__) . '/../../web/images/logo.jpg');
+        echo Html::img('images/logo.jpg')
+
+        ?>
+    </div>
 </div>
