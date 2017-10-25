@@ -7,7 +7,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-//use app\models\ContactForm;
+// use app\models\ContactForm;
 use yii\web\GoneHttpException;
 
 class SiteController extends Controller
@@ -48,10 +48,10 @@ class SiteController extends Controller
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
+//            'captcha' => [
+//                'class' => 'yii\captcha\CaptchaAction',
+//                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+//            ],
         ];
     }
 
@@ -62,6 +62,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        Yii::trace('Index page display');
         if (Yii::$app->user->isGuest) {
             return $this->render('index-guest');
         } else {
@@ -90,6 +91,8 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
+
+        Yii::trace('Login form display', 'user');
         return $this->render('login', [
                 'model' => $model,
         ]);
@@ -102,7 +105,14 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $user_id = Yii::$app->has('user', true) ? Yii::$app->get('user')->getId(false) : '-';
+        Yii::info("Logout request {$user_id}", 'user');
+
+        if (Yii::$app->user->logout()) {
+            Yii::info('Successful logout', 'user.logout');
+        } else {
+            Yii::warning('Unsuccessful logout', 'user.logout');
+        }
 
         return $this->goHome();
     }
@@ -116,7 +126,7 @@ class SiteController extends Controller
     {
         throw new GoneHttpException();
 
-//        $model = new ContactForm();
+        //        $model = new ContactForm();
 //        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
 //            Yii::$app->session->setFlash('contactFormSubmitted');
 //
@@ -134,6 +144,7 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
+        Yii::trace('About page display');
         return $this->render('about');
     }
 }

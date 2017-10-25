@@ -76,7 +76,14 @@ class LoginForm extends Model
     {
         if ($this->validate()) {
             $tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            if ($tmp) {
+                Yii::info('Successful login', 'user.login');
+            } else {
+                Yii::error('No login', 'user.login');
+            }
             return $tmp;
+        } else {
+            Yii::error('Failed login', 'user.login');
         }
         return false;
     }

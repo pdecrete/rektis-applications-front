@@ -72,6 +72,8 @@ class ApplicationController extends Controller
      */
     public function actionIndex()
     {
+        Yii::trace('Applications raw list display');
+
         $searchModel = new ApplicationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -94,6 +96,7 @@ class ApplicationController extends Controller
 
         // if no application exists, forward to create
         if (count($choices) == 0) {
+            Yii::trace('User requested not existant application; forwarding to apply');
             Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
             return $this->redirect(['apply']);
         }
@@ -137,9 +140,12 @@ class ApplicationController extends Controller
                     'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
                 ]
             ]);
+            Yii::info('Generate PDF file for application', 'user.application');
 
             return $pdf->render();
         } else {
+            Yii::trace('Display application', 'user.application');
+
             return $this->render('view', [
                     'user' => $user,
                     'dataProvider' => $provider,
@@ -242,16 +248,21 @@ class ApplicationController extends Controller
 
                     $transaction->commit();
                     Yii::$app->session->addFlash('success', "Οι επιλογές σας έχουν αποθηκευτεί.");
+
+                    Yii::info('User application submitted', 'user.application.submit');
                     return $this->redirect(['my-application']);
                 } catch (\Exception $e) {
                     Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση των επιλογών σας. Παρακαλώ προσπαθήστε ξανά.");
+                    Yii::error('User application failure', 'user.application.submit');
                     $transaction->rollBack();
                 }
             } else {
+                Yii::error('User application failure', 'user.application.submit');
                 Yii::$app->session->addFlash('danger', "Παρακαλώ διορθώστε τα λάθη που υπάρχουν στις επιλογές και δοκιμάστε ξανά.");
             }
         }
 
+        Yii::trace('Display application form', 'user.application');
         return $this->render('apply', [
                 'models' => $models,
                 'user' => $user,

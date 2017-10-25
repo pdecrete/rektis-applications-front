@@ -56,4 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Αρχείο καταγραφής</h2>
+            <p>Στοιχεία καταγραφής ενεργειών χρηστών.</p>
+            <p class="text-info">Προβάλλονται στοιχεία καταγραφής που έχουν αποθηκευτεί στη βάση δεδομένων. Περισσότερες λεπτομέρειες και καταγραφές γίνονται στα αρχεία καταγραφής.</p>
+            <p><?= Html::a(Html::icon('eye-open') . ' Προβολή', Url::to(['audit-log/index']), ['class' => 'btn btn-primary']) ?></p>
+        </div>
+    </div>
 </div>
