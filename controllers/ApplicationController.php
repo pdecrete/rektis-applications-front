@@ -13,6 +13,8 @@ use app\models\Model;
 use app\models\Prefecture;
 use app\models\PrefecturesPreference;
 use app\models\Choice;
+use yii\web\ForbiddenHttpException;
+use yii\web\GoneHttpException;
 use kartik\mpdf\Pdf;
 
 /**
@@ -45,7 +47,7 @@ class ApplicationController extends Controller
                         }
                     ],
                     [
-                        'actions' => ['apply', 'delete-my-application', 'my-delete'],
+                        'actions' => ['apply', 'request-deny', 'deny'],// 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -154,7 +156,7 @@ class ApplicationController extends Controller
      * @return mixed
      */
     public function actionApply()
-    {
+    {		
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
         if (count($prefectrs_prefrnc_model) == 0) {
@@ -261,6 +263,7 @@ class ApplicationController extends Controller
 
     public function actionDeleteMyApplication()
     {
+		throw new GoneHttpException();
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         // if user has made no choices, forward to index
         if (count($user->applications) == 0) {
@@ -273,6 +276,7 @@ class ApplicationController extends Controller
 
     public function actionMyDelete()
     {
+		throw new GoneHttpException();
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
 
@@ -288,10 +292,30 @@ class ApplicationController extends Controller
      */
     public function actionDelete($id)
     {
+		throw new GoneHttpException();
         $this->findModel($id)->delete();
-
         return $this->redirect(['my-application']);
     }
+
+	public function actionRequestDeny()
+	{
+		$user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+		if(count($user->applications) > 0)
+			throw new ForbiddenHttpException();
+		return $this->render('confirm-deny-application');
+	}
+
+	public function actionDeny()
+	{
+		$user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+		if(count($user->applications) > 0)
+			throw new ForbiddenHttpException();
+		$user->setAttribute('state', 1);
+		$tmp = $user->updateAll(['state' => 1], ['id' => $user->id]);
+		Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
+        return $this->redirect(['site/index']);
+	}
+
 
     /**
      * Finds the Application model based on its primary key value.
