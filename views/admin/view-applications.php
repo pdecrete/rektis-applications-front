@@ -12,6 +12,14 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         [
+            'label' => 'Επώνυμο',
+            'attribute' => 'lastname'
+        ],
+        [
+            'label' => 'Όνομα',
+            'attribute' => 'firstname'
+        ],
+        [
             'label' => 'Α.Φ.Μ.',
             'attribute' => 'vat'
         ],
@@ -28,8 +36,8 @@ echo GridView::widget([
             'header' => 'Προβολή',
             'template' => '{printButton}',
             'buttons' => ['printButton' => function ($url, $model, $key) {
-                    return Html::a(Html::icon('print'), ['admin/print-applications', 'applicantId' => $model->id]);
-                }
+                return Html::a(Html::icon('print'), ['admin/print-applications', 'applicantId' => $model->id]);
+            }
             ]
         ]
     ]
