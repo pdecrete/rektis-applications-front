@@ -1,8 +1,5 @@
 <?php
 
-use yii\bootstrap\Html;
-use yii\helpers\Url;
-use app\models\Applicant;
 
 /* @var $this yii\web\View */
 

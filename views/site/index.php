@@ -19,8 +19,8 @@ $this->title = 'Αιτήσεις';
         <div class="row">
             <?php //TODO: CHECK THE CONDITION OF if
                  if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin()) : ?>
-                <?php $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);      
-					  if($user->applications): ?>
+                <?php $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+                      if ($user->applications): ?>
 						  <div class="col-lg-4">
 							  <h2>Επεξεργασία</h2>
 							  <p>Επεξεργαστείτε την αίτηση που έχετε υποβάλλει</p>
@@ -48,7 +48,7 @@ $this->title = 'Αιτήσεις';
 					<p>Προβάλλετε την αίτηση σας εδώ.</p>
 					<p><?= Html::a('Προβολή', Url::to(['application/my-application']), ['class' => 'btn btn-primary']) ?></p>
 				</div>
-				<?php if(count($user->applications) === 0): ?>
+				<?php if (count($user->applications) === 0): ?>
 						 <div class="col-lg-4">
 							 <h2>Άρνηση Δήλωσης</h2>
 							 <p>Δηλώστε άρνηση υποβολής αίτησης εδώ.</p>

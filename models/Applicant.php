@@ -73,7 +73,7 @@ class Applicant extends \yii\db\ActiveRecord
                 }
             }
         } catch (Exception $e) {
-            // leave unhandled; TODO 
+            // leave unhandled; TODO
             throw $e;
         }
     }

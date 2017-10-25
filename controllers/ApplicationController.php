@@ -73,7 +73,7 @@ class ApplicationController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {        
+    {
         $searchModel = new ApplicationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -84,17 +84,18 @@ class ApplicationController extends Controller
     }
 
     /**
-     * 
+     *
      * @param int $printMode
      * @return mixed
      */
     public function actionMyApplication($printMode = 0)
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-        
-        if($user->state == Applicant::DENIED_TO_APPLY)
-		    return $this->render('denied-application');
-        
+
+        if ($user->state == Applicant::DENIED_TO_APPLY) {
+            return $this->render('denied-application');
+        }
+
         $choices = $user->applications;
 
         // if no application exists, forward to create
@@ -123,7 +124,7 @@ class ApplicationController extends Controller
             $content = $this->renderPartial('print', [
                 'data' => $data,
             ]);
-            
+
             $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
             $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
             // setup kartik\mpdf\Pdf component
@@ -159,10 +160,11 @@ class ApplicationController extends Controller
      * @return mixed
      */
     public function actionApply()
-    {		
+    {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-        if($user->state == Applicant::DENIED_TO_APPLY)
-		    return $this->render('denied-application');
+        if ($user->state == Applicant::DENIED_TO_APPLY) {
+            return $this->render('denied-application');
+        }
         $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
         if (count($prefectrs_prefrnc_model) == 0) {
             Yii::$app->session->addFlash('info', "Δεν υπάρχουν νομοί προτιμήσης.");
@@ -268,7 +270,7 @@ class ApplicationController extends Controller
 
     public function actionDeleteMyApplication()
     {
-		throw new GoneHttpException();
+        throw new GoneHttpException();
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         // if user has made no choices, forward to index
         if (count($user->applications) == 0) {
@@ -281,7 +283,7 @@ class ApplicationController extends Controller
 
     public function actionMyDelete()
     {
-		throw new GoneHttpException();
+        throw new GoneHttpException();
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
 
@@ -297,29 +299,31 @@ class ApplicationController extends Controller
      */
     public function actionDelete($id)
     {
-		throw new GoneHttpException();
+        throw new GoneHttpException();
         $this->findModel($id)->delete();
         return $this->redirect(['my-application']);
     }
 
-	public function actionRequestDeny()
-	{
-		$user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
-		if(count($user->applications) > 0)
-			throw new ForbiddenHttpException();
-		return $this->render('confirm-deny-application');
-	}
+    public function actionRequestDeny()
+    {
+        $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+        if (count($user->applications) > 0) {
+            throw new ForbiddenHttpException();
+        }
+        return $this->render('confirm-deny-application');
+    }
 
-	public function actionDeny()
-	{
-		$user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
-		if(count($user->applications) > 0)
-			throw new ForbiddenHttpException();
-		$user->setAttribute('state', 1);
-		$tmp = $user->updateAll(['state' => 1], ['id' => $user->id]);
-		Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
+    public function actionDeny()
+    {
+        $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+        if (count($user->applications) > 0) {
+            throw new ForbiddenHttpException();
+        }
+        $user->setAttribute('state', 1);
+        $tmp = $user->updateAll(['state' => 1], ['id' => $user->id]);
+        Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
         return $this->redirect(['site/index']);
-	}
+    }
 
 
     /**
