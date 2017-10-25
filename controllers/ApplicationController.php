@@ -14,6 +14,7 @@ use app\models\Prefecture;
 use app\models\PrefecturesPreference;
 use app\models\Choice;
 use kartik\mpdf\Pdf;
+use app\models\AuditLog;
 
 /**
  * ApplicationController implements the CRUD actions for Application model.
@@ -84,7 +85,7 @@ class ApplicationController extends Controller
     }
 
     /**
-     * 
+     *
      * @param int $printMode
      * @return mixed
      */
@@ -115,13 +116,16 @@ class ApplicationController extends Controller
             'allModels' => $choicesArray
         ]);
 
+        // submit ts
+        $user_id = Yii::$app->has('user', true) ? Yii::$app->get('user')->getId() : null;
+        $last_submit_model = AuditLog::find()->withUserId($user_id)->applicationSubmits()->one();
+
         if ($printMode == 1) {
             $data[0]['user'] = $user;
             $data[0]['provider'] = $provider;
-            $content = $this->renderPartial('print', [
-                'data' => $data,
-            ]);
-            
+            $data[0]['last_submit_model'] = $last_submit_model;
+            $content = $this->renderPartial('print', compact('data'));
+
             $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
             $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
             // setup kartik\mpdf\Pdf component
@@ -149,7 +153,8 @@ class ApplicationController extends Controller
             return $this->render('view', [
                     'user' => $user,
                     'dataProvider' => $provider,
-                    'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+                    'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1),
+                    'last_submit_model' => $last_submit_model
             ]);
         }
     }
