@@ -170,6 +170,18 @@ class AdminController extends \yii\web\Controller
         ]);
     }
 
+
+    public function actionViewDenials()
+    {
+        $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->where(['state' => 1])->all()]);
+        //echo "<pre>"; print_r($dataProvider); echo "</pre>";
+        //die();
+        return $this->render('view-denials', ['users' => $dataProvider,
+                'pagination' => ['pageSize' => 100],
+                'sort' => ['attributes' => ['vat', 'identity', 'specialty']],
+        ]);
+    }
+
     public function actionPrintApplications($applicantId = null)
     {
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
@@ -207,11 +219,11 @@ class AdminController extends \yii\web\Controller
             $data[$j]['user'] = $users[$j];
             $data[$j]['provider'] = $provider;
         }
-            $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
-            $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
-			$content = $this->renderPartial('../application/print', ['data' => $data]);
-				// setup kartik\mpdf\Pdf component
-			$pdf = new Pdf([
+        $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
+        $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
+        $content = $this->renderPartial('../application/print', ['data' => $data]);
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
