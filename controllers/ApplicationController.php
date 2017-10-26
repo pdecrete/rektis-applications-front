@@ -320,7 +320,15 @@ class ApplicationController extends Controller
             throw new ForbiddenHttpException();
         }
         $user->setAttribute('state', 1);
-        $tmp = $user->updateAll(['state' => 1], ['id' => $user->id]);
+        try {
+            $rowsAffected = $user->updateAll(['state' => 1], ['id' => $user->id]);
+            if ($rowsAffected != 1) {
+                throw new \Exception();
+            }
+        } catch (\Exception $nse) {
+            Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
+            return $this->redirect(['site/index']);
+        }
         Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
         return $this->redirect(['site/index']);
     }
