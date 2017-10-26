@@ -187,6 +187,8 @@ class AdminController extends \yii\web\Controller
 
     public function actionViewDenials()
     {
+        Yii::trace('View denials', 'admin');
+
         $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->where(['state' => 1])->all(),
                 'pagination' => ['pageSize' => 100],
                 'sort' => ['attributes' => ['lastname', 'firstname', 'vat', 'identity', 'specialty']]
@@ -198,7 +200,7 @@ class AdminController extends \yii\web\Controller
 
     public function actionPrintApplications($applicantId = null)
     {
-        Yii::trace('Application print: ' . $applicantId === null ? "ALL" : "for {$applicantId}", 'admin');
+        Yii::trace('Application print: ' . ($applicantId === null ? "ALL" : "for {$applicantId}"), 'admin');
 
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
             $users = [Applicant::findOne(['id' => $applicantId])];

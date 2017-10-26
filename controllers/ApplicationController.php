@@ -48,7 +48,7 @@ class ApplicationController extends Controller
                         }
                     ],
                     [
-                        'actions' => ['apply', 'request-deny', 'deny'],// 'delete-my-application', 'my-delete'],
+                        'actions' => ['apply', 'request-deny', 'deny'], // 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -134,8 +134,8 @@ class ApplicationController extends Controller
                 'data' => $data,
             ]);
 
-            $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
-            $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
+            $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
+            $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
             // setup kartik\mpdf\Pdf component
             $pdf = new Pdf([
                 'mode' => Pdf::MODE_UTF8,
@@ -148,7 +148,7 @@ class ApplicationController extends Controller
                 'cssInline' => '.kv-heading-1{font-size:18px}',
                 'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
                 'methods' => [
-                     'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                    'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
                     'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
                 ]
             ]);
@@ -289,24 +289,28 @@ class ApplicationController extends Controller
     public function actionDeleteMyApplication()
     {
         throw new GoneHttpException();
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-        // if user has made no choices, forward to index
-        if (count($user->applications) == 0) {
-            Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
-            return $this->redirect(['site/index']);
-        }
+        /*
+          $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+          // if user has made no choices, forward to index
+          if (count($user->applications) == 0) {
+          Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
+          return $this->redirect(['site/index']);
+          }
 
-        return $this->render('delete_my_application');
+          return $this->render('delete_my_application');
+         */
     }
 
     public function actionMyDelete()
     {
         throw new GoneHttpException();
-        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-        Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
+        /*
+          $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+          Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
 
-        Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");
-        return $this->redirect(['site/index']);
+          Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");
+          return $this->redirect(['site/index']);
+         */
     }
 
     /**
@@ -324,6 +328,8 @@ class ApplicationController extends Controller
 
     public function actionRequestDeny()
     {
+        Yii::trace('User request deny', 'user.deny');
+
         $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
         if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
@@ -343,14 +349,14 @@ class ApplicationController extends Controller
             if ($rowsAffected != 1) {
                 throw new \Exception();
             }
+            Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
+            Yii::info('User deny application', 'user.deny');
         } catch (\Exception $nse) {
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
-            return $this->redirect(['site/index']);
+            Yii::error('User deny application error', 'user.deny');
         }
-        Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
         return $this->redirect(['site/index']);
     }
-
 
     /**
      * Finds the Application model based on its primary key value.
