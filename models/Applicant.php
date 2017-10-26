@@ -13,6 +13,8 @@ namespace app\models;
  */
 class Applicant extends \yii\db\ActiveRecord
 {
+    const DENIED_TO_APPLY = "1";
+
     public $last_submit_str;
     /* the following properties should be separated from the model in th final version */
     public $firstname;

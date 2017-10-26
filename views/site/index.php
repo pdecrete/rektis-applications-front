@@ -15,56 +15,43 @@ $this->title = 'Αιτήσεις';
     </div>
 
     <div class="body-content">
-
         <div class="row">
-            <?php if (Yii::$app->user->isGuest || (!Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin())) : ?>
-                <?php $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-                      if($user->applications): ?>
-                          <div class="col-lg-4">
-                              <h2>Επεξεργασία</h2>
-                              <p>Επεξεργαστείτε την αίτηση που έχετε υποβάλλει</p>
-                              <?php if ($enable_applications === true) : ?>
-                                       <p><?= Html::a('Επεξεργασία', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
-                              <?php else: ?>
-                                       <p><?= Html::a('Επεξεργασία', '#', ['class' => 'btn btn-success disabled', 'disabled' => 'disabled']) ?></p>
-                                       <p class="text-danger">Η υποβολή αιτήσεων δεν είναι διαθέσιμη.</p>
-                              <?php endif; ?>
-                          </div>
-                <?php else: ?>
-                          <div class="col-lg-4">
-                              <h2>Καταχώρηση</h2>
-                              <p>Υποβάλλετε την αίτησή σας εδώ.</p>
-                              <?php if ($enable_applications === true) : ?>
-                                       <p><?= Html::a('Υποβολή', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
-                              <?php else: ?>
-                                       <p><?= Html::a('Υποβολή', '#', ['class' => 'btn btn-success disabled', 'disabled' => 'disabled']) ?></p>
-                                       <p class="text-danger">Η υποβολή αιτήσεων δεν είναι διαθέσιμη.</p>
-                              <?php endif; ?>
-                          </div>
-                <?php endif; ?>
-                <div class="col-lg-4">
-                    <h2>Προβολή</h2>
-                    <p>Προβάλλετε την αίτηση σας εδώ.</p>
-                    <p><?= Html::a('Προβολή', Url::to(['application/my-application']), ['class' => 'btn btn-primary']) ?></p>
-                </div>
-            <?php endif; ?>
-            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin()) : ?>
-                <div class="col-lg-4">
-                    <h2>Ενεργοποίηση αιτήσεων</h2>
-                    <?php if ($enable_applications === true) : ?>
-                        <p>Η υποβολή των αιτήσεων είναι <strong><span class="text-success">ενεργοποιημένη.</span></strong>.</p>
-                        <p><?= Html::a('Απενεργοποίηση', Url::to(['enable-applications/confirm-enable']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
-                    <?php else: ?>
-                        <p>Η υποβολή των αιτήσεων είναι <strong><span class="text-danger">απενεργοποιημένη.</span></strong></p>
-                        <p><?= Html::a('Ενεργοποίηση', Url::to(['enable-applications/confirm-enable']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
-                    <?php endif; ?>
-                </div>
-                <div class="col-lg-4">
-                    <h2>Εξαγωγή</h2>
-                    <p>Η εξαγωγή είναι διαθέσιμη μόνο στους διαχειριστές.</p>
-                    <p><?= Html::a('Εξαγωγή', Url::to(['export/index']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?></p>
-                </div>
-            <?php endif; ?>
+			<?php $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+                  if ($user->applications): ?>
+					  <div class="col-lg-4">
+						  <h2>Επεξεργασία</h2>
+						  <p>Επεξεργαστείτε την αίτηση που έχετε υποβάλλει</p>
+						  <?php if ($enable_applications === true) : ?>
+								   <p><?= Html::a('Επεξεργασία', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
+						  <?php else: ?>
+								   <p><?= Html::a('Επεξεργασία', '#', ['class' => 'btn btn-success disabled', 'disabled' => 'disabled']) ?></p>
+								   <p class="text-danger">Η υποβολή αιτήσεων δεν είναι διαθέσιμη.</p>
+						  <?php endif; ?>
+					  </div>
+			<?php else: ?>
+					  <div class="col-lg-4">
+						  <h2>Καταχώρηση</h2>
+						  <p>Υποβάλλετε την αίτησή σας εδώ.</p>
+						  <?php if ($enable_applications === true) : ?>
+								   <p><?= Html::a('Υποβολή', Url::to(['application/apply']), ['class' => 'btn btn-success']) ?></p>
+						  <?php else: ?>
+								   <p><?= Html::a('Υποβολή', '#', ['class' => 'btn btn-success disabled', 'disabled' => 'disabled']) ?></p>
+								   <p class="text-danger">Η υποβολή αιτήσεων δεν είναι διαθέσιμη.</p>
+						  <?php endif; ?>
+					  </div>
+			<?php endif; ?>
+			<div class="col-lg-4">
+				<h2>Προβολή</h2>
+				<p>Προβάλλετε την αίτηση σας εδώ.</p>
+				<p><?= Html::a('Προβολή', Url::to(['application/my-application']), ['class' => 'btn btn-primary']) ?></p>
+			</div>
+			<?php if (count($user->applications) === 0): ?>
+					 <div class="col-lg-4">
+						 <h2>Άρνηση Δήλωσης</h2>
+						 <p>Δηλώστε άρνηση υποβολής αίτησης εδώ.</p>
+						 <p><?= Html::a('Άρνηση', Url::to(['application/request-deny']), ['class' => 'btn btn-primary']) ?></p>
+					 </div>
+			<?php endif; ?>
         </div>
 
     </div>
