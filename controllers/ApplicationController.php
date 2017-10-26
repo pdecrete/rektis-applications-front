@@ -16,6 +16,7 @@ use app\models\Choice;
 use yii\web\ForbiddenHttpException;
 use yii\web\GoneHttpException;
 use kartik\mpdf\Pdf;
+use app\models\AuditLog;
 
 /**
  * ApplicationController implements the CRUD actions for Application model.
@@ -74,6 +75,8 @@ class ApplicationController extends Controller
      */
     public function actionIndex()
     {
+        Yii::trace('Applications raw list display');
+
         $searchModel = new ApplicationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -100,6 +103,7 @@ class ApplicationController extends Controller
 
         // if no application exists, forward to create
         if (count($choices) == 0) {
+            Yii::trace('User requested not existant application; forwarding to apply');
             Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση. Μπορείτε να υποβάλλετε νέα αίτηση.");
             return $this->redirect(['apply']);
         }
@@ -118,9 +122,14 @@ class ApplicationController extends Controller
             'allModels' => $choicesArray
         ]);
 
+        // submit ts
+        $user_id = Yii::$app->has('user', true) ? Yii::$app->get('user')->getId() : null;
+        $last_submit_model = AuditLog::find()->withUserId($user_id)->applicationSubmits()->one();
+
         if ($printMode == 1) {
             $data[0]['user'] = $user;
             $data[0]['provider'] = $provider;
+            $data[0]['last_submit_model'] = $last_submit_model;
             $content = $this->renderPartial('print', [
                 'data' => $data,
             ]);
@@ -143,13 +152,17 @@ class ApplicationController extends Controller
                     'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
                 ]
             ]);
+            Yii::info('Generate PDF file for application', 'user.application');
 
             return $pdf->render();
         } else {
+            Yii::trace('Display application', 'user.application');
+
             return $this->render('view', [
                     'user' => $user,
                     'dataProvider' => $provider,
-                    'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+                    'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1),
+                    'last_submit_model' => $last_submit_model
             ]);
         }
     }
@@ -251,16 +264,21 @@ class ApplicationController extends Controller
 
                     $transaction->commit();
                     Yii::$app->session->addFlash('success', "Οι επιλογές σας έχουν αποθηκευτεί.");
+
+                    Yii::info('User application submitted', 'user.application.submit');
                     return $this->redirect(['my-application']);
                 } catch (\Exception $e) {
                     Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση των επιλογών σας. Παρακαλώ προσπαθήστε ξανά.");
+                    Yii::error('User application failure', 'user.application.submit');
                     $transaction->rollBack();
                 }
             } else {
+                Yii::error('User application failure', 'user.application.submit');
                 Yii::$app->session->addFlash('danger', "Παρακαλώ διορθώστε τα λάθη που υπάρχουν στις επιλογές και δοκιμάστε ξανά.");
             }
         }
 
+        Yii::trace('Display application form', 'user.application');
         return $this->render('apply', [
                 'models' => $models,
                 'user' => $user,

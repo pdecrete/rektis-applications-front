@@ -36,6 +36,10 @@ echo GridView::widget([
             'attribute' => 'points'
         ],
         [
+            'attribute' => 'last_submit_str',
+            'format' => 'html'
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Προβολή',
             'template' => '{printButton}',

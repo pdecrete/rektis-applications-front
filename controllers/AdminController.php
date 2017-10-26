@@ -11,6 +11,7 @@ use app\models\Prefecture;
 use League\Csv\Writer;
 use yii\data\ArrayDataProvider;
 use kartik\mpdf\Pdf;
+use app\models\AuditLog;
 
 class AdminController extends \yii\web\Controller
 {
@@ -51,6 +52,8 @@ class AdminController extends \yii\web\Controller
 
     public function actionClearData()
     {
+        Yii::trace('Clearing data', 'admin');
+
         try {
             \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
             \Yii::$app->db->createCommand()->truncateTable('{{%application}}')->execute();
@@ -59,8 +62,10 @@ class AdminController extends \yii\web\Controller
             \Yii::$app->db->createCommand()->truncateTable('{{%prefecture}}')->execute();
             \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
 
+            Yii::info('Cleared data', 'admin');
             Yii::$app->session->addFlash('success', "Ολοκληρώθηκε η εκκαθάριση των στοιχείων.");
         } catch (\Exception $e) {
+            Yii::error('Data not cleared due to error: ' . $e->getMessage(), 'admin');
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την εκκαθάριση των στοιχείων. <strong>Παρακαλώ ελέγξτε τα στοιχεία!</strong>. Το μύνημα λάθους από τη βάση δεδομένων ήταν: " . $e->getMessage());
         }
         return $this->redirect(['index']);
@@ -68,6 +73,8 @@ class AdminController extends \yii\web\Controller
 
     public function actionOverview()
     {
+        Yii::trace('Applications overview', 'admin');
+
         $applications = Application::find()
             ->select('applicant_id')
             ->distinct()
@@ -110,6 +117,8 @@ class AdminController extends \yii\web\Controller
 
     public function actionExportCsv()
     {
+        Yii::trace('Applications export to CSV', 'admin');
+
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
         $csv->insertOne([
             'ID',
@@ -158,6 +167,8 @@ class AdminController extends \yii\web\Controller
 
     public function actionViewApplications()
     {
+        Yii::trace('Applications view', 'admin');
+
         $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->joinWith([
                 'applications' => function (\yii\db\ActiveQuery $query) {
                     $query->andWhere(['deleted' => 0])->count() > 0;
@@ -187,14 +198,17 @@ class AdminController extends \yii\web\Controller
 
     public function actionPrintApplications($applicantId = null)
     {
+        Yii::trace('Application print: ' . $applicantId === null ? "ALL" : "for {$applicantId}", 'admin');
+
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
-            $users = [ Applicant::findOne(['id' => $applicantId]) ];
+            $users = [Applicant::findOne(['id' => $applicantId])];
         } else {
             $users = Applicant::find()->joinWith(['applications' => function (\yii\db\ActiveQuery $query) {
                 $query->andWhere(['deleted' => 0])->count() > 0;
             }])->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all();
         }
 
+        $data = [];
         for ($j = 0; $j < count($users); $j++) {
             $choices = $users[$j]->applications;
 
@@ -221,9 +235,13 @@ class AdminController extends \yii\web\Controller
 
             $data[$j]['user'] = $users[$j];
             $data[$j]['provider'] = $provider;
+
+            // submit ts
+            $last_submit_model = AuditLog::find()->withUserId($users[$j]->id)->applicationSubmits()->one();
+            $data[$j]['last_submit_model'] = $last_submit_model;
         }
-        $actionlogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/logo.jpg');
-        $pdelogo = "file:///" . realpath(dirname(__FILE__). '/../web/images/pdelogo.jpg');
+        $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
+        $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
         $content = $this->renderPartial('../application/print', ['data' => $data]);
         // setup kartik\mpdf\Pdf component
         $pdf = new Pdf([
@@ -237,8 +255,8 @@ class AdminController extends \yii\web\Controller
             'cssInline' => '.kv-heading-1{font-size:18px}',
             'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
             'methods' => [
-                      'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                      'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
+                'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
             ]
         ]);
 
