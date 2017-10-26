@@ -21,9 +21,18 @@ composer install
 ## Προσαρμογή αρχείων ρυθμίσεων 
 
 * params.php
+    * `crypt-key-file` διαδρομή αρχείου που περιλαμβάνει το κλειδί κρυπτογράφησης - _διατηρήστε το εκτός πρόσβασης του web server_ 
+    * `users` επιπλέον χρήστες με πρόσβαση στο σύστημα 
 * web.php
+    * `reCaptcha siteKey` και `reCaptcha secret` παράμετροι για το reCaptcha v2 που εμφανίζεται στην οθόνη σύνδεσης χρήστη 
 * console.php 
 * αρχείο κλειδιού κρυπτογράφησης 
+    * Το αρχείο που θα περιέχει το κλειδί κρυπτογράφησης δηλώνεται στην 
+    παράμετρο `cryptKeyFile` του component `crypt` (config/web.php και 
+    config/console.php). 
+    * Μπορείτε να δηλώσετε το αρχείο στη ρύθμιση του `crypt` component ή
+    στο αρχείο παραμέτρων params.php στην παράμετρο `crypt-key-file` (προτιμότερο)
+    * Για τη δημιουργία του κλειδιού ακολουθήστε τις [οδηγίες που θα βρείτε εδώ](https://github.com/defuse/php-encryption/blob/master/docs/Tutorial.md#scenario-1-keep-data-secret-from-the-database-administrator).
 
 ## Εγκατάσταση και αρχικοποίηση βάσης δεδομένων 
 
