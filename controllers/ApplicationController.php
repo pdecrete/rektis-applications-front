@@ -93,7 +93,7 @@ class ApplicationController extends Controller
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
 
         if ($user->state == Applicant::DENIED_TO_APPLY) {
-            return $this->render('denied-application');
+            return $this->redirect(['site/index']);
         }
 
         $choices = $user->applications;
@@ -163,7 +163,7 @@ class ApplicationController extends Controller
     {
         $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
         if ($user->state == Applicant::DENIED_TO_APPLY) {
-            return $this->render('denied-application');
+            return $this->redirect(['site/index']);
         }
         $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
         if (count($prefectrs_prefrnc_model) == 0) {
