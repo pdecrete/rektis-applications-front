@@ -163,27 +163,24 @@ class AdminController extends \yii\web\Controller
                     $query->andWhere(['deleted' => 0])->count() > 0;
                 }
             ])->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all(),
+            'pagination' => ['pageSize' => 100],
             'sort' => ['attributes' => [
                                         'points'=> [
-                                            'asc' => ['specialty' => SORT_DESC],
-                                            'desc' => ['specialty' => SORT_ASC]],
-                                        'specialty'=> [
-                                            'asc' => ['points' => SORT_DESC],
-                                            'desc' => ['points' => SORT_DESC]],
+                                             'asc' => ['specialty' => SORT_DESC, 'points' => SORT_ASC],
+                                             'desc' => ['specialty' => SORT_ASC, 'points' => SORT_DESC]],
                                         'lastname', 'firstname', 'vat', 'identity', 'specialty']]]);
 
-        return $this->render('view-applications', ['users' => $dataProvider,
-                'pagination' => ['pageSize' => 100],
-                'sort' => ['attributes' => ['vat', 'identity', 'specialty']],
-        ]);
+        return $this->render('view-applications', ['users' => $dataProvider]);
     }
 
 
     public function actionViewDenials()
     {
-        $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->where(['state' => 1])->all()]);
-        return $this->render('view-denials', ['users' => $dataProvider,
+        $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->where(['state' => 1])->all(),
                 'pagination' => ['pageSize' => 100],
+                'sort' => ['attributes' => ['lastname', 'firstname', 'vat', 'identity', 'specialty']]
+        ]);
+        return $this->render('view-denials', ['users' => $dataProvider,
                 'sort' => ['attributes' => ['vat', 'identity', 'specialty']],
         ]);
     }
