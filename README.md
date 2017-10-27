@@ -50,10 +50,82 @@ composer install
 ```
 
 > Η παραπάνω εντολή θα εγκαταστήσει δοκιμαστικά δεδομένα στους πίνακες 
-`Applicant` και `Choice`.
+`Applicant`, `Choice`, `Prefecture` και `PrefecturePreference`. Ο πίνακας
+`Application` θα εκκαθαριστεί.
 
 Για αναλυτικές πληροφορίες για τα `Fixtures` και πως αυτά διαχειρίζονται 
 από το Yii 2 [δείτε εδώ](http://www.yiiframework.com/doc-2.0/guide-test-fixtures.html).
+
+### Δεδομένα από CSV αρχεία
+
+Υπάρχει διαθέσιμη διαδικασία εισαγωγής στοιχείων μέσω console command.
+Χρησιμοποιώντας αρχεία εισόδου σε μορφή CSV μπορεί να γίνει εισαγωγή δεδομένων
+εκτελώντας την εντολή:
+
+```
+./yii import/parse file-with-applicant-info.csv file-with-choices.csv --runFixture=yes
+```
+
+Με την παράμετρο `runFixture=yes` τα δεδομένα θα εισαχθούν στη βάση δεδομένων 
+αντικαθιστώντας τα ήδη καταχωρημένα δεδομένα.
+
+Για αναλυτικές οδηγίες χρήσης του import command καθώς και των διαθέσιμων παραμέτρων
+και μορφής των αρχείων εισόδου εκτελέστε την εντολή:
+
+```
+./yii help import 
+```
+
+Συγκεκριμένα στην έκδοση 1.0.0 η οθόνη βοήθειας για την προεπιλεγμένη εντολή import
+είναι όπως παρακάτω: 
+
+```
+$ ./yii help import/parse 
+
+DESCRIPTION
+
+Parse and generate serialized data files with the applicant and choices data included in CSV files.
+
+
+USAGE
+
+yii import/parse <applicants_file> <choices_file> [...options...]
+
+- applicants_file (required): string
+  the filename of the CSV containing the applicant information
+
+- choices_file (required): string
+  the filename of the CSV containing the choices information
+
+
+OPTIONS
+
+--appconfig: string
+  custom application configuration file path.
+  If not set, default application configuration is used.
+
+--csvDelimiter: string (defaults to ';')
+  CSV delimiter character
+
+--csvEnclosure: string (defaults to '"')
+  CSV enclosure character
+
+--csvSkipLines: string (defaults to 1)
+  How many line to skip to get to the actual data
+
+--fields_applicants: string (defaults to '1,2,3,4,5,6,9,11,12')
+  Numeric index of the fields to retrieve. In order:
+  For the applicants: 
+  Prefecture preference, Lastname, Firstname, Fathername, Mothername, Phone, VAT, ID card, email
+
+--fields_choices: string (defaults to '0,1,2,3')
+  Numeric index of the fields to retrieve. In order:
+  For the choices:
+  Specialty, Position count, Position description, Prefecture (only the first letter in capital)
+
+--runFixture: string (defaults to 'no')
+  If "yes" the command also invokes the necessary fixture load command
+```
 
 # Περιβάλλον ανάπτυξης 
 

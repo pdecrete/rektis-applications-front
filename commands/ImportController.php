@@ -82,7 +82,8 @@ class ImportController extends Controller
             'csvDelimiter',
             'csvEnclosure',
             'csvSkipLines',
-            'fields'
+            'fields_applicants',
+            'fields_choices',
         ];
     }
 

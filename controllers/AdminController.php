@@ -56,10 +56,12 @@ class AdminController extends \yii\web\Controller
 
         try {
             \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
+            \Yii::$app->db->createCommand()->truncateTable('{{%prefectures_preference}}')->execute();
             \Yii::$app->db->createCommand()->truncateTable('{{%application}}')->execute();
             \Yii::$app->db->createCommand()->truncateTable('{{%choice}}')->execute();
             \Yii::$app->db->createCommand()->truncateTable('{{%applicant}}')->execute();
             \Yii::$app->db->createCommand()->truncateTable('{{%prefecture}}')->execute();
+            \Yii::$app->db->createCommand()->truncateTable('{{%audit_log}}')->execute();
             \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
 
             Yii::info('Cleared data', 'admin');
