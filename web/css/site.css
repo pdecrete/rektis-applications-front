@@ -113,3 +113,8 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.application-form-container .well h2,
+.application-view .well h2 {
+    margin-top: 10px;
+}

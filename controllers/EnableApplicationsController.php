@@ -8,7 +8,6 @@ use app\models\Config;
 
 class EnableApplicationsController extends \yii\web\Controller
 {
-
     public function behaviors()
     {
         return [

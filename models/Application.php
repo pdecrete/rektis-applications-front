@@ -1,8 +1,6 @@
 <?php
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "application".
  *
@@ -64,7 +62,7 @@ class Application extends \yii\db\ActiveRecord
     }
 
     /**
-     * 
+     *
      * @inheritdoc
      */
     public function beforeSave($insert)

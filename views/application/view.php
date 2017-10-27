@@ -21,30 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <div class="well well-sm">
-        <div class="row item">
-            <div class="col-sm-4">
-                <h2><?= $user->firstname ?> <small>(Όνομα)</small></h2>
-            </div>
-            <div class="col-sm-4">
-                <h2><?= $user->lastname ?> <small>(Επώνυμο)</small></h2>
-            </div>
-            <div class="col-sm-4">
-                <h2><?= $user->email ?> <small>(Email)</small></h2>
-            </div>
-        </div>
-        <div class="row item">
-            <div class="col-sm-4">
-                <h2><?= $user->specialty ?> <small>(Ειδικότητα)</small></h2>
-            </div>
-            <div class="col-sm-4">
-                <h2><?= $user->vat ?> <small>(Α.Φ.Μ.)</small></h2>
-            </div>
-            <div class="col-sm-4">
-                <h2><?= $user->identity ?> <small>(Ταυτότητα)</small></h2>
-            </div>
-        </div>
-    </div>
+    <?= $this->render('_applicant_info_header', ['user' => $user]) ?>
 
     <div class="alert alert-info">
         Ημερομηνία υποβολής: 

@@ -13,7 +13,6 @@ namespace app\models;
  */
 class AuditLog extends \yii\db\ActiveRecord
 {
-
     public $level_label;
     public $log_time_str;
     public $ip;

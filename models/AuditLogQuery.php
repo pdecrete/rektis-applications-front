@@ -7,7 +7,6 @@ namespace app\models;
  */
 class AuditLogQuery extends \yii\db\ActiveQuery
 {
-
     public function withUserId($id)
     {
         return $this->andWhere(['like', 'prefix', "[" . intval($id) . "]"]);

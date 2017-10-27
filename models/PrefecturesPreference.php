@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "prefectures_preference".
  *
@@ -66,9 +64,9 @@ class PrefecturesPreference extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Prefecture::className(), ['id' => 'prefect_id']);
     }
-    
+
     public function getPrefectureName()
     {
-		return $this->prefect->prefecture;
+        return $this->prefect->prefecture;
     }
 }

@@ -19,6 +19,7 @@ class Applicant extends \yii\db\ActiveRecord
     /* the following properties should be separated from the model in th final version */
     public $firstname;
     public $lastname;
+    public $fathername;
     public $email;
     public $phone;
 
@@ -63,6 +64,7 @@ class Applicant extends \yii\db\ActiveRecord
     {
         $this->firstname = '';
         $this->lastname = '';
+        $this->fathername = '';
         $this->email = '';
         $this->phone = '';
 
@@ -70,7 +72,7 @@ class Applicant extends \yii\db\ActiveRecord
             $reference = \Yii::$app->crypt->decrypt($this->reference);
             $more_data = json_decode($reference, true);
             if ($more_data) {
-                foreach (['firstname', 'lastname', 'email', 'phone'] as $fieldname) {
+                foreach (['firstname', 'lastname', 'fathername','email', 'phone'] as $fieldname) {
                     $this->$fieldname = isset($more_data[$fieldname]) ? $more_data[$fieldname] : '-';
                 }
             }

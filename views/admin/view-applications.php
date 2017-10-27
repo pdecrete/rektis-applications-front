@@ -20,6 +20,10 @@ echo GridView::widget([
             'attribute' => 'firstname'
         ],
         [
+            'label' => 'Πατρώνυμο',
+            'attribute' => 'fathername'
+        ],
+        [
             'label' => 'Α.Φ.Μ.',
             'attribute' => 'vat'
         ],
