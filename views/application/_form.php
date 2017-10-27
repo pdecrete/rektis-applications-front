@@ -72,7 +72,7 @@ use app\models\Choice;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Αποθήκευση', ['class' => 'btn btn-success btn-lg pull-right']) ?>
+        <?= Html::submitButton('Υποβολή αίτησης', ['class' => 'btn btn-success btn-lg pull-right']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
