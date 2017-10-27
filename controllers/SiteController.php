@@ -74,6 +74,9 @@ class SiteController extends Controller
                 if ($user->state == Applicant::DENIED_TO_APPLY) {
                     return $this->render('denied-application');
                 }
+                else  if($user->agreedterms == NULL)
+					\Yii::$app->response->redirect(['application/request-agree']);
+                
                 return $this->render('index', [
                         'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
                 ]);

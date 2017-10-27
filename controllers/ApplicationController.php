@@ -17,6 +17,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\GoneHttpException;
 use kartik\mpdf\Pdf;
 use app\models\AuditLog;
+use app\components\TermsAgreement;
 
 /**
  * ApplicationController implements the CRUD actions for Application model.
@@ -30,6 +31,10 @@ class ApplicationController extends Controller
     public function behaviors()
     {
         return [
+            [
+            'class' => TermsAgreement::className(),
+            'except' => ['request-agree'],
+			],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -48,7 +53,7 @@ class ApplicationController extends Controller
                         }
                     ],
                     [
-                        'actions' => ['apply', 'request-deny', 'deny'], // 'delete-my-application', 'my-delete'],
+                        'actions' => ['apply', 'request-deny', 'deny', 'request-agree', 'terms-agree'], // 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -322,8 +327,8 @@ class ApplicationController extends Controller
     public function actionDelete($id)
     {
         throw new GoneHttpException();
-        $this->findModel($id)->delete();
-        return $this->redirect(['my-application']);
+        /*$this->findModel($id)->delete();
+        return $this->redirect(['my-application']);*/
     }
 
     public function actionRequestDeny()
@@ -358,6 +363,38 @@ class ApplicationController extends Controller
         return $this->redirect(['site/index']);
     }
 
+	public function actionRequestAgree()
+	{
+		//TODO: Yii:trace('User request agree', 'user.agree');
+		$user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+		if (count($user->applications) > 0)
+            throw new ForbiddenHttpException();
+		if($user->agreedterms != NULL)
+			\Yii::$app->response->redirect(['site/index']);
+		return $this->render('show-terms');
+	}
+	
+	public function actionTermsAgree()
+	{
+		//TODO: Yii:trace('User request agree', 'user.agree');
+        $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+        if (count($user->applications) > 0)
+            throw new ForbiddenHttpException();
+		try{
+			$rowsAffected = $user->updateAll(['agreedterms' => time()], ['id' => $user->id]);
+            if ($rowsAffected != 1)
+                throw new \Exception();
+            //TODO: Yii::$app->session->addFlash('info', "Έχετε αποδεχτεί τους όρους. Μπορείτε να συνεχίσετε στην υποβολή των προτιμήσεών σας.");
+            //TODO: Yii::info('User agree terms', 'user.agree');
+		}
+		catch(\Exception $nse){
+			Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
+            //TODO: Yii::error('User agree terms error', 'user.agree');
+		}
+		return $this->redirect(['site/index']);
+	}
+	
+	
     /**
      * Finds the Application model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
