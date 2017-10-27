@@ -34,7 +34,7 @@ class ApplicationController extends Controller
             [
             'class' => TermsAgreement::className(),
             'except' => ['request-agree'],
-			],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -363,38 +363,41 @@ class ApplicationController extends Controller
         return $this->redirect(['site/index']);
     }
 
-	public function actionRequestAgree()
-	{
-		//TODO: Yii:trace('User request agree', 'user.agree');
-		$user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
-		if (count($user->applications) > 0)
-            throw new ForbiddenHttpException();
-		if($user->agreedterms != NULL)
-			\Yii::$app->response->redirect(['site/index']);
-		return $this->render('show-terms');
-	}
-	
-	public function actionTermsAgree()
-	{
-		//TODO: Yii:trace('User request agree', 'user.agree');
+    public function actionRequestAgree()
+    {
+        //TODO: Yii:trace('User request agree', 'user.agree');
         $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
-        if (count($user->applications) > 0)
+        if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
-		try{
-			$rowsAffected = $user->updateAll(['agreedterms' => time()], ['id' => $user->id]);
-            if ($rowsAffected != 1)
+        }
+        if ($user->agreedterms != null) {
+            \Yii::$app->response->redirect(['site/index']);
+        }
+        return $this->render('show-terms');
+    }
+
+    public function actionTermsAgree()
+    {
+        //TODO: Yii:trace('User request agree', 'user.agree');
+        $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+        if (count($user->applications) > 0) {
+            throw new ForbiddenHttpException();
+        }
+        try {
+            $rowsAffected = $user->updateAll(['agreedterms' => time()], ['id' => $user->id]);
+            if ($rowsAffected != 1) {
                 throw new \Exception();
+            }
             //TODO: Yii::$app->session->addFlash('info', "Έχετε αποδεχτεί τους όρους. Μπορείτε να συνεχίσετε στην υποβολή των προτιμήσεών σας.");
             //TODO: Yii::info('User agree terms', 'user.agree');
-		}
-		catch(\Exception $nse){
-			Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
+        } catch (\Exception $nse) {
+            Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
             //TODO: Yii::error('User agree terms error', 'user.agree');
-		}
-		return $this->redirect(['site/index']);
-	}
-	
-	
+        }
+        return $this->redirect(['site/index']);
+    }
+
+
     /**
      * Finds the Application model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

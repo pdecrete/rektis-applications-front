@@ -73,10 +73,10 @@ class SiteController extends Controller
                 $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
                 if ($user->state == Applicant::DENIED_TO_APPLY) {
                     return $this->render('denied-application');
+                } elseif ($user->agreedterms == null) {
+                    \Yii::$app->response->redirect(['application/request-agree']);
                 }
-                else  if($user->agreedterms == NULL)
-					\Yii::$app->response->redirect(['application/request-agree']);
-                
+
                 return $this->render('index', [
                         'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
                 ]);
