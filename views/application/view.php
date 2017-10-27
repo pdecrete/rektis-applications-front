@@ -24,24 +24,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="well well-sm">
         <div class="row item">
             <div class="col-sm-4">
-                <h2><?= $user->firstname ?> <small>(Όνομα)</small></h2>
+                <h3><?= $user->firstname ?> <small>(Όνομα)</small></h3>
             </div>
             <div class="col-sm-4">
-                <h2><?= $user->lastname ?> <small>(Επώνυμο)</small></h2>
+                <h3><?= $user->lastname ?> <small>(Επώνυμο)</small></h3>
             </div>
             <div class="col-sm-4">
-                <h2><?= $user->email ?> <small>(Email)</small></h2>
+                <h3><?= $user->fathername ?> <small>(Πατρώνυμο)</small></h3>
             </div>
         </div>
         <div class="row item">
-            <div class="col-sm-4">
-                <h2><?= $user->specialty ?> <small>(Ειδικότητα)</small></h2>
+			<div class="col-sm-3">
+                <h3><?= $user->specialty ?> <small>(Ειδικότητα)</small></h3>
             </div>
-            <div class="col-sm-4">
-                <h2><?= $user->vat ?> <small>(Α.Φ.Μ.)</small></h2>
+			<div class="col-sm-3">
+                <h3><?= $user->email ?> <small>(Email)</small></h3>
             </div>
-            <div class="col-sm-4">
-                <h2><?= $user->identity ?> <small>(Ταυτότητα)</small></h2>
+            <div class="col-sm-3">
+                <h3><?= $user->vat ?> <small>(Α.Φ.Μ.)</small></h3>
+            </div>
+            <div class="col-sm-3">
+                <h3><?= $user->identity ?> <small>(Ταυτότητα)</small></h3>
             </div>
         </div>
     </div>
