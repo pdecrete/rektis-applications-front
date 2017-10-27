@@ -28,6 +28,8 @@ class ApplicantFixture extends ActiveFixture
                     array_merge($common_ref, [
                 'firstname' => "{$v['identity']}-firstname",
                 'lastname' => "{$v['identity']}-lastname",
+                'fathername' => "{$v['identity']}-fathername",
+                'mothername' => "{$v['identity']}-mothername",
                 'email' => "{$v['identity']}@email",
                 'phone' => "2810{$v['vat']}",
                     ])
