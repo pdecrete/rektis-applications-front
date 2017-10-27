@@ -12,33 +12,7 @@ use app\models\Choice;
 ?>
 
 <div class="application-form-container">
-    <div class="well well-sm">
-        <div class="row item">
-            <div class="col-sm-4">
-                <h3><?= $user->firstname ?> <small>(Όνομα)</small></h3>
-            </div>
-            <div class="col-sm-4">
-                <h3><?= $user->lastname ?> <small>(Επώνυμο)</small></h3>
-            </div>
-            <div class="col-sm-4">
-                <h3><?= $user->fathername ?> <small>(Πατρώνυμο)</small></h3>
-            </div>
-        </div>
-        <div class="row item">
-			<div class="col-sm-3">
-                <h3><?= $user->specialty ?> <small>(Ειδικότητα)</small></h3>
-            </div>
-			<div class="col-sm-3">
-                <h3><?= $user->email ?> <small>(Email)</small></h3>
-            </div>
-            <div class="col-sm-3">
-                <h3><?= $user->vat ?> <small>(Α.Φ.Μ.)</small></h3>
-            </div>
-            <div class="col-sm-3">
-                <h3><?= $user->identity ?> <small>(Ταυτότητα)</small></h3>
-            </div>
-        </div>
-    </div>
+    <?= $this->render('_applicant_info_header', ['user' => $user]) ?>
 
     <div class="well">
         <h4>Οδηγίες συμπλήρωσης αίτησης</h4>

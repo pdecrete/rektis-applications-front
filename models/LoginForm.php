@@ -13,7 +13,6 @@ use himiklab\yii2\recaptcha\ReCaptchaValidator;
  */
 class LoginForm extends Model
 {
-
     public $username;
     public $password;
     public $specialty;
@@ -38,7 +37,7 @@ class LoginForm extends Model
     }
 
     /**
-     * @inheritdoc 
+     * @inheritdoc
      */
     public function attributeLabels()
     {

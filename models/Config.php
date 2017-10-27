@@ -8,7 +8,7 @@ namespace app\models;
  * @property string $name
  * @property string $type
  * @property string $value
- * 
+ *
  */
 class Config extends \yii\db\ActiveRecord
 {

@@ -1,7 +1,7 @@
 <?php
 /**
- * Credit: https://github.com/wbraganca/yii2-dynamicform 
- * 
+ * Credit: https://github.com/wbraganca/yii2-dynamicform
+ *
  */
 namespace app\models;
 
