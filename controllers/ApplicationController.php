@@ -365,7 +365,8 @@ class ApplicationController extends Controller
 
     public function actionRequestAgree()
     {
-        //TODO: Yii:trace('User request agree', 'user.agree');
+        Yii::trace('User request agree', 'user.agree');
+
         $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
         if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
@@ -378,7 +379,8 @@ class ApplicationController extends Controller
 
     public function actionTermsAgree()
     {
-        //TODO: Yii:trace('User request agree', 'user.agree');
+        Yii::trace('User request agree', 'user.agree');
+
         $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
         if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
@@ -388,11 +390,11 @@ class ApplicationController extends Controller
             if ($rowsAffected != 1) {
                 throw new \Exception();
             }
-            //TODO: Yii::$app->session->addFlash('info', "Έχετε αποδεχτεί τους όρους. Μπορείτε να συνεχίσετε στην υποβολή των προτιμήσεών σας.");
-            //TODO: Yii::info('User agree terms', 'user.agree');
+            Yii::$app->session->addFlash('info', "Έχετε αποδεχτεί τους όρους. Μπορείτε να συνεχίσετε στην υποβολή των προτιμήσεών σας.");
+            Yii::info('User agree terms', 'user.agree');
         } catch (\Exception $nse) {
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
-            //TODO: Yii::error('User agree terms error', 'user.agree');
+            Yii::error('User agree terms error', 'user.agree');
         }
         return $this->redirect(['site/index']);
     }
