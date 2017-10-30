@@ -53,7 +53,7 @@ class ApplicationController extends Controller
                         }
                     ],
                     [
-                        'actions' => ['apply', 'request-deny', 'deny', 'request-agree', 'terms-agree'], // 'delete-my-application', 'my-delete'],
+                        'actions' => ['apply', 'request-deny', 'deny', 'request-agree', 'terms-agree', 'print-denial'], // 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -361,6 +361,37 @@ class ApplicationController extends Controller
             Yii::error('User deny application error', 'user.deny');
         }
         return $this->redirect(['site/index']);
+    }
+
+    public function actionPrintDenial()
+    {
+        $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+        if ($user->state != 1 || count($user->applications) > 0) {
+            throw new ForbiddenHttpException();
+        }
+        $data[0]['user'] = $user;
+        $content = $this->renderPartial('print-denial', ['data' => $data]);
+        $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
+        $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
+
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'filename' => 'arnisiaitisis.pdf',
+            'destination' => Pdf::DEST_DOWNLOAD,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+            'methods' => [
+                'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
+            ]
+        ]);
+        Yii::info('Generate PDF file for application', 'user.application');
+
+        return $pdf->render();
     }
 
     public function actionRequestAgree()
