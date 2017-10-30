@@ -268,7 +268,7 @@ class ApplicationController extends Controller
                     }
 
                     $transaction->commit();
-                    Yii::$app->session->addFlash('success', "Οι επιλογές σας έχουν αποθηκευτεί.");
+                    Yii::$app->session->addFlash('success', "Η αίτησή σας έχει υποβληθεί.");
 
                     Yii::info('User application submitted', 'user.application.submit');
                     return $this->redirect(['my-application']);
