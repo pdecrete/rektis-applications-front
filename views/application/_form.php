@@ -14,14 +14,7 @@ use app\models\Choice;
 <div class="application-form-container">
     <?= $this->render('_applicant_info_header', ['user' => $user]) ?>
 
-    <div class="well">
-        <h4>Οδηγίες συμπλήρωσης αίτησης</h4>
-        <ul>
-            <li>Οι νομοί παρουσιάζονται με τη σειρά προτίμησης που έχετε ήδη δηλώσει.</li>
-            <li>Επιλέξτε <strong>όλα</strong> τα σχολεία για κάθε νομό με τη σειρά προτίμησης που επιθυμείτε.</li>
-            <li>Όταν ολοκληρώσετε τις επιλογές σας, πατήστε το κουμπί <strong>"Αποθήκευση"</strong>.</li>
-        </ul>
-    </div>
+    <?= $this->render('_info_apply_usage') ?>
 
     <?php $form = ActiveForm::begin(['id' => 'application-form', 'layout' => 'horizontal']); ?>
 
