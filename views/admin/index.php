@@ -21,6 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <p><?= Html::a('Προβολή', Url::to(['admin/view-applications']), ['class' => 'btn btn-primary', 'data-method' => 'post']) ?></p>
         </div>
         <div class="col-lg-3">
+            <h3>Επισκόπηση στοιχείων</h3>
+            <p>Εμφάνιση συνοπτικών στατιστικών.</p>
+            <p><?= Html::a('Προβολή', Url::to(['admin/overview']), ['class' => 'btn btn-primary']) ?></p>
+        </div>
+        <div class="col-lg-3">
             <h3>Εξαγωγή αιτήσεων</h3>
             <p>Η λειτουργία αυτή εξάγει όλες τις μη διεγραμμένες αιτήσεις σε μορφή CSV.</p>
             <p><?= Html::a(Html::icon('save') . ' Εξαγωγή σε CSV', Url::to(['admin/export-csv']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?></p>
@@ -30,18 +35,18 @@ $this->params['breadcrumbs'][] = $this->title;
             <p>Η λειτουργία αυτή εκτυπώνει όλες τις υποβληθείσες αιτήσεις.</p>
             <p><?= Html::a(Html::icon('print') . ' Εκτύπωση', Url::to(['admin/print-applications']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?></p>
         </div>   
-        <div class="col-lg-3">
-            <h3>Δηλώσεις Άρνησης</h3>
-            <p>Προβολή εκπαιδευτικών που έχουν δηλώσει άρνηση πρόσληψης.</p>
-            <p><?= Html::a('Προβολή', Url::to(['view-denials']), ['class' => 'btn btn-primary']) ?></p>
-        </div>
     </div>
 
     <div class="row">
         <div class="col-lg-3">
-            <h3>Επισκόπηση στοιχείων</h3>
-            <p>Εμφάνιση συνοπτικών στατιστικών.</p>
-            <p><?= Html::a('Προβολή', Url::to(['admin/overview']), ['class' => 'btn btn-primary']) ?></p>
+            <h3>Δηλώσεις Άρνησης</h3>
+            <p>Προβολή εκπαιδευτικών που έχουν δηλώσει άρνηση τοποθέτησης.</p>
+            <p><?= Html::a('Προβολή', Url::to(['view-denials']), ['class' => 'btn btn-primary']) ?></p>
+        </div>
+        <div class="col-lg-3">
+            <h3>Εκτύπωση Δηλώσεων Άρνησης</h3>
+            <p>Εκτύπωση όλων των δηλώσεων άρνησης τοποθέτησης.</p>
+            <p><?= Html::a('Εκτύπωση', Url::to(['print-denials']), ['class' => 'btn btn-primary']) ?></p>
         </div>
     </div>
 

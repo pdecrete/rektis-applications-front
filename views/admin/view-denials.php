@@ -1,5 +1,5 @@
 <?php
-
+use yii\bootstrap\Html;
 use yii\grid\GridView;
 
 $this->title = 'Προβολή δηλώσεων άρνησης';
@@ -33,6 +33,15 @@ echo GridView::widget([
         [
             'label' => 'Ειδικότητα',
             'attribute' => 'specialty'
+        ] ,
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'header' => 'Προβολή',
+            'template' => '{printButton}',
+            'buttons' => ['printButton' => function ($url, $model, $key) {
+                return Html::a(Html::icon('print'), ['admin/print-denials', 'applicantId' => $model->id]);
+            }
+            ]
         ]
     ]
 ]);

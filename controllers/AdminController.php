@@ -244,9 +244,52 @@ class AdminController extends \yii\web\Controller
             $last_submit_model = AuditLog::find()->withUserId($users[$j]->id)->applicationSubmits()->one();
             $data[$j]['last_submit_model'] = $last_submit_model;
         }
+
         $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
         $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
+
         $content = $this->renderPartial('../application/print', ['data' => $data]);
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'filename' => 'aitisi.pdf',
+            'destination' => Pdf::DEST_DOWNLOAD,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+            'methods' => [
+                'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
+            ]
+        ]);
+
+        return $pdf->render();
+    }
+
+    public function actionPrintDenials($applicantId = null)
+    {
+        if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
+            $users = [Applicant::findOne(['id' => $applicantId])];
+        } else {
+            $users = Applicant::find()->where(['state' => 1])->all();
+        }
+        if (count($users) == 0) {
+            Yii::$app->session->addFlash('info', "Δεν εντοπίστηκε καμία/κανένας αιτούσα/αιτών και καμία ενεργή αίτηση.");
+            return $this->redirect(['admin/view-denials']);
+        }
+
+        $data = [];
+        for ($j = 0; $j < count($users); $j++) {
+            $data[$j]['user'] = $users[$j];
+        }
+
+
+        $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
+        $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
+        $content = $this->renderPartial('../application/print-denial', ['data' => $data]);
         // setup kartik\mpdf\Pdf component
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
