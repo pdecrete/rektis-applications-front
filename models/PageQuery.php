@@ -9,7 +9,7 @@ namespace app\models;
 class PageQuery extends \yii\db\ActiveQuery
 {
 
-    public function identity()
+    public function identity($identity)
     {
         return $this->andWhere(['[[identity]]' => $identity]);
     }

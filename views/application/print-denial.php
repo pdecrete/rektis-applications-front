@@ -37,7 +37,7 @@ foreach ($data as $idx => $userdata):
     </table>
 	<br /><br />
     <table border="0">
-        <tr><td style="font-size:120%;"><?= $this->render('_denyterms') ?></td></tr>
+        <tr><td style="font-size:120%;"><?= $info_content ?></td></tr>
     </table>
    <table style="font-size:120%;width: 100%; border: none; padding: 15px;">
         <tr>

@@ -14,7 +14,7 @@ use app\models\Choice;
 <div class="application-form-container">
     <?= $this->render('_applicant_info_header', ['user' => $user]) ?>
 
-    <?= $this->render('_info_apply_usage') ?>
+    <?= $information ?>
 
     <?php $form = ActiveForm::begin(['id' => 'application-form', 'layout' => 'horizontal']); ?>
 

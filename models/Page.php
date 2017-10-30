@@ -85,7 +85,7 @@ class Page extends ActiveRecord
      */
     public static function getPageContent($identity)
     {
-        $model = static::find()->identity($identity);
+        $model = static::find()->identity($identity)->one();
         if ($model) {
             return $model->content;
         } else {

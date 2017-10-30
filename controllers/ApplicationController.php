@@ -288,6 +288,7 @@ class ApplicationController extends Controller
                 'models' => $models,
                 'user' => $user,
                 'prefectures_choices' => $prefectures_choices,
+                'information' => \app\models\Page::getPageContent('_info_apply_usage')
         ]);
     }
 
@@ -327,8 +328,8 @@ class ApplicationController extends Controller
     public function actionDelete($id)
     {
         throw new GoneHttpException();
-        /*$this->findModel($id)->delete();
-        return $this->redirect(['my-application']);*/
+        /* $this->findModel($id)->delete();
+          return $this->redirect(['my-application']); */
     }
 
     public function actionRequestDeny()
@@ -339,7 +340,8 @@ class ApplicationController extends Controller
         if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
         }
-        return $this->render('confirm-deny-application', ['user' => $user]);
+        $content = \app\models\Page::getPageContent('info_denial');
+        return $this->render('confirm-deny-application', compact('user', 'content'));
     }
 
     public function actionDeny()
@@ -370,7 +372,8 @@ class ApplicationController extends Controller
             throw new ForbiddenHttpException();
         }
         $data[0]['user'] = $user;
-        $content = $this->renderPartial('print-denial', ['data' => $data]);
+        $info_content = \app\models\Page::getPageContent('info_denial');
+        $content = $this->renderPartial('print-denial', compact(['data', 'info_content']));
         $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
         $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
 
@@ -405,7 +408,8 @@ class ApplicationController extends Controller
         if ($user->agreedterms != null) {
             \Yii::$app->response->redirect(['site/index']);
         }
-        return $this->render('show-terms');
+        $content = \app\models\Page::getPageContent('info_terms');
+        return $this->render('show-terms', ['content' => $content]);
     }
 
     public function actionTermsAgree()
@@ -429,7 +433,6 @@ class ApplicationController extends Controller
         }
         return $this->redirect(['site/index']);
     }
-
 
     /**
      * Finds the Application model based on its primary key value.
