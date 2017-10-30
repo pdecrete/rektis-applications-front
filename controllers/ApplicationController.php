@@ -139,8 +139,8 @@ class ApplicationController extends Controller
                 'data' => $data,
             ]);
 
-            $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
-            $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
+            $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
+            $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
             // setup kartik\mpdf\Pdf component
             $pdf = new Pdf([
                 'mode' => Pdf::MODE_UTF8,

@@ -2,6 +2,8 @@
 $params = require(__DIR__ . '/params.php');
 $db = require(__DIR__ . '/db.php');
 
+\Yii::setAlias('@images', __DIR__ . '/../web/images');
+
 $config = [
     'id' => 'aplicationsbasichandler',
     'language' => 'el', //Make the change in web.php too
