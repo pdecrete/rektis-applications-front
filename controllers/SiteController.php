@@ -153,6 +153,8 @@ class SiteController extends Controller
     public function actionAbout()
     {
         Yii::trace('About page display');
-        return $this->render('about');
+        return $this->render('about', [
+            'information' => \app\models\Page::getPageContent('about')
+        ]);
     }
 }

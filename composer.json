@@ -22,7 +22,8 @@
         "wbraganca/yii2-dynamicform": "dev-master",
         "kartik-v/yii2-mpdf": "*",
         "defuse/php-encryption": "^2.1",
-        "himiklab/yii2-recaptcha-widget": "*"
+        "himiklab/yii2-recaptcha-widget": "*",
+        "vova07/yii2-imperavi-widget": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

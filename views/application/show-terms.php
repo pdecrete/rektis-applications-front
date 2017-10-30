@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p><strong>Για να συνεχίσετε πρέπει να τις αποδεχτείτε.</strong></p>
 </div>
 <div class="well">
-    <?= $this->render('_info_terms') ?>
+    <?= $content ?>
 </div>
 <div class="jumbotron">
     <p>Πατήστε το κουμπί αποδέχομαι εφόσον μελετήσατε και συμφωνείτε με τα παραπάνω.<p>
