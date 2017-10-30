@@ -32,8 +32,8 @@ class ApplicationController extends Controller
     {
         return [
             [
-            'class' => TermsAgreement::className(),
-            'except' => ['request-agree'],
+                'class' => TermsAgreement::className(),
+                'except' => ['request-agree'],
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -139,8 +139,8 @@ class ApplicationController extends Controller
                 'data' => $data,
             ]);
 
-            $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
-            $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
+            $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
+            $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
             // setup kartik\mpdf\Pdf component
             $pdf = new Pdf([
                 'mode' => Pdf::MODE_UTF8,
@@ -339,7 +339,7 @@ class ApplicationController extends Controller
         if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
         }
-        return $this->render('confirm-deny-application');
+        return $this->render('confirm-deny-application', ['user' => $user]);
     }
 
     public function actionDeny()
@@ -421,7 +421,7 @@ class ApplicationController extends Controller
             if ($rowsAffected != 1) {
                 throw new \Exception();
             }
-            Yii::$app->session->addFlash('info', "Έχετε αποδεχτεί τους όρους. Μπορείτε να συνεχίσετε στην υποβολή των προτιμήσεών σας.");
+            Yii::$app->session->addFlash('info', "Έχετε ενημερωθεί για τη διαδικασία υποβολής αιτήσεων. Μπορείτε να συνεχίσετε στην υποβολή των προτιμήσεών σας.");
             Yii::info('User agree terms', 'user.agree');
         } catch (\Exception $nse) {
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
