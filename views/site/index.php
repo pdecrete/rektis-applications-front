@@ -50,9 +50,9 @@ $this->title = 'Αιτήσεις';
             </div>
             <?php if (count($user->applications) === 0): ?>
                 <div class="col-lg-4">
-                    <h2>Άρνηση υποβολής αίτησης</h2>
-                    <p>Δηλώστε άρνηση υποβολής αίτησης εδώ.</p>
-                    <p><?= Html::a('Άρνηση', Url::to(['application/request-deny']), ['class' => 'btn btn-primary']) ?></p>
+                    <h2>Υποβολή αρνητικής δήλωσης</h2>
+                    <p>Υποβάλλετε δήλωση άρνησης πρόσληψης εδώ.</p>
+                    <p><?= Html::a('Αρνητική δήλωση', Url::to(['application/request-deny']), ['class' => 'btn btn-primary']) ?></p>
                 </div>
             <?php endif; ?>
         </div>

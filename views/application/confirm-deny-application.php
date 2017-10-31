@@ -4,11 +4,11 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Επιβεβαίωση δήλωσης άρνησης αίτησης';
+$this->title = 'Επιβεβαίωση υποβολής αρνητικής δήλωσης';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<h1>Άρνηση υποβολής αίτησης</h1>
+<h1>Υποβολή αρνητικής δήλωσης</h1>
 <div class="text-left">
     <?= $this->render('_applicant_info_header', ['user' => $user]) ?>
 </div>

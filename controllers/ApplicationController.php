@@ -356,7 +356,7 @@ class ApplicationController extends Controller
             if ($rowsAffected != 1) {
                 throw new \Exception();
             }
-            Yii::$app->session->addFlash('info', "Η δήλωση άρνησης αίτησης έχει καταχωριστεί.");
+            Yii::$app->session->addFlash('info', "Η υποβολή αρνητικής δήλωσης έχει καταχωριστεί.");
             Yii::info('User deny application', 'user.deny');
         } catch (\Exception $nse) {
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
