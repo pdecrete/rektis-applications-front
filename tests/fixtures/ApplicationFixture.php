@@ -10,6 +10,7 @@ class ApplicationFixture extends ActiveFixture
     public $depends = [
         'app\tests\fixtures\ChoiceFixture',
         'app\tests\fixtures\PrefecturesPreferenceFixture',
+        'app\tests\fixtures\PageFixture',
     ];
 
     protected function getData()

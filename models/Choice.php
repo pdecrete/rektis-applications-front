@@ -20,7 +20,7 @@ class Choice extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'choice';
+        return '{{%choice}}';
     }
 
     /**

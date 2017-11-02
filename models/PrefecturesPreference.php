@@ -20,7 +20,7 @@ class PrefecturesPreference extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'prefectures_preference';
+        return '{{%prefectures_preference}}';
     }
 
     /**

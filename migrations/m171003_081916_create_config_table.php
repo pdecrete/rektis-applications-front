@@ -33,6 +33,6 @@ class m171003_081916_create_config_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('config');
+        $this->dropTable('{{%config}}');
     }
 }
