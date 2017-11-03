@@ -65,7 +65,7 @@ class SiteController extends Controller
     {
         Yii::trace('Index page display');
         if (Yii::$app->user->isGuest) {
-            return $this->render('index-guest');
+            return $this->render('index-guest', ['period_open' => (1 === \app\models\Config::getConfig('enable_applications'))]);
         } else {
             if (\Yii::$app->user->identity->isAdmin()) {
                 return $this->redirect(['admin/index']);
@@ -154,7 +154,7 @@ class SiteController extends Controller
     {
         Yii::trace('About page display');
         return $this->render('about', [
-            'information' => \app\models\Page::getPageContent('about')
+                'information' => \app\models\Page::getPageContent('about')
         ]);
     }
 }
