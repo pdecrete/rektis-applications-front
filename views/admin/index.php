@@ -39,6 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-lg-3">
+            <h3>Διαθέσιμοι Υποψήφιοι</h3>
+            <p>Προβολή υποψηφηφίων εκπαιδευτικών που βρίσκονται στη βάση και αναμένεται να δηλώσουν τοποθέτηση ή άρνηση τοποθέτησης.</p>
+            <p><?= Html::a('Προβολή', Url::to(['view-candidates']), ['class' => 'btn btn-primary']) ?></p>
+        </div>
+        <div class="col-lg-3">
             <h3>Δηλώσεις Άρνησης</h3>
             <p>Προβολή εκπαιδευτικών που έχουν δηλώσει άρνηση τοποθέτησης.</p>
             <p><?= Html::a('Προβολή', Url::to(['view-denials']), ['class' => 'btn btn-primary']) ?></p>
