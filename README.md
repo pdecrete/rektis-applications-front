@@ -38,6 +38,8 @@ composer install
 
 * Δημιουργία βάσης δεδομένων 
 * Εκτέλεση migrations 
+`./yii migrate`
+`./yii migrate --migrationPath=@yii/log/migrations/`
 
 ## Δεδομένα για δοκιμές 
 

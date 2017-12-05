@@ -22,7 +22,7 @@ class Application extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'application';
+        return '{{%application}}';
     }
 
     /**

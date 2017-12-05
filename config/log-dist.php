@@ -32,7 +32,7 @@ return [
                 'user*', // user.login, user.logout, ...
                 'admin*', 
             ],
-            'logTable' => 'audit_log',
+            'logTable' => '{{%audit_log}}',
             'logVars' => [],
         ],
     ],

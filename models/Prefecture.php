@@ -20,7 +20,7 @@ class Prefecture extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'prefecture';
+        return '{{%prefecture}}';
     }
 
     /**
