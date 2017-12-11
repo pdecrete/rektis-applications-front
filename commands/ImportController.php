@@ -41,9 +41,9 @@ class ImportController extends Controller
     /**
      * @var string Numeric index of the fields to retrieve. In order:
      * For the applicants: 
-     * Prefecture preference, Lastname, Firstname, Fathername, Mothername, Phone, VAT, ID card, email
+     * Specialty, Prefecture preference, Lastname, Firstname, Fathername, Mothername, Phone, VAT, ID card, email
      */
-    public $fields_applicants = '1,2,3,4,5,6,9,11,12';
+    public $fields_applicants = '1,2,3,4,5,6,7,10,12,13';
 
     /**
      * @var string Numeric index of the fields to retrieve. In order:
@@ -57,6 +57,7 @@ class ImportController extends Controller
      */
     private $_field_mapping = [
         'applicants' => [
+            'specialty',
             'preferences',
             'lastname',
             'firstname',
@@ -246,7 +247,7 @@ class ImportController extends Controller
         $fields_idx = array_combine($fields, $fields);
         $data = [
             'applicant' => [],
-            'specialty' => ['ΕΒΠ'],
+            'specialty' => [],
             'prefecture' => [],
             'choices' => [],
             'prefecture_preference' => []
@@ -255,14 +256,13 @@ class ImportController extends Controller
         $aid = 100;
         foreach ($retrieve_statement->process($csv) as $record) {
             $aid++;
+            
             $mapped_record = array_combine($this->_field_mapping['applicants'], array_intersect_key($record, $fields_idx));
-            //            echo print_r($record, true), PHP_EOL;
-            //            echo print_r($mapped_record, true), PHP_EOL;
             $applicant_data_entry = [
                 'id' => $aid, // keep the id
                 'vat' => $mapped_record['vat'],
                 'identity' => preg_replace('/\s+/', '', $mapped_record['identity']),
-                'specialty' => 'ΕΒΠ',
+                'specialty' => preg_replace('/\s+/', '', $mapped_record['specialty']),
                 'reference' => \Yii::$app->crypt->encrypt(
                     json_encode([
                     'firstname' => $mapped_record['firstname'],
@@ -341,8 +341,6 @@ class ImportController extends Controller
         foreach ($retrieve_statement->process($csv) as $record) {
             $aid++;
             $mapped_record = array_combine($this->_field_mapping['choices'], array_intersect_key($record, $fields_idx));
-//            echo print_r($record, true), PHP_EOL;
-//            echo print_r($mapped_record, true), PHP_EOL;
 
             $pref = trim($mapped_record['prefecture']);
             switch (strtoupper($pref)) {
@@ -364,7 +362,7 @@ class ImportController extends Controller
             }
             $applicant_data_entry = [
                 'id' => $aid,
-                'specialty' => $mapped_record['specialty'],
+                'specialty' => preg_replace('/\s+/', '', $mapped_record['specialty']),
                 'count' => $mapped_record['count'],
                 'position' => $mapped_record['position'],
                 'reference' => $common_ref,
