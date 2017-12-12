@@ -48,10 +48,10 @@ foreach ($data as $idx => $userdata):
     <h3 style="text-align: center">Προτιμήσεις</h3>
     <table class="table table-bordered table-striped">
         <tr>
-            <th>Σειρά<br/>προτίμησης</th>
-            <th>Κενό προτίμησης</th>
-            <th>Περιφερειακή ενότητα</th>
-            <th>Περιφέρεια</th>
+            <th style="width: 10%">Σειρά<br/>προτίμησης</th>
+            <th style="width: 60%">Κενό προτίμησης</th>
+            <th style="width: 15%">Περιφερειακή ενότητα</th>
+            <th style="width: 15%">Περιφέρεια</th>
         </tr>
         <tbody>
             <?=
