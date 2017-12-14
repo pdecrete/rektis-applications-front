@@ -32,6 +32,14 @@ class AdminController extends \yii\web\Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
+                        'actions' => ['index', 'overview', 'view-candidates', 'view-applications', 'print-applications', 'view-denials', 'print-denials'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return \Yii::$app->user->identity->isSupervisor();
+                        }
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -46,7 +54,9 @@ class AdminController extends \yii\web\Controller
     public function actionIndex()
     {
         return $this->render('index', [
-                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+                'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1),
+                'admin' => \Yii::$app->user->identity->isAdmin(),
+                'supervisor' => \Yii::$app->user->identity->isSupervisor()
         ]);
     }
 

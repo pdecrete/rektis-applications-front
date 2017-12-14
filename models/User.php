@@ -98,6 +98,15 @@ class User extends Applicant implements IdentityInterface
         return $this->role === 'admin';
     }
 
+    /**
+     *
+     * @return boolean
+     */
+    public function isSupervisor()
+    {
+        return $this->role === 'supervisor';
+    }
+
     public function validateAdmin($password)
     {
         $users = Yii::$app->params['users'];

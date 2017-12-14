@@ -67,8 +67,9 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->render('index-guest', ['period_open' => (1 === \app\models\Config::getConfig('enable_applications'))]);
         } else {
-            if (\Yii::$app->user->identity->isAdmin()) {
-                return $this->redirect(['admin/index']);
+            if (\Yii::$app->user->identity->isAdmin() ||
+                \Yii::$app->user->identity->isSupervisor()) {
+                    return $this->redirect(['admin/index']);
             } else {
                 $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
                 if ($user->state == Applicant::DENIED_TO_APPLY) {
