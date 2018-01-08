@@ -311,8 +311,8 @@ class AdminController extends \yii\web\Controller
         }
 
 
-        $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
-        $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
+        $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
+        $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
         $content = $this->renderPartial('../application/print-denial', [
             'data' => $data,
             'info_content' => \app\models\Page::getPageContent('info_denial')

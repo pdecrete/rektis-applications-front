@@ -41,7 +41,7 @@ AppAsset::register($this);
                     ['label' => 'Διαχείριση', 'url' => ['/admin/index'], 
 					 'visible' => (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin())
 					],
-                    ['label' => 'Σχετικά', 'url' => ['/site/about']],
+                    ['label' => 'Πληροφορίες', 'url' => ['/site/about']],
                     Yii::$app->user->isGuest ? (
                         ['label' => 'Σύνδεση', 'url' => ['/site/login']]
                         ) : (
