@@ -374,8 +374,8 @@ class ApplicationController extends Controller
         $data[0]['user'] = $user;
         $info_content = \app\models\Page::getPageContent('info_denial');
         $content = $this->renderPartial('print-denial', compact(['data', 'info_content']));
-        $actionlogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/logo.jpg');
-        $pdelogo = "file:///" . realpath(dirname(__FILE__) . '/../web/images/pdelogo.jpg');
+        $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
+        $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
 
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
