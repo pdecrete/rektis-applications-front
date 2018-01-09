@@ -35,6 +35,16 @@ foreach ($data as $idx => $userdata):
             <td colspan="2"><h4>Θέμα: Δήλωση Άρνησης Τοποθέτησης Αναπληρωτή/τριας</h4></td>
         </tr>
     </table>
+
+    <div class="alert alert-info">
+        Ημερομηνία υποβολής δήλωσης άρνησης τοποθέτησης: 
+        <?php if ($userdata['user']->statets !== null) : ?>
+            <strong><?= date("d-m-Y H:i:s", $userdata['user']->statets); ?></strong>
+        <?php else: ?>
+            <span class="label label-danger">Δεν εντοπίστηκε</span>
+        <?php endif; ?>
+    </div>
+
 	<br /><br />
     <table border="0">
         <tr><td style="font-size:120%;"><?= $info_content ?></td></tr>

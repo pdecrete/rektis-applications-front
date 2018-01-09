@@ -268,7 +268,7 @@ class ApplicationController extends Controller
                     }
 
                     $transaction->commit();
-                    Yii::$app->session->addFlash('success', "Η αίτησή σας έχει υποβληθεί.");
+                    Yii::$app->session->addFlash('success', "Η αίτησή σας έχει υποβληθεί επιτυχώς.");
 
                     Yii::info('User application submitted', 'user.application.submit');
                     return $this->redirect(['my-application']);
@@ -350,10 +350,10 @@ class ApplicationController extends Controller
         if (count($user->applications) > 0) {
             throw new ForbiddenHttpException();
         }
-        $user->setAttribute('state', 1);
+        $user->state = 1;
+        $user->statets = time();
         try {
-            $rowsAffected = $user->updateAll(['state' => 1], ['id' => $user->id]);
-            if ($rowsAffected != 1) {
+            if (!$user->save()) {
                 throw new \Exception();
             }
             Yii::$app->session->addFlash('info', "Η υποβολή αρνητικής δήλωσης έχει καταχωριστεί.");
