@@ -12,6 +12,29 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1>Διαχειριστικές λειτουργίες</h1>
 
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4">
+                Υποβολή αιτήσεων<br/>
+                <?php if ($enable_applications === true) : ?> <span class="label label-success">Ενεργοποιημένη</span>
+                <?php else: ?> <span class="label label-danger">Απενεργοποιημένη</span>
+                <?php endif; ?>
+            </div>
+            <div class="col-sm-4">
+                Διαλειτουργικότητα - φόρτωση στοιχείων<br/>
+                <?php if ($enable_data_load === true) : ?> <span class="label label-success">Ενεργοποιημένη</span>
+                <?php else: ?> <span class="label label-danger">Απενεργοποιημένη</span>
+                <?php endif; ?>
+            </div>
+            <div class="col-sm-4">
+                Διαλειτουργικότητα - κατέβασμα στοιχείων<br/>
+                <?php if ($enable_date_unload === true) : ?> <span class="label label-success">Ενεργοποιημένη</span>
+                <?php else: ?> <span class="label label-danger">Απενεργοποιημένη</span>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
     <div class="body-content">
 
         <div class="row">
