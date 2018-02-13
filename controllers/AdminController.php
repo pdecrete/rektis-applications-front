@@ -66,7 +66,7 @@ class AdminController extends \yii\web\Controller
     {
         Yii::trace('Clearing data', 'admin');
 
-        if (($status = $this->clearData()) === true) {
+        if (($status = \Yii::$app->adminHelper->clearData()) === true) {
             Yii::$app->session->addFlash('success', "Ολοκληρώθηκε η εκκαθάριση των στοιχείων.");
         } else {
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την εκκαθάριση των στοιχείων. <strong>Παρακαλώ ελέγξτε τα στοιχεία!</strong>. Το μύνημα λάθους από τη βάση δεδομένων ήταν: {$status}");
@@ -328,31 +328,4 @@ class AdminController extends \yii\web\Controller
         return $pdf->render();
     }
 
-    /**
-     * 
-     * @return boolean|string returns boolean trus on success or an error message on failure
-     */
-    protected function clearData()
-    {
-        $cleared = 'Unknown error';
-
-        Yii::trace('Clearing data', 'admin');
-        try {
-            \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%prefectures_preference}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%application}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%choice}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%applicant}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%prefecture}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%audit_log}}')->execute();
-            \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
-            Yii::info('Cleared data', 'admin');
-            $cleared = true;
-        } catch (\Exception $e) {
-            Yii::error('Data not cleared due to error: ' . $e->getMessage(), 'admin');
-            $cleared = $e->getMessage();
-        }
-
-        return $cleared;
-    }
 }
