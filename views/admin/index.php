@@ -16,20 +16,32 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <div class="col-sm-4">
                 Υποβολή αιτήσεων<br/>
-                <?php if ($enable_applications === true) : ?> <span class="label label-success">Ενεργοποιημένη</span>
-                <?php else: ?> <span class="label label-danger">Απενεργοποιημένη</span>
+                <?php if ($enable_applications === true) : ?>
+                    <span class="label label-success">Ενεργοποιημένη</span>
+                    <?= Html::a(Html::icon('ban-circle'), ['enable/confirm-enable'], ['class' => 'btn btn-xs btn-danger', 'data-method' => 'POST', 'title' => 'Απενεργοποίηση']) ?>
+                <?php else: ?>
+                    <span class="label label-danger">Απενεργοποιημένη</span>
+                    <?= Html::a(Html::icon('ok-sign'), ['enable/confirm-enable'], ['class' => 'btn btn-xs btn-success', 'data-method' => 'POST', 'title' => 'Ενεργοποίηση']) ?>
                 <?php endif; ?>
             </div>
             <div class="col-sm-4">
                 Διαλειτουργικότητα - φόρτωση στοιχείων<br/>
-                <?php if ($enable_data_load === true) : ?> <span class="label label-success">Ενεργοποιημένη</span>
-                <?php else: ?> <span class="label label-danger">Απενεργοποιημένη</span>
+                <?php if ($enable_data_load === true) : ?>
+                    <span class="label label-success">Ενεργοποιημένη</span>
+                    <?= Html::a(Html::icon('ban-circle'), ['enable/disable-data-load'], ['class' => 'btn btn-xs btn-danger', 'data-method' => 'POST', 'title' => 'Απενεργοποίηση']) ?>
+                <?php else: ?>
+                    <span class="label label-danger">Απενεργοποιημένη</span>
+                    <?= Html::a(Html::icon('ok-sign'), ['enable/enable-data-load'], ['class' => 'btn btn-xs btn-success', 'data-method' => 'POST', 'title' => 'Ενεργοποίηση']) ?>
                 <?php endif; ?>
             </div>
             <div class="col-sm-4">
                 Διαλειτουργικότητα - κατέβασμα στοιχείων<br/>
-                <?php if ($enable_date_unload === true) : ?> <span class="label label-success">Ενεργοποιημένη</span>
-                <?php else: ?> <span class="label label-danger">Απενεργοποιημένη</span>
+                <?php if ($enable_date_unload === true) : ?>
+                    <span class="label label-success">Ενεργοποιημένη</span>
+                    <?= Html::a(Html::icon('ban-circle'), ['enable/disable-data-unload'], ['class' => 'btn btn-xs btn-danger', 'data-method' => 'POST', 'title' => 'Απενεργοποίηση']) ?>
+                <?php else: ?>
+                    <span class="label label-danger">Απενεργοποιημένη</span>
+                    <?= Html::a(Html::icon('ok-sign'), ['enable/enable-data-unload'], ['class' => 'btn btn-xs btn-success', 'data-method' => 'POST', 'title' => 'Ενεργοποίηση']) ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -106,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <span class="text-success">ενεργοποιημένη.</span>
                     </strong>.</p>
                 <p>
-                    <?= Html::a('Απενεργοποίηση', Url::to(['enable-applications/confirm-enable']), ['class' => 'btn btn-danger', 'data-method' => 'POST']) ?>
+                    <?= Html::a('Απενεργοποίηση', Url::to(['enable/confirm-enable']), ['class' => 'btn btn-danger', 'data-method' => 'POST']) ?>
                 </p>
                 <?php else: ?>
                 <p>Η υποβολή των αιτήσεων είναι
@@ -115,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </strong>
                 </p>
                 <p>
-                    <?= Html::a('Ενεργοποίηση', Url::to(['enable-applications/confirm-enable']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                    <?= Html::a('Ενεργοποίηση', Url::to(['enable/confirm-enable']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
                 </p>
                 <?php endif; ?>
             </div>

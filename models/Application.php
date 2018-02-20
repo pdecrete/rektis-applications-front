@@ -62,6 +62,24 @@ class Application extends \yii\db\ActiveRecord
     }
 
     /**
+     * Fields to be returned in APIs
+     */
+    public function fields()
+    {
+        return [
+            // 'id',
+            'applicant_id',
+            'choice_id',
+            'order',
+            'updated',
+            'deleted',
+            'applicant',
+            'choice'
+        ];
+    }
+
+
+    /**
      *
      * @inheritdoc
      */

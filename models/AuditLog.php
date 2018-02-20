@@ -83,6 +83,30 @@ class AuditLog extends \yii\db\ActiveRecord
     }
 
     /**
+     * Fields to be returned in APIs
+     */
+    public function fields()
+    {
+        return [
+            // 'id',
+            'level',
+            'category',
+            'log_time',
+            'prefix',
+            'message',
+            // 'o' => function ($model) {
+            //     return [
+            //         $this->level,
+            //         $this->category,
+            //         $this->log_time,
+            //         $this->prefix,
+            //         $this->message
+            //     ];
+            // }
+        ];
+    }
+
+    /**
      * @inheritdoc
      * @return AuditLogQuery the active query used by this AR class.
      */

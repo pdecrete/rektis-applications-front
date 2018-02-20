@@ -6,6 +6,8 @@ use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\ForbiddenHttpException;
 use yii\web\ServerErrorHttpException;
+use app\models\AuditLog;
+use app\models\Application;
 
 /**
  * BridgeController handles api functionality.
@@ -125,7 +127,11 @@ class BridgeController extends \yii\rest\Controller
     {
         return [
             'success' => true,
-            'message' => 'Unload action TEST'
+            'message' => 'Unload action TEST',
+            'data' => [
+                'audit_log' => AuditLog::find()->all(),
+                'applications' => Application::find()->all(),
+            ]
         ];
 
         // check for access
