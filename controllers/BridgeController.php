@@ -131,6 +131,7 @@ class BridgeController extends \yii\rest\Controller
             'data' => [
                 'audit_log' => AuditLog::find()->all(),
                 'applications' => Application::find()->all(),
+                // TODO check data that is returned 
             ]
         ];
 
