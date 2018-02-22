@@ -191,13 +191,19 @@ class AdminController extends \yii\web\Controller
     {
         Yii::trace('Candidates view', 'admin');
 
-        $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all(),
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => Applicant::find()->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all(),
             'pagination' => ['pageSize' => 100],
-            'sort' => ['attributes' => [
-                                        'points'=> [
-                                             'asc' => ['specialty' => SORT_DESC, 'points' => SORT_ASC],
-                                             'desc' => ['specialty' => SORT_ASC, 'points' => SORT_DESC]],
-                                        'lastname', 'firstname', 'fathername', 'vat', 'identity', 'specialty']]]);
+            'sort' => [
+                'attributes' => [
+                    'points'=> [
+                        'asc' => ['specialty' => SORT_DESC, 'points' => SORT_ASC],
+                        'desc' => ['specialty' => SORT_ASC, 'points' => SORT_DESC]
+                    ],
+                    'lastname', 'firstname', 'fathername', 'vat', 'identity', 'specialty'
+                ]
+            ]
+        ]);
 
         return $this->render('view-candidates', ['users' => $dataProvider]);
     }
@@ -327,5 +333,4 @@ class AdminController extends \yii\web\Controller
 
         return $pdf->render();
     }
-
 }

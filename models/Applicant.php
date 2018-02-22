@@ -8,6 +8,7 @@ namespace app\models;
  * @property string $vat
  * @property string $identity
  * @property string $specialty
+ * @property int $state
  *
  * @property Application[] $applications
  */
@@ -16,6 +17,7 @@ class Applicant extends \yii\db\ActiveRecord
     const DENIED_TO_APPLY = "1";
 
     public $last_submit_str;
+    public $state_ts_str;
     /* the following properties should be separated from the model in th final version */
     public $firstname;
     public $lastname;
@@ -39,6 +41,7 @@ class Applicant extends \yii\db\ActiveRecord
         return [
             [['vat', 'identity', 'specialty'], 'required'],
             [['vat'], 'string', 'max' => 9],
+            ['state', 'in', 'range' => [0, 1]],
             [['identity'], 'string', 'max' => 32],
             [['specialty'], 'string', 'max' => 8],
             [['vat'], 'unique'],
@@ -56,7 +59,8 @@ class Applicant extends \yii\db\ActiveRecord
             'vat' => 'Α.Φ.Μ.',
             'identity' => 'Α.Δ.Τ.',
             'specialty' => 'Ειδικότητα',
-            'last_submit_str' => 'Υποβολή αίτησης'
+            'last_submit_str' => 'Υποβολή αίτησης',
+            'state_ts_str' => 'Αλλαγή κατάστασης (άρνησης)',
         ];
     }
 
@@ -85,7 +89,13 @@ class Applicant extends \yii\db\ActiveRecord
         if ($last_submit_model !== null) {
             $this->last_submit_str = "<strong>{$last_submit_model->log_time_str}</strong>";
         } else {
-            $this->last_submit_str = '<span class="label label-danger">Δεν εντοπίστηκε</span>';
+            $this->last_submit_str = '<span class="label label-default">Δεν εντοπίστηκε</span>';
+        }
+
+        if (empty($this->statets)) {
+            $this->state_ts_str = null;
+        } else {
+            $this->state_ts_str =  date("d-m-Y H:i:s", $this->statets);
         }
     }
 
