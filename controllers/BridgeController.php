@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\ForbiddenHttpException;
@@ -9,7 +10,12 @@ use yii\web\ServerErrorHttpException;
 use app\models\AuditLog;
 use app\models\Application;
 use yii\helpers\Json;
-use yii\base\InvalidArgumentException;
+use yii\web\BadRequestHttpException;
+use app\models\Prefecture;
+use yii\db\IntegrityException;
+use app\models\Applicant;
+use app\models\Choice;
+use app\models\PrefecturesPreference;
 
 /**
  * BridgeController handles api functionality.
@@ -103,32 +109,75 @@ class BridgeController extends \yii\rest\Controller
      * Prior to loading new data, clearing of data is not performed implicitly,
      * so a clear of old data should have been performed explicitly via a [clear] call.
      *
+     * @throws yii\web\BadRequestHttpException If data is not valid 
      */
     public function actionLoad()
     {
+        $transaction = \Yii::$app->db->beginTransaction(); // perform alla data loading or rollback on error
         // expect to get a JSON data feed (framework parser should not be enabled)
-        // $data = \Yii::$app->request->getRawBody();
         try {
             $data = Json::decode(\Yii::$app->request->getRawBody());
+            $data_groups = array_keys($data);
+            $expected_data_groups = ['prefectures', 'teachers', 'positions', 'placement_preferences'];
+            $has_all_expected_data_groups = empty(array_diff($expected_data_groups, $data_groups));
+            if ($has_all_expected_data_groups === false) {
+                throw new \Exception('Missing required data: ' . implode(', ', $expected_data_groups));
+            }
+
+            // data seems ok, process
+            // save prefectures 
+            $prefectures_load_data = array_map(function ($prefecture) {
+                return [
+                    $prefecture['index'], $prefecture['region'], $prefecture['prefecture'], $prefecture['ref']
+                ];
+            }, $data['prefectures']);
+            $prefectures_load_data_inserted = Yii::$app->db->createCommand()
+                ->batchInsert(Prefecture::tableName(), ['id', 'region', 'prefecture', 'reference'], $prefectures_load_data)
+                ->execute();
+
+            // save teachers 
+            $teachers_load_data = array_map(function ($teacher) {
+                return [
+                    $teacher['index'], $teacher['vat'], $teacher['identity'], $teacher['specialty'], $teacher['ref']
+                ];
+            }, $data['teachers']);
+            $teachers_load_data_inserted = Yii::$app->db->createCommand()
+                ->batchInsert(Applicant::tableName(), ['id', 'vat', 'identity', 'specialty', 'reference'], $teachers_load_data)
+                ->execute(); // state, points, agreedterms, statets rely on database defaults.
+
+            // save positions 
+            $positions_load_data = array_map(function ($position) {
+                return [
+                    $position['index'], $position['specialty'], $position['label'], $position['school_type'], $position['prefecture'], $position['ref'], 1
+                ];
+            }, $data['positions']);
+            $positions_load_data_inserted = Yii::$app->db->createCommand()
+                ->batchInsert(Choice::tableName(), ['id', 'specialty', 'position', 'school_type', 'prefecture_id', 'reference', 'count'], $positions_load_data)
+                ->execute(); 
+
+            // save placement preferences 
+            $preference_load_data = array_map(function ($preference) {
+                return [
+                    $preference['prefecture'], $preference['teacher'], $preference['school_type'], $preference['order']
+                ];
+            }, $data['placement_preferences']);
+            $preference_load_data_inserted = Yii::$app->db->createCommand()
+                ->batchInsert(PrefecturesPreference::tableName(), ['prefect_id', 'applicant_id', 'school_type', 'order'], $preference_load_data)
+                ->execute(); // id left auto increment
+
+        } catch (IntegrityException $x) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException('Data feed may containt existing data; db error code: ' . $x->getCode());
         } catch (\Exception $x) {
-            return [
-                'status' => false,
-                'message' => 'Mallformed data feed; ' . $x->errorSummary()
-            ];
+            $transaction->rollBack();
+            throw new BadRequestHttpException('Cannot process data feed; ' . $x->getMessage());
         }
+        $transaction->commit();
 
         return [
             'status' => true,
-            'message' => 'Load action TEST',
-            'raw' => $data
+            'message' => "Load completed ({$prefectures_load_data_inserted} prefectures, {$positions_load_data_inserted} positions, {$teachers_load_data_inserted} applicants, {$preference_load_data_inserted} placement preferences)",
         ];
-        // check for access
-
-        // preliminary check of posted data
-
-        // start be verifying that all previous data is cleared
-
-        // do the actual import
     }
 
     /**
