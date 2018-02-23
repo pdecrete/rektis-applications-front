@@ -8,6 +8,8 @@ use yii\web\ForbiddenHttpException;
 use yii\web\ServerErrorHttpException;
 use app\models\AuditLog;
 use app\models\Application;
+use yii\helpers\Json;
+use yii\base\InvalidArgumentException;
 
 /**
  * BridgeController handles api functionality.
@@ -104,9 +106,21 @@ class BridgeController extends \yii\rest\Controller
      */
     public function actionLoad()
     {
+        // expect to get a JSON data feed (framework parser should not be enabled)
+        // $data = \Yii::$app->request->getRawBody();
+        try {
+            $data = Json::decode(\Yii::$app->request->getRawBody());
+        } catch (\Exception $x) {
+            return [
+                'status' => false,
+                'message' => 'Mallformed data feed; ' . $x->errorSummary()
+            ];
+        }
+
         return [
             'status' => true,
-            'message' => 'Load action TEST'
+            'message' => 'Load action TEST',
+            'raw' => $data
         ];
         // check for access
 
