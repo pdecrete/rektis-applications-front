@@ -12,6 +12,7 @@ use League\Csv\Writer;
 use yii\data\ArrayDataProvider;
 use kartik\mpdf\Pdf;
 use app\models\AuditLog;
+use app\models\ChoiceSearch;
 
 class AdminController extends \yii\web\Controller
 {
@@ -206,6 +207,21 @@ class AdminController extends \yii\web\Controller
         ]);
 
         return $this->render('view-candidates', ['users' => $dataProvider]);
+    }
+
+    /**
+     * Lists all Choice models.
+     * @return mixed
+     */
+    public function actionViewChoices()
+    {
+        $searchModel = new ChoiceSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('view-choices', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionViewDenials()

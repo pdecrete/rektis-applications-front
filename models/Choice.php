@@ -33,13 +33,14 @@ class Choice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['specialty', 'count', 'position', 'reference'], 'required'],
+            [['specialty', 'count', 'position', 'reference', 'prefecture_id'], 'required'],
             [['count', 'school_type'], 'integer'],
             ['school_type', 'in', 'range' => [1, 2]],
             [['reference'], 'string'],
             [['specialty'], 'string', 'max' => 8],
             [['position'], 'string', 'max' => 150],
             [['specialty', 'position'], 'unique', 'targetAttribute' => ['specialty', 'position'], 'message' => 'The combination of Specialty and Position has already been taken.'],
+            [['prefecture_id'], 'exist', 'skipOnError' => true, 'targetClass' => Prefecture::className(), 'targetAttribute' => ['prefecture_id' => 'id']],
         ];
     }
 
@@ -55,6 +56,7 @@ class Choice extends \yii\db\ActiveRecord
             'position' => 'Θέση',
             'school_type' => 'Τύπος σχολικής μονάδας',
             'reference' => 'Αναφορά προγραμματιστή',
+            'prefecture_id' => 'Νομός'
         ];
     }
 
@@ -66,6 +68,13 @@ class Choice extends \yii\db\ActiveRecord
         return $this->hasMany(Application::className(), ['choice_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrefecture()
+    {
+        return $this->hasOne(Prefecture::className(), ['id' => 'prefecture_id']);
+    }
 
     /**
      * @inheritdoc
