@@ -16,6 +16,7 @@ use yii\db\IntegrityException;
 use app\models\Applicant;
 use app\models\Choice;
 use app\models\PrefecturesPreference;
+use app\models\Config;
 
 /**
  * BridgeController handles api functionality.
@@ -28,7 +29,7 @@ use app\models\PrefecturesPreference;
  * should be considered an error status.
  * Upon error, the [message] response parameter should contain a human
  * readable message.
- * When the http status code is 200 AND the [success] response parameter
+ * When the http status code is 200 AND the [status] response parameter
  * is true, the call should be considered as succesfully completed.
  * Upon succes, the [message] response parameter could be empty or null or
  * contain a human readable message.
@@ -95,11 +96,29 @@ class BridgeController extends \yii\rest\Controller
         ];
     }
 
+    /**
+     * Provides service status. 
+     * 
+     * @returns json Returns a json response containing the fields:
+     *      status, true or http status code or error 
+     *      message, possible explanatory message 
+     *      services, array of available services and availability (true or false)
+     */
     public function actionIndex()
     {
+        $enable_data_load = (Config::getConfig('enable_data_load') === 1);
+        $enable_data_unload = (Config::getConfig('enable_data_unload') === 1);
+        $enable_applications = (Config::getConfig('enable_applications') === 1);
+
         return [
             'status' => true,
-            'message' => null
+            'message' => null,
+            'services' => [
+                'applications' => $enable_applications,
+                'load' => $enable_data_load,
+                'clear' => $enable_data_load,
+                'unload' => $enable_data_unload,
+            ]
         ];
     }
 
@@ -167,6 +186,7 @@ class BridgeController extends \yii\rest\Controller
 
         } catch (IntegrityException $x) {
             $transaction->rollBack();
+            // TODO ADD FULL ERROR LOGGING 
             throw new BadRequestHttpException('Data feed may containt existing data; db error code: ' . $x->getCode());
         } catch (\Exception $x) {
             $transaction->rollBack();
@@ -177,6 +197,12 @@ class BridgeController extends \yii\rest\Controller
         return [
             'status' => true,
             'message' => "Load completed ({$prefectures_load_data_inserted} prefectures, {$positions_load_data_inserted} positions, {$teachers_load_data_inserted} applicants, {$preference_load_data_inserted} placement preferences)",
+            'count' => [
+                'prefectures' => $prefectures_load_data_inserted,
+                'positions' => $positions_load_data_inserted,
+                'teachers' => $teachers_load_data_inserted,
+                'placement_preferences' => $preference_load_data_inserted
+            ]
         ];
     }
 
@@ -189,7 +215,7 @@ class BridgeController extends \yii\rest\Controller
     public function actionUnload()
     {
         return [
-            'success' => true,
+            'status' => true,
             'message' => 'Unload action TEST',
             'data' => [
                 'audit_log' => AuditLog::find()->all(),
@@ -213,7 +239,7 @@ class BridgeController extends \yii\rest\Controller
     {
         if (($status = \Yii::$app->adminHelper->clearData()) === true) {
             return [
-                'success' => true,
+                'status' => true,
                 'message' => null
             ];
         } else {
