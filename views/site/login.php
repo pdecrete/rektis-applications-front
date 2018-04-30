@@ -43,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     ?>
 
+    <?php if (\Yii::$app->params['allow-recaptcha']) : ?>
     <?=
     $form->field($model, 'captchavalidation', [
         'template' => "<div class=\"col-lg-offset-1 col-lg-11\">{input} {label}</div>\n<div class=\"col-lg-7 col-lg-offset-1\">{error}</div>",
@@ -51,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
     )->label(false)
 
     ?>
+    <?php endif; ?>
 
     <?=
     $form->field($model, 'rememberMe')->checkbox([
