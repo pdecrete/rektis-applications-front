@@ -12,6 +12,7 @@ use League\Csv\Writer;
 use yii\data\ArrayDataProvider;
 use kartik\mpdf\Pdf;
 use app\models\AuditLog;
+use app\models\ChoiceSearch;
 
 class AdminController extends \yii\web\Controller
 {
@@ -55,6 +56,8 @@ class AdminController extends \yii\web\Controller
     {
         return $this->render('index', [
                 'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1),
+                'enable_data_load' => (\app\models\Config::getConfig('enable_data_load') === 1),
+                'enable_date_unload' => (\app\models\Config::getConfig('enable_data_unload') === 1),
                 'admin' => \Yii::$app->user->identity->isAdmin(),
                 'supervisor' => \Yii::$app->user->identity->isSupervisor()
         ]);
@@ -64,21 +67,10 @@ class AdminController extends \yii\web\Controller
     {
         Yii::trace('Clearing data', 'admin');
 
-        try {
-            \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%prefectures_preference}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%application}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%choice}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%applicant}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%prefecture}}')->execute();
-            \Yii::$app->db->createCommand()->truncateTable('{{%audit_log}}')->execute();
-            \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
-
-            Yii::info('Cleared data', 'admin');
+        if (($status = \Yii::$app->adminHelper->clearData()) === true) {
             Yii::$app->session->addFlash('success', "Ολοκληρώθηκε η εκκαθάριση των στοιχείων.");
-        } catch (\Exception $e) {
-            Yii::error('Data not cleared due to error: ' . $e->getMessage(), 'admin');
-            Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την εκκαθάριση των στοιχείων. <strong>Παρακαλώ ελέγξτε τα στοιχεία!</strong>. Το μύνημα λάθους από τη βάση δεδομένων ήταν: " . $e->getMessage());
+        } else {
+            Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την εκκαθάριση των στοιχείων. <strong>Παρακαλώ ελέγξτε τα στοιχεία!</strong>. Το μύνημα λάθους από τη βάση δεδομένων ήταν: {$status}");
         }
         return $this->redirect(['index']);
     }
@@ -200,15 +192,36 @@ class AdminController extends \yii\web\Controller
     {
         Yii::trace('Candidates view', 'admin');
 
-        $dataProvider = new ArrayDataProvider(['allModels' => Applicant::find()->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all(),
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => Applicant::find()->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all(),
             'pagination' => ['pageSize' => 100],
-            'sort' => ['attributes' => [
-                                        'points'=> [
-                                             'asc' => ['specialty' => SORT_DESC, 'points' => SORT_ASC],
-                                             'desc' => ['specialty' => SORT_ASC, 'points' => SORT_DESC]],
-                                        'lastname', 'firstname', 'fathername', 'vat', 'identity', 'specialty']]]);
+            'sort' => [
+                'attributes' => [
+                    'points'=> [
+                        'asc' => ['specialty' => SORT_DESC, 'points' => SORT_ASC],
+                        'desc' => ['specialty' => SORT_ASC, 'points' => SORT_DESC]
+                    ],
+                    'lastname', 'firstname', 'fathername', 'vat', 'identity', 'specialty'
+                ]
+            ]
+        ]);
 
         return $this->render('view-candidates', ['users' => $dataProvider]);
+    }
+
+    /**
+     * Lists all Choice models.
+     * @return mixed
+     */
+    public function actionViewChoices()
+    {
+        $searchModel = new ChoiceSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('view-choices', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionViewDenials()

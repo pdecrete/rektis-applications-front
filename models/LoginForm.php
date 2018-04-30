@@ -25,15 +25,18 @@ class LoginForm extends Model
      */
     public function rules()
     {
-        return [
+        $rules = [
             // username and password are both required
             [['username', 'password', 'specialty'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
-            ['captchavalidation', ReCaptchaValidator::className(), 'uncheckedMessage' => 'Παρακαλώ επιβεβαιώστε ότι είστε άνθρωπος.']
         ];
+        if (\Yii::$app->params['allow-recaptcha']) {
+            $rules[] = ['captchavalidation', ReCaptchaValidator::className(), 'uncheckedMessage' => 'Παρακαλώ επιβεβαιώστε ότι είστε άνθρωπος.'];
+        }
+        return $rules;
     }
 
     /**

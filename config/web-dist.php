@@ -46,6 +46,9 @@ $config = [
             'siteKey' => 'yourSiteKey',
             'secret' => 'yourSecretKey',
         ],
+        'adminHelper' => [
+            'class' => 'app\components\AdminHelper',
+        ],
     /*
       'urlManager' => [
       'enablePrettyUrl' => true,

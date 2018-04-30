@@ -183,70 +183,84 @@ class ApplicationController extends Controller
         if ($user->state == Applicant::DENIED_TO_APPLY) {
             return $this->redirect(['site/index']);
         }
-        $prefectrs_prefrnc_model = PrefecturesPreference::find()->where(['applicant_id' => $user->id])->orderBy('order')->all();
+        $prefectrs_prefrnc_model = PrefecturesPreference::find()
+            ->joinWith('prefecture') // eager load
+            ->where(['applicant_id' => $user->id])
+            ->orderBy('order')
+            ->all();
         if (count($prefectrs_prefrnc_model) == 0) {
-            Yii::$app->session->addFlash('info', "Δεν υπάρχουν νομοί προτιμήσης.");
+            Yii::$app->session->addFlash('info', "Δεν υπάρχουν καταχωρημένες προτιμήσεις τοποθέτησης σε νομούς.");
             return $this->redirect(['site/index']);
         }
 
-        $prefectrs_choices_model = Choice::classname();
         $models = [];
         $prefectures_choices = [];
-        $counter = 1;
+        $global_counter = 0;
 
         if ($user->applications) { // Edit, if the user has already applied
             foreach ($prefectrs_prefrnc_model as $preference) {
+                $prefecture_name = $preference->getPrefectureName();
                 $userChoices = $user->getApplications()->all();
-                $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
+                $prefectures_choices[$prefecture_name] = $preference->prefect_id;
                 foreach ($userChoices as $userChoice) {
-                    $choice = Choice::findOne($userChoice->choice_id);
+                    $choice = $userChoice->choice; 
                     if ($choice->prefecture_id === $preference->prefect_id) {
-                        $models[$preference->getPrefectureName()][$counter] = $userChoice;
-                        $counter++;
+                        if ($preference->school_type == 0 || ($choice->school_type == $preference->school_type)) {
+                            $models[$prefecture_name][$preference->school_type][$global_counter++] = $userChoice;
+                        }
                     }
                 }
             }
         } else { // Make new application, if the user has not already applied
             foreach ($prefectrs_prefrnc_model as $preference) {
-                $choices = Choice::getChoices($preference->prefect_id, $user->specialty);
-                $prefectures_choices[$preference->getPrefectureName()] = $preference->prefect_id;
+                $prefecture_name = $preference->getPrefectureName();
+                $choices = Choice::getChoices($preference->prefect_id, $user->specialty, $preference->school_type);
+                $prefectures_choices[$prefecture_name] = $preference->prefect_id;
                 foreach ($choices as $choice) {
-                    $models[$preference->getPrefectureName()][$counter] = new Application();
-                    $helper = $models[$preference->getPrefectureName()][$counter];
-                    $helper->applicant_id = $user->id;
-                    $helper->deleted = 0;
-                    $counter++;
+                    $new_application = new Application();
+                    $new_application->applicant_id = $user->id;
+                    $new_application->deleted = 0;
+                    $models[$prefecture_name][$preference->school_type][$global_counter++] = $new_application;
                 }
             }
         }
 
         if (\Yii::$app->request->isPost) {
-            foreach (array_keys($models) as $pr) {
-                Model::loadMultiple($models[$pr], Yii::$app->request->post());
+            $applicable_prefectures = array_keys($models);
+            foreach ($applicable_prefectures as $pr) {
+                foreach ($models[$pr] as $sch_type => $choices) {
+                    Model::loadMultiple($choices, Yii::$app->request->post());
+                }
             }
 
             $order_counter = 1;
-            foreach (array_keys($models) as $pr) {
-                foreach ($models[$pr] as $choice) {
-                    $choice->order = $order_counter++;
+            foreach ($applicable_prefectures as $pr) {
+                foreach ($models[$pr] as $sch_type => $choices) {
+                    foreach ($choices as $choice) {
+                        $choice->order = $order_counter++;
+                    }
                 }
             }
             $models_cnt = $order_counter - 1;
 
             $valid = true;
-            foreach (array_keys($models) as $pr) {
-                if (!Model::validateMultiple($models[$pr])) {
-                    $valid = false;
+            foreach ($applicable_prefectures as $pr) {
+                foreach ($models[$pr] as $sch_type => $choices) {
+                    if (!Model::validateMultiple($choices)) {
+                        $valid = false;
+                    }
                 }
             }
 
             // check unique choices
             $unique_choices_cnt = 0;
-            foreach (array_keys($models) as $pr) {
-                $choices = array_map(function ($m) {
-                    return $m->choice_id;
-                }, $models[$pr]);
-                $unique_choices_cnt += count(array_unique($choices));
+            foreach ($applicable_prefectures as $pr) {
+                foreach ($models[$pr] as $sch_type => $choices) {
+                    $choice_ids = array_map(function ($m) {
+                        return $m->choice_id;
+                    }, $choices);
+                    $unique_choices_cnt += count(array_unique($choice_ids));
+                }
             }
 
             if ($unique_choices_cnt != $models_cnt) {
@@ -259,10 +273,12 @@ class ApplicationController extends Controller
                 $transaction = \Yii::$app->db->beginTransaction();
 
                 try {
-                    foreach (array_keys($models) as $pr) {
-                        foreach ($models[$pr] as $index => $app) {
-                            if ($app->save() === false) {
-                                throw new \Exception();
+                    foreach ($applicable_prefectures as $pr) {
+                        foreach ($models[$pr] as $sch_type => $choices) {
+                            foreach ($choices as $app) {
+                                if ($app->save() === false) {
+                                    throw new \Exception();
+                                }
                             }
                         }
                     }
