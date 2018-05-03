@@ -73,8 +73,8 @@ class Application extends \yii\db\ActiveRecord
             'order',
             'updated',
             'deleted',
-            'applicant',
-            'choice'
+            // 'applicant',
+            // 'choice'
         ];
     }
 
