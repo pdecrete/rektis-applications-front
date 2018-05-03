@@ -61,6 +61,17 @@ class Choice extends \yii\db\ActiveRecord
     }
 
     /**
+     * Fields to be returned in APIs
+     */
+    public function fields()
+    {
+        return [
+            'id',
+            'reference',
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplications()

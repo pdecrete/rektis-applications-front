@@ -214,21 +214,27 @@ class BridgeController extends \yii\rest\Controller
      */
     public function actionUnload()
     {
+        try {
+            $applicants = Applicant::find()->all();
+            $choices = Choice::find()->all();
+            $applications = Application::find()->all();
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException($e->getMessage(), 500);
+        }
+
+        $applicants_count = count($applicants);
+        $choices_count = count($choices);
+        $applications_count = count($applications);
+
         return [
             'status' => true,
-            'message' => 'Unload action TEST',
+            'message' => "Unload completed ({$applicants_count} applicants, {$applications_count} applications, {$choices_count} choices)",
             'data' => [
-                'audit_log' => AuditLog::find()->all(),
-                'applications' => Application::find()->all(),
-                // TODO check data that is returned 
+                'applicants' => $applicants,
+                'choices' => $choices,
+                'applications' => $applications,
             ]
         ];
-
-        // check for access
-
-        // gather data and package
-
-        // send
     }
 
     /**
@@ -243,7 +249,7 @@ class BridgeController extends \yii\rest\Controller
                 'message' => null
             ];
         } else {
-            throw new ServerErrorHttpException($status);
+            throw new ServerErrorHttpException('Clearing was not successful', $status);
         }
     }
 }

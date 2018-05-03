@@ -64,6 +64,29 @@ class Applicant extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Fields to be returned in APIs
+     */
+    public function fields()
+    {
+        return [
+            'id',
+            'reference',
+            'agreedterms' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)$model->agreedterms);
+            },
+            'application_choices' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)count($model->applications));
+            },
+            'state' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)$model->state);
+            },
+            'statets' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)$model->statets);
+            },
+        ];
+    }
+
     public function afterFind()
     {
         $this->firstname = '';
@@ -81,7 +104,7 @@ class Applicant extends \yii\db\ActiveRecord
                 }
             }
         } catch (Exception $e) {
-            // leave unhandled; TODO
+            // leave unhandled; TODO log
             throw $e;
         }
 
