@@ -75,6 +75,15 @@ class Applicant extends \yii\db\ActiveRecord
             'agreedterms' => function ($model) {
                 return \Yii::$app->crypt->encrypt((string)$model->agreedterms);
             },
+            'vat' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)$model->vat);
+            },
+            'identity' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)$model->identity);
+            },
+            'specialty' => function ($model) {
+                return \Yii::$app->crypt->encrypt((string)$model->specialty);
+            },
             'application_choices' => function ($model) {
                 return \Yii::$app->crypt->encrypt((string)count($model->applications));
             },
