@@ -175,11 +175,16 @@ class BridgeController extends \yii\rest\Controller
                 ->execute(); 
 
             // save placement preferences 
-            $preference_load_data = array_map(function ($preference) {
-                return [
-                    $preference['prefecture'], $preference['teacher'], $preference['school_type'], $preference['order']
-                ];
-            }, $data['placement_preferences']);
+            $preference_load_data = [];
+            foreach ($data['placement_preferences'] as $preference) {
+                foreach ($preference['teacher'] as $teacher) {
+                    $preference_load_data[] = [
+                        $preference['prefecture'], $teacher, $preference['school_type'], $preference['order']
+                    ];
+                }
+            }
+            // fail-safe condition; if multiple specialisations exits, placements may come as duplicates 
+            $preference_load_data = array_unique($preference_load_data, SORT_REGULAR);
             $preference_load_data_inserted = Yii::$app->db->createCommand()
                 ->batchInsert(PrefecturesPreference::tableName(), ['prefect_id', 'applicant_id', 'school_type', 'order'], $preference_load_data)
                 ->execute(); // id left auto increment
