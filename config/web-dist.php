@@ -13,6 +13,10 @@ $config = [
         'crypt'
     ],
     'components' => [
+        'session' => [
+            'class' => '\yii\web\Session',
+            'name' => 'pdekritis-adm-applications',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'SpxHFwfYWefgCsiSxJu7AwRjVpc5XtLg',
