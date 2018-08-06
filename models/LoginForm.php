@@ -63,8 +63,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
-            if (!$user || ($this->_user->identity !== null) && (strcasecmp($this->_user->identity, ($this->password)) !== 0) || ($this->_user->identity === null && !$user->validateAdmin($this->password))) {
+            if (!$user || ($this->_user->identity !== null) && (strcasecmp(strtr($this->_user->identity, [' ' => '']), strtr($this->password, [' ' => ''])) !== 0) || ($this->_user->identity === null && !$user->validateAdmin($this->password))) {
                 $this->addError($attribute, 'Λανθασμένα στοιχεία πρόσβασης.');
             }
         }
