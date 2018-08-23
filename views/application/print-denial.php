@@ -17,43 +17,46 @@ foreach ($data as $idx => $userdata):
     }
 
     ?>
-    <br /><br /><br /> 
     <h3 style="text-align: center;"><?= Html::encode($this->title) ?></h3>
-    <table style="border: 1px solid grey; width: 100%;border-spacing: 10px; padding: 5px; background-color: #efefef;">
+    <table class="table table-bordered" style="border-spacing: 10px; padding: 5px; background-color: #efefef;">
+        <tbody>
         <tr>
-            <td colspan="2" style="border-bottom: 1px solid grey;"><h4>Ονοματεπώνυμο: <?= $userdata['user']->firstname ?> <?= $userdata['user']->lastname ?> του <?= $userdata['user']->fathername ?></h4></td>
-        </tr>
-        <tr>
-            <td style="border-bottom: 1px solid grey;"><h4>Α.Φ.Μ.: <?= $userdata['user']->vat ?>&nbsp;&nbsp;&nbsp;Ταυτότητα: <?= $userdata['user']->identity ?></h4></td>
-            <td style="border-bottom: 1px solid grey;"><h4>Ειδικότητα: <?= $userdata['user']->specialty ?></h4></td>
-        </tr>
-        <tr>
-            <td style="border-bottom: 1px solid grey;"><h4>Τηλ: <?= $userdata['user']->phone ?></h4></td>
-            <td style="border-bottom: 1px solid grey;"><h4>E-mail: <?= $userdata['user']->email ?></h4></td>
-        </tr>
-        <tr>
-            <td colspan="2"><h4>Θέμα: Δήλωση Άρνησης Τοποθέτησης Αναπληρωτή/τριας</h4></td>
-        </tr>
+                <td colspan="3"><h4>Ονοματεπώνυμο: <strong><?= $userdata['user']->firstname ?> <?= $userdata['user']->lastname ?></strong> 
+                    του <strong><?= $userdata['user']->fathername ?></strong></h4></td>
+            </tr>
+            <tr>
+                <td><h4>Α.Φ.Μ.: <strong><?= $userdata['user']->vat ?></strong></h4></td>
+                <td><h4>Ταυτότητα: <strong><?= $userdata['user']->identity ?></strong></h4></td>
+                <td><h4>Ειδικότητα: <strong><?= $userdata['user']->specialty ?></strong></h4></td>
+            </tr>
+            <tr>
+                <td><h4>Τηλ: <strong><?= $userdata['user']->phone ?></strong></h4></td>
+                <td colspan="2"><h4>E-mail: <strong><?= $userdata['user']->email ?></strong></h4></td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>Θέμα: <strong>Δήλωση Άρνησης Τοποθέτησης Αναπληρωτή/τριας</strong></h4></td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>Ημερομηνία υποβολής δήλωσης άρνησης τοποθέτησης: 
+                    <?php if ($userdata['user']->statets !== null) : ?>
+                        <strong><?= date("d-m-Y H:i:s", $userdata['user']->statets); ?></strong>
+                    <?php else: ?>
+                        <span class="label label-danger">Δεν εντοπίστηκε</span>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
-    <div class="alert alert-info">
-        Ημερομηνία υποβολής δήλωσης άρνησης τοποθέτησης: 
-        <?php if ($userdata['user']->statets !== null) : ?>
-            <strong><?= date("d-m-Y H:i:s", $userdata['user']->statets); ?></strong>
-        <?php else: ?>
-            <span class="label label-danger">Δεν εντοπίστηκε</span>
-        <?php endif; ?>
+    <div class="row" style="font-size: 1.2em; padding-top: 5em;">
+        <div class="col-xs-12">
+            <?= $info_content ?>
+        </div>
+        <div class="col-xs-6 col-xs-offset-6 text-center">
+            Ο δηλών / Η δηλούσα
+            <br><br><br><br>
+            (υπογραφή)
+        </div>
     </div>
-
-	<br /><br />
-    <table border="0">
-        <tr><td style="font-size:120%;"><?= $info_content ?></td></tr>
-    </table>
-   <table style="font-size:120%;width: 100%; border: none; padding: 15px;">
-        <tr>
-            <td class="col-xs-6">&nbsp;</td>
-            <td  class="col-xs-6 text-center">Ο δηλών / Η δηλούσα<br/><br/><br/><br/>(υπογραφή)</td>
-        </tr>
-    </table>
 
 <?php endforeach; ?>

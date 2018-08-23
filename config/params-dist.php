@@ -25,5 +25,9 @@ return [
 	],
     'crypt-key-file' => __DIR__ . "/path/to/your/key.file",
     'bridge-allowed-ips' => ['127.0.0.*'], // add ips to allow access to web api
-    'allow-recaptcha' => (YII_ENV_DEV ? false : true)
+    'allow-recaptcha' => (YII_ENV_DEV ? false : true),
+    'pdf' => [
+        'marginTop' => 35, // millimeters
+        'marginBottom' => 35
+    ]
 ];

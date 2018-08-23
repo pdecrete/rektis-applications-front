@@ -284,22 +284,27 @@ class AdminController extends \yii\web\Controller
 
         $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
         $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
+        $content = $this->renderPartial('/application/print', ['data' => $data]);
 
-        $content = $this->renderPartial('../application/print', ['data' => $data]);
-        // setup kartik\mpdf\Pdf component
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
-            'filename' => 'aitisi.pdf',
+            'filename' => 'ΑΙΤΗΣΗ-ΔΗΛΩΣΗ.pdf',
             'destination' => Pdf::DEST_DOWNLOAD,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
-            'cssInline' => '.kv-heading-1{font-size:18px}',
-            'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+            'cssInline' => '.kv-heading-1{font-size:16px}',
+            'options' => [
+                'title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης',
+                'defaultheaderline' => 0,
+                'defaultfooterline' => 0
+            ],
+            'marginTop' => Yii::$app->params['pdf']['marginTop'],
+            'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
             ]
         ]);
 
@@ -326,24 +331,30 @@ class AdminController extends \yii\web\Controller
 
         $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
         $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
-        $content = $this->renderPartial('../application/print-denial', [
+        $content = $this->renderPartial('/application/print-denial', [
             'data' => $data,
             'info_content' => \app\models\Page::getPageContent('info_denial')
         ]);
-        // setup kartik\mpdf\Pdf component
+
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
-            'filename' => 'aitisi.pdf',
+            'filename' => 'ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ.pdf',
             'destination' => Pdf::DEST_DOWNLOAD,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
-            'cssInline' => '.kv-heading-1{font-size:18px}',
-            'options' => ['title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης'],
+            'cssInline' => '.kv-heading-1{font-size:16px}',
+            'options' => [
+                'title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης',
+                'defaultheaderline' => 0,
+                'defaultfooterline' => 0
+            ],
+            'marginTop' => Yii::$app->params['pdf']['marginTop'],
+            'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<img src=\'' . $actionlogo . '\'>Σελίδα: {PAGENO} από {nb}'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
             ]
         ]);
 
