@@ -46,14 +46,18 @@ if (!isset($has_applications)) {
                 <h2>Προβολή</h2>
                 <p>Προβάλλετε την αίτηση σας εδώ.</p>
                 <p><?= Html::a('<span class="glyphicon glyphicon-file"></span> Προβολή', Url::to(['application/my-application']), ['class' => 'btn btn-primary']) ?></p>
-                <?php endif; ?>
+            <?php endif; ?>
             </div>
             <div class="col-lg-4">
-            <?php if (!$has_applications) : ?>
+            <?php if ($has_applications) : ?>
+                <h2>Διαγραφή αίτησης</h2>
+                <p>Ακυρώστε την αίτηση - δήλωση διαγράφοντας την οριστικά.</p>
+                <p><?= Html::a('<span class="glyphicon glyphicon-trash"></span> Διαγραφή', Url::to(['application/delete-my-application']), ['class' => 'btn btn-danger']) ?></p>
+            <?php else : ?>
                 <h2>Υποβολή αρνητικής δήλωσης</h2>
                 <p>Υποβάλλετε δήλωση άρνησης πρόσληψης εδώ.</p>
                 <p><?= Html::a('<span class="glyphicon glyphicon-remove"></span> Αρνητική δήλωση', Url::to(['application/request-deny']), ['class' => 'btn btn-primary']) ?></p>
-                <?php endif; ?>
+            <?php endif; ?>
             </div>
         </div>
         <div class="row">
