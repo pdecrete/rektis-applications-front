@@ -7,10 +7,14 @@ use app\models\Choice;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $models app\models\Application[] */
 /* @var $form yii\widgets\ActiveForm */
+
+$data_collect_js = new JsExpression('var collectData = function(params) { return $("#application-form").serialize() + "&term=" + (params.term || ""); };'); 
+$this->registerJs($data_collect_js, View::POS_HEAD);
 
 ?>
 
@@ -63,7 +67,7 @@ use yii\web\JsExpression;
                                         'url' => $url,
                                         'method' => 'POST',
                                         'dataType' => 'json',
-                                        'data' => new JsExpression('function(params) { return $("#application-form").serialize() + "&term=" + (params.term || ""); }'), // TODO make this a reusable function
+                                        'data' => new JsExpression('collectData'),
                                         'delay' => 500,
                                         'cache' => true
                                     ],
