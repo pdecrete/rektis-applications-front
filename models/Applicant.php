@@ -17,6 +17,7 @@ class Applicant extends \yii\db\ActiveRecord
     const DENIED_TO_APPLY = "1";
 
     public $last_submit_str;
+    public $has_submitted; // denote if the applicant has made a submission at some time
     public $state_ts_str;
     /* the following properties should be separated from the model in th final version */
     public $firstname;
@@ -118,10 +119,12 @@ class Applicant extends \yii\db\ActiveRecord
         }
 
         $last_submit_model = AuditLog::find()->withUserId($this->id)->applicationSubmits()->one();
-        if ($last_submit_model !== null) {
-            $this->last_submit_str = "<strong>{$last_submit_model->log_time_str}</strong>";
-        } else {
+        if (empty($last_submit_model)) {
             $this->last_submit_str = '<span class="label label-default">Δεν εντοπίστηκε</span>';
+            $this->has_submitted = false;
+        } else {
+            $this->last_submit_str = "<strong>{$last_submit_model->log_time_str}</strong>";
+            $this->has_submitted = true; 
         }
 
         if (empty($this->statets)) {

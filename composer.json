@@ -23,7 +23,8 @@
         "kartik-v/yii2-mpdf": "*",
         "defuse/php-encryption": "^2.1",
         "himiklab/yii2-recaptcha-widget": "*",
-        "vova07/yii2-imperavi-widget": "*"
+        "vova07/yii2-imperavi-widget": "*",
+        "kartik-v/yii2-widget-select2": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

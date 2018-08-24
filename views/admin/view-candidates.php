@@ -48,7 +48,12 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'last_submit_str',
-            'format' => 'html'
+            'format' => 'html',
+            'value' => function ($m) { 
+                return (count($m->applications) > 0) 
+                    ? $m->last_submit_str 
+                    : '<span class="text-danger">' . $m->last_submit_str . '</span>' . ($m->has_submitted ? '<br><span class="label label-danger">Έχει ακυρωθεί</span>' : ''); 
+            },
         ],
         [
             'attribute' => 'state_ts_str',

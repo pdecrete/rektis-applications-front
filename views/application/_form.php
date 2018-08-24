@@ -4,10 +4,17 @@ use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Choice;
+use yii\helpers\Url;
+use kartik\select2\Select2;
+use yii\web\JsExpression;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $models app\models\Application[] */
 /* @var $form yii\widgets\ActiveForm */
+
+$data_collect_js = new JsExpression('var collectData = function(params) { return $("#application-form").serialize() + "&term=" + (params.term || ""); };'); 
+$this->registerJs($data_collect_js, View::POS_HEAD);
 
 ?>
 
@@ -21,33 +28,70 @@ use app\models\Choice;
     <div class="container-items">
         <div class="panel-group">
             <?php foreach ($models as $prefect_name => $st_choices): ?>
-                <div class="panel panel-info">
-                    <div class="panel-heading"><?php echo 'ΝΟΜΟΣ ', $prefect_name ?></div>
-                    <div class="panel-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <?php echo 'ΝΟΜΟΣ ', $prefect_name ?>
+                </div>
+                <div class="panel-body">
                     <?php foreach ($st_choices as $idx_school_type => $choices): ?>
                         <?php if ($idx_school_type > 0): ?>
-                            <div class="well well-sm" role="alert"><?php echo Choice::schooltypeLabel($idx_school_type); ?></div>
+                        <div class="well well-sm" role="alert">
+                            <?php echo Choice::schooltypeLabel($idx_school_type); ?>
+                        </div>
                         <?php endif; ?>
                         <?php
-                        $options = ArrayHelper::map(Choice::getChoices($prefectures_choices[$prefect_name], $user->specialty, $idx_school_type), 'id', 'position');
+                        $url = Url::to([
+                            'choice/select-choices', 
+                            'prefecture' => $prefectures_choices[$prefect_name],
+                            'specialty' => $user->specialty,
+                            'school_type' => $idx_school_type
+                        ]);
+
                         $counter = 1;
                         foreach ($choices as $index => $choice) {
-                            echo $form->field($choice, "[{$index}]choice_id")->dropdownList($options, ['prompt' => 'Επιλέξτε...'])->label('Επιλογή ' . $counter++ . 'ου κενού');
+                            $selected_position = empty($choice->choice) ? '' : $choice->choice->position;
+                            echo $form->field($choice, "[{$index}]choice_id")->label('Επιλογή ' . $counter++ . 'ου κενού')->widget(Select2::classname(), [
+                                'initValueText' => $selected_position,
+                                'options' => [
+                                    'placeholder' => 'Επιλέξτε...'
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                    'minimumInputLength' => 0,
+                                    'language' => [
+                                        'errorLoading' => new JsExpression("function () { return 'Αναμονή για αποτελέσματα...'; }"),
+                                        'searching' => new JsExpression("function () { return 'Αναζήτηση...'; }"),
+                                        'noResults' => new JsExpression("function () { return 'Κανένα αποτέλεσμα.'; }"),
+                                    ],
+                                    'ajax' => [
+                                        'url' => $url,
+                                        'method' => 'POST',
+                                        'dataType' => 'json',
+                                        'data' => new JsExpression('collectData'),
+                                        'delay' => 500,
+                                        'cache' => true
+                                    ],
+                                    'templateResult' => new JsExpression('function (res) { return res.text; }'),
+                                    'templateSelection' => new JsExpression('function (res) { return res.text; }'),
+                                ],
+                            ])->hint('');
+
                             if (!$choice->isNewRecord) {
                                 echo $form->field($choice, "[{$index}]id")->hiddenInput()->label(false);
                             }
                         }
-
                         ?>
                     <?php endforeach; ?>
-                    </div>
                 </div>
+            </div>
             <?php endforeach; ?>
         </div>
     </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Υποβολή αίτησης', ['class' => 'btn btn-success btn-lg pull-right']) ?>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <?= Html::submitButton('<span class="glyphicon glyphicon-floppy-disk"></span> Υποβολή αίτησης', ['class' => 'btn btn-success btn-lg']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

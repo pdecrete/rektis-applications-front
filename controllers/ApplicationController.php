@@ -39,6 +39,8 @@ class ApplicationController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'my-delete' => ['POST'],
+                    'recall-deny' => ['POST']
                 ],
             ],
             'access' => [
@@ -53,7 +55,7 @@ class ApplicationController extends Controller
                         }
                     ],
                     [
-                        'actions' => ['apply', 'request-deny', 'deny', 'request-agree', 'terms-agree', 'print-denial'], // 'delete-my-application', 'my-delete'],
+                        'actions' => ['apply', 'request-deny', 'deny', 'recall-deny', 'request-agree', 'terms-agree', 'print-denial', 'delete-my-application', 'my-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -316,29 +318,44 @@ class ApplicationController extends Controller
 
     public function actionDeleteMyApplication()
     {
-        throw new GoneHttpException();
-        /*
-          $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-          // if user has made no choices, forward to index
-          if (count($user->applications) == 0) {
-          Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
-          return $this->redirect(['site/index']);
-          }
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+        if ($user->state == Applicant::DENIED_TO_APPLY) {
+            return $this->redirect(['site/index']);
+        }
 
-          return $this->render('delete_my_application');
-         */
+        // if user has made no choices, forward to index
+        if (count($user->applications) == 0) {
+            Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
+            return $this->redirect(['site/index']);
+        }
+
+        Yii::info('User application check for deletion', 'user.application.checkdelete');
+        return $this->render('delete_my_application');
     }
 
     public function actionMyDelete()
     {
-        throw new GoneHttpException();
-        /*
-          $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
-          Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
+        $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
+        if ($user->state == Applicant::DENIED_TO_APPLY) {
+            return $this->redirect(['site/index']);
+        }
 
-          Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");
-          return $this->redirect(['site/index']);
-         */
+        $applications_count = count($user->applications);
+        if ($applications_count == 0) {
+            Yii::$app->session->addFlash('info', "Δεν υπάρχει αποθηκευμένη αίτηση");
+            return $this->redirect(['site/index']);
+        }
+
+        $updated = Application::updateAll(['deleted' => 1], ['applicant_id' => $user->id]);
+        if ($updated == $applications_count) {
+            Yii::$app->session->addFlash('info', "Η αίτηση έχει διαγραφεί");
+            Yii::info('User application deletion', 'user.application.delete');
+        } else {
+            Yii::$app->session->addFlash('danger', "Η αίτηση φαίνεται να μην έχει διαγραφεί οριστικά. Παρακαλώ επικοινωνήστε με το διαχειριστή.");
+            Yii::error("User application deletion reports {$updated} out of {$applications_count} updates", 'user.application.delete');
+        }
+
+        return $this->redirect(['site/index']);
     }
 
     /**
@@ -383,6 +400,29 @@ class ApplicationController extends Controller
         } catch (\Exception $nse) {
             Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την αποθήκευση της επιλογής σας. Παρακαλώ προσπαθήστε ξανά.");
             Yii::error('User deny application error', 'user.deny');
+        }
+        return $this->redirect(['site/index']);
+    }
+
+    public function actionRecallDeny()
+    {
+        $user = Applicant::findOne(\Yii::$app->user->getIdentity()->id);
+        if ($user->state != Applicant::DENIED_TO_APPLY) {
+            Yii::$app->session->addFlash('info', "Δεν υπάρχει αρνητική δήλωση");
+            return $this->redirect(['site/index']);
+        }
+
+        $user->state = 0;
+        $user->statets = null;
+        try {
+            if (!$user->save()) {
+                throw new \Exception();
+            }
+            Yii::$app->session->addFlash('info', "Πραγματοποιήθηκε ακύρωση της αρνητικής δήλωσης.");
+            Yii::info('User recall deny application', 'user.deny.recall');
+        } catch (\Exception $nse) {
+            Yii::$app->session->addFlash('danger', "Προέκυψε σφάλμα κατά την ακύρωση της αρνητικής δήλωσης. Παρακαλώ προσπαθήστε ξανά.");
+            Yii::error('User deny application error', 'user.deny.recall');
         }
         return $this->redirect(['site/index']);
     }

@@ -99,15 +99,29 @@ class Choice extends \yii\db\ActiveRecord
     /**
      * Get a list of all choices matching the denoted filters.
      * 
+     * @param int $prefecture_id
+     * @param string $specialty
+     * @param int $filter_school_type If not 0, used to filter school type.
+     * @param string $filter_name Is set, require its value to be part of the position field.
+     * @param int[] $filter_exclude_ids If set, EXCLUDES specified ids. 
+     * @param boolean $get_query If true, return only the query object and not the data; If false, returns the activerecords result set.
+     * @return ActiveQuery|ActiveRecord[]
      */
-    public static function getChoices($prefecture_id, $specialty, $filter_school_type = 0)
+    public static function getChoices($prefecture_id, $specialty, $filter_school_type = 0, $filter_name = null, $filter_exclude_ids = null, $get_query = false)
     {
         $aq = static::find()->where(['prefecture_id' => $prefecture_id, 'specialty' => $specialty]);
         if (intval($filter_school_type) !== 0) {
             $aq->andWhere(['school_type' => $filter_school_type])
                 ->orderBy(['school_type' => SORT_ASC]);
         }
-        return $aq->all();
+        if (!empty($filter_name)) {
+            $aq->andWhere(['like', 'position', $filter_name])
+                ->orderBy(['position' => SORT_ASC]);
+        }
+        if (!empty($filter_exclude_ids)) {
+            $aq->andWhere(['not', ['id' => $filter_exclude_ids]]);
+        }
+        return ($get_query === false) ? $aq->all() : $aq;
     }
 
     public static function schooltypeLabel($school_type)

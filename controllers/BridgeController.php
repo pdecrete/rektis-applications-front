@@ -222,7 +222,9 @@ class BridgeController extends \yii\rest\Controller
         try {
             $applicants = Applicant::find()->all();
             $choices = Choice::find()->all();
-            $applications = Application::find()->all();
+            $applications = Application::find()
+                ->andWhere('deleted=0')
+                ->all();
         } catch (\Exception $e) {
             throw new ServerErrorHttpException($e->getMessage(), 500);
         }
