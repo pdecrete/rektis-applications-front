@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php if ($enable_applications === true) : ?>
             <?php //= Html::a('Διαγραφή', ['delete-my-application'], ['class' => 'pull-right btn btn-danger']);?>
         <?php endif; ?>
-        <?= Html::a('Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
+        <?= Html::a('<span class="glyphicon glyphicon-save-file"></span> Εκτύπωση', ['my-application', 'printMode' => '1'], ['class' => 'pull-right btn btn-primary']) ?>
     </div>
 
 

@@ -7,7 +7,6 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-// use app\models\ContactForm;
 use yii\web\GoneHttpException;
 use app\models\Applicant;
 
@@ -49,10 +48,6 @@ class SiteController extends Controller
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-//            'captcha' => [
-//                'class' => 'yii\captcha\CaptchaAction',
-//                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-//            ],
         ];
     }
 
@@ -69,7 +64,7 @@ class SiteController extends Controller
         } else {
             if (\Yii::$app->user->identity->isAdmin() ||
                 \Yii::$app->user->identity->isSupervisor()) {
-                    return $this->redirect(['admin/index']);
+                return $this->redirect(['admin/index']);
             } else {
                 $user = Applicant::findOne(['vat' => \Yii::$app->user->getIdentity()->vat, 'specialty' => \Yii::$app->user->getIdentity()->specialty]);
                 if ($user->state == Applicant::DENIED_TO_APPLY) {
@@ -79,7 +74,8 @@ class SiteController extends Controller
                 }
 
                 return $this->render('index', [
-                        'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
+                    'has_applications' => !empty($user->applications),
+                    'enable_applications' => (\app\models\Config::getConfig('enable_applications') === 1)
                 ]);
             }
         }
@@ -134,16 +130,6 @@ class SiteController extends Controller
     public function actionContact()
     {
         throw new GoneHttpException();
-
-        //        $model = new ContactForm();
-//        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-//            Yii::$app->session->setFlash('contactFormSubmitted');
-//
-//            return $this->refresh();
-//        }
-//        return $this->render('contact', [
-//                'model' => $model,
-//        ]);
     }
 
     /**
@@ -155,7 +141,7 @@ class SiteController extends Controller
     {
         Yii::trace('About page display');
         return $this->render('about', [
-                'information' => \app\models\Page::getPageContent('about')
+            'information' => \app\models\Page::getPageContent('about')
         ]);
     }
 }

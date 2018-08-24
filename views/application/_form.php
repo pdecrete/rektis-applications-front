@@ -88,8 +88,10 @@ $this->registerJs($data_collect_js, View::POS_HEAD);
         </div>
     </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Υποβολή αίτησης', ['class' => 'btn btn-success btn-lg pull-right']) ?>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <?= Html::submitButton('<span class="glyphicon glyphicon-floppy-disk"></span> Υποβολή αίτησης', ['class' => 'btn btn-success btn-lg']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
