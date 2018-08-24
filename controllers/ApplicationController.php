@@ -40,6 +40,7 @@ class ApplicationController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'my-delete' => ['POST'],
+                    'recall-deny' => ['POST']
                 ],
             ],
             'access' => [
