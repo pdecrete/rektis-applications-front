@@ -270,7 +270,8 @@ class AdminController extends \yii\web\Controller
             }
 
             $provider = new \yii\data\ArrayDataProvider([
-                'allModels' => $choicesArray
+                'allModels' => $choicesArray,
+                'pagination' => false
             ]);
 
 

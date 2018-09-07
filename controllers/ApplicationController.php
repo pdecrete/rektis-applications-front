@@ -126,7 +126,8 @@ class ApplicationController extends Controller
         }
 
         $provider = new \yii\data\ArrayDataProvider([
-            'allModels' => $choicesArray
+            'allModels' => $choicesArray,
+            'pagination' => false
         ]);
 
         // submit ts
