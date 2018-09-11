@@ -240,6 +240,7 @@ class AdminController extends \yii\web\Controller
     public function actionPrintApplications($applicantId = null)
     {
         Yii::trace('Application print: ' . ($applicantId === null ? "ALL" : "for {$applicantId}"), 'admin');
+        ini_set("pcre.backtrack_limit", "5000000");
 
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
             $users = [Applicant::findOne(['id' => $applicantId])];
@@ -314,6 +315,7 @@ class AdminController extends \yii\web\Controller
 
     public function actionPrintDenials($applicantId = null)
     {
+        ini_set("pcre.backtrack_limit", "5000000");
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
             $users = [Applicant::findOne(['id' => $applicantId])];
         } else {
