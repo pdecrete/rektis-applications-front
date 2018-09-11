@@ -17,6 +17,10 @@ foreach ($data as $idx => $userdata):
     }
 
     ?>
+    <htmlpagefooter name="Footer<?php echo $idx; ?>">
+        <p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb} :: <?php echo $userdata['user']->firstname, ' ', $userdata['user']->lastname; ?><br><img src="<?php echo $actionlogo; ?>"></p>
+    </htmlpagefooter>
+    <sethtmlpagefooter name="Footer<?php echo $idx; ?>" value="on" />
     <h3 style="text-align: center;"><?= Html::encode($this->title) ?></h3>
     <table class="table table-bordered" style="border-spacing: 10px; padding: 5px; background-color: #efefef;">
         <tbody>

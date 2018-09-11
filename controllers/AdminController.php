@@ -242,12 +242,15 @@ class AdminController extends \yii\web\Controller
         Yii::trace('Application print: ' . ($applicantId === null ? "ALL" : "for {$applicantId}"), 'admin');
         ini_set("pcre.backtrack_limit", "5000000");
 
+        $output_filename = 'ΑΙΤΗΣΗ-ΔΗΛΩΣΗ.pdf';
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
             $users = [Applicant::findOne(['id' => $applicantId])];
+            $output_filename = sprintf("ΑΙΤΗΣΗ-ΔΗΛΩΣΗ-%s.pdf", $users[0]->getFilenameLabel());
         } else {
             $users = Applicant::find()->joinWith(['applications' => function (\yii\db\ActiveQuery $query) {
                 $query->andWhere(['deleted' => 0])->count() > 0;
             }])->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])->all();
+            $output_filename = 'ΑΙΤΗΣΗ-ΔΗΛΩΣΗ-ΟΛΕΣ.pdf';
         }
 
         $data = [];
@@ -286,13 +289,16 @@ class AdminController extends \yii\web\Controller
 
         $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
         $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
-        $content = $this->renderPartial('/application/print', ['data' => $data]);
+        $content = $this->renderPartial('/application/print', [
+            'data' => $data, 
+            'actionlogo' => $actionlogo
+        ]);
 
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
-            'filename' => 'ΑΙΤΗΣΗ-ΔΗΛΩΣΗ.pdf',
+            'filename' => $output_filename,
             'destination' => Pdf::DEST_DOWNLOAD,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
@@ -306,7 +312,7 @@ class AdminController extends \yii\web\Controller
             'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'], // leave it as failsafe, but it will be altered in view
             ]
         ]);
 
@@ -316,10 +322,14 @@ class AdminController extends \yii\web\Controller
     public function actionPrintDenials($applicantId = null)
     {
         ini_set("pcre.backtrack_limit", "5000000");
+
+        $output_filename = 'ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ.pdf';
         if (isset($applicantId) && is_numeric($applicantId) && intval($applicantId) > 0) {
             $users = [Applicant::findOne(['id' => $applicantId])];
+            $output_filename = sprintf("ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ-%s.pdf", $users[0]->getFilenameLabel());
         } else {
             $users = Applicant::find()->where(['state' => 1])->all();
+            $output_filename = 'ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ-ΟΛΕΣ.pdf';
         }
         if (count($users) == 0) {
             Yii::$app->session->addFlash('info', "Δεν εντοπίστηκε καμία/κανένας αιτούσα/αιτών και καμία ενεργή αίτηση.");
@@ -343,7 +353,7 @@ class AdminController extends \yii\web\Controller
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
-            'filename' => 'ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ.pdf',
+            'filename' => $output_filename,
             'destination' => Pdf::DEST_DOWNLOAD,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',

@@ -138,18 +138,20 @@ class ApplicationController extends Controller
             $data[0]['user'] = $user;
             $data[0]['provider'] = $provider;
             $data[0]['last_submit_model'] = $last_submit_model;
-            $content = $this->renderPartial('print', [
-                'data' => $data,
-            ]);
 
             $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
             $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
+
+            $content = $this->renderPartial('print', [
+                'data' => $data,
+                'actionlogo' => $actionlogo
+            ]);
 
             $pdf = new Pdf([
                 'mode' => Pdf::MODE_UTF8,
                 'format' => Pdf::FORMAT_A4,
                 'orientation' => Pdf::ORIENT_PORTRAIT,
-                'filename' => 'ΑΙΤΗΣΗ-ΔΗΛΩΣΗ.pdf',
+                'filename' => sprintf("ΑΙΤΗΣΗ-ΔΗΛΩΣΗ-%s.pdf", $user->getFilenameLabel()),
                 'destination' => Pdf::DEST_DOWNLOAD,
                 'content' => $content,
                 'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
@@ -163,7 +165,7 @@ class ApplicationController extends Controller
                 'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
                 'methods' => [
                     'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                    'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+                    'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'], // leave it as failsafe, but it will be altered in view
                 ]
             ]);
             Yii::info('Generate PDF file for application', 'user.application');
@@ -444,7 +446,7 @@ class ApplicationController extends Controller
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
-            'filename' => 'ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ.pdf',
+            'filename' => sprintf("ΔΗΛΩΣΗ-ΑΡΝΗΣΗΣ-ΤΟΠΟΘΕΤΗΣΗΣ-%s.pdf", $user->getFilenameLabel()),
             'destination' => Pdf::DEST_DOWNLOAD,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
