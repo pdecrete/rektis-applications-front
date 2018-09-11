@@ -41,7 +41,11 @@ AppAsset::register($this);
                     ['label' => 'Διαχείριση', 'url' => ['/admin/index'], 
 					 'visible' => (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin())
 					],
-                    ['label' => 'Πληροφορίες', 'url' => ['/site/about']],
+                    [
+                        'label' => 'Πληροφορίες', 
+                        'url' => ['/site/about'],
+                        'visible' => (1 === \app\models\Config::getConfig('enable_applications'))
+                    ],
                     Yii::$app->user->isGuest ? (
                         ['label' => 'Σύνδεση', 'url' => ['/site/login']]
                         ) : (

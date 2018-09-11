@@ -139,6 +139,11 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
+        if (0 === \app\models\Config::getConfig('enable_applications')) {
+            Yii::$app->session->addFlash('info', "Οι πληροφορίες είναι διαθέσιμες ταυτόχρονα με την ενεργοποίηση των αιτήσεων.");
+            return $this->goHome();
+        }
+
         Yii::trace('About page display');
         return $this->render('about', [
             'information' => \app\models\Page::getPageContent('about')
