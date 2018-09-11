@@ -138,12 +138,14 @@ class ApplicationController extends Controller
             $data[0]['user'] = $user;
             $data[0]['provider'] = $provider;
             $data[0]['last_submit_model'] = $last_submit_model;
-            $content = $this->renderPartial('print', [
-                'data' => $data,
-            ]);
 
             $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
             $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
+
+            $content = $this->renderPartial('print', [
+                'data' => $data,
+                'actionlogo' => $actionlogo
+            ]);
 
             $pdf = new Pdf([
                 'mode' => Pdf::MODE_UTF8,
@@ -163,7 +165,7 @@ class ApplicationController extends Controller
                 'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
                 'methods' => [
                     'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                    'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+                    'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'], // leave it as failsafe, but it will be altered in view
                 ]
             ]);
             Yii::info('Generate PDF file for application', 'user.application');

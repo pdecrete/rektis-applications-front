@@ -289,7 +289,10 @@ class AdminController extends \yii\web\Controller
 
         $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
         $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
-        $content = $this->renderPartial('/application/print', ['data' => $data]);
+        $content = $this->renderPartial('/application/print', [
+            'data' => $data, 
+            'actionlogo' => $actionlogo
+        ]);
 
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8,
@@ -309,7 +312,7 @@ class AdminController extends \yii\web\Controller
             'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'], // leave it as failsafe, but it will be altered in view
             ]
         ]);
 
