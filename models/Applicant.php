@@ -15,6 +15,8 @@ namespace app\models;
 class Applicant extends \yii\db\ActiveRecord
 {
     const DENIED_TO_APPLY = "1";
+    const SANITIZE_FILENAME_PATTERN = '/[^\wΑ-Ζα-ζ\s\d\.\-_,]/';
+
 
     public $last_submit_str;
     public $has_submitted; // denote if the applicant has made a submission at some time
@@ -132,6 +134,12 @@ class Applicant extends \yii\db\ActiveRecord
         } else {
             $this->state_ts_str =  date("d-m-Y H:i:s", $this->statets);
         }
+    }
+
+    public function getFilenameLabel()
+    {
+        $label = "{$this->lastname}-{$this->firstname}-{$this->specialty}";
+        return "" . preg_replace(self::SANITIZE_FILENAME_PATTERN, "-", $label);
     }
 
     /**
