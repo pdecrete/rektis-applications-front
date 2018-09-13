@@ -33,7 +33,7 @@ class AdminController extends \yii\web\Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'overview', 'view-candidates', 'view-applications', 'print-applications', 'view-denials', 'print-denials'],
+                        'actions' => ['index', 'overview', 'view-candidates', 'view-applications', 'print-applications', 'view-denials', 'print-denials', 'print-no-application-candidates'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -167,6 +167,57 @@ class AdminController extends \yii\web\Controller
         $csv->insertAll($exported_data);
         $csv->output('ΑΙΤΗΣΕΙΣ-' . date('Y-m-d') . '.csv');
         \Yii::$app->end();
+    }
+
+    public function actionPrintNoApplicationCandidates()
+    {
+        Yii::trace('No application candidates print', 'admin');
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => Applicant::find()
+                ->andWhere(['state' => 0])
+                ->joinWith([
+                    'applications' => function (\yii\db\ActiveQuery $query) {
+                        $query->andWhere([Application::tableName() . '.[[id]]' => null]);
+                    }
+                ])
+                ->orderBy(['specialty' => SORT_ASC, 'points' => SORT_DESC])
+                ->all(),
+            'pagination' => false
+        ]);
+
+        $actionlogo = "file:///" . realpath(Yii::getAlias('@images/logo.jpg'));
+        $pdelogo = "file:///" . realpath(Yii::getAlias('@images/pdelogo.jpg'));
+        $content = $this->renderPartial('print-no-applications', [
+            'dataProvider' => $dataProvider,
+            'actionlogo' => $actionlogo
+        ]);
+
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'filename' => "ΧΩΡΙΣ_ΑΙΤΗΣΗ.pdf",
+            'destination' => Pdf::DEST_DOWNLOAD,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:16px}',
+            'options' => [
+                'title' => 'Περιφερειακή Διεύθυνση Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης Κρήτης',
+                'defaultheaderline' => 0,
+                'defaultfooterline' => 0
+            ],
+            'marginTop' => Yii::$app->params['pdf']['marginTop'],
+            'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
+            'methods' => [
+                'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+            ]
+        ]);
+
+        return $pdf->render();
+
+        // return $this->render('view-no-applications', ['users' => $dataProvider]);
     }
 
     public function actionViewApplications()

@@ -70,6 +70,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <hr/>
                         <p>
+                            <?= Html::a(Html::icon('print') . ' Χωρίς αίτηση', Url::to(['admin/print-no-application-candidates']), ['class' => 'btn btn-info', 'data-method' => 'POST']) ?>
+                        </p>
+                        <p>Η λειτουργία αυτή εκτυπώνει τα στοιχεία των υποψήφιων εκπαιδευτικών που <strong>δεν</strong> έχουν 
+                            υποβάλει αίτηση-δήλωση ούτε δήλωση άρνησης τοποθέτησης.</p>
+
+                        <hr/>
+                        <p>
                             <?= Html::a(Html::icon('list') . ' Κενά', Url::to(['view-choices']), ['class' => 'btn btn-primary']) ?>
                         </p>
                         <p>Προβολή καταχωρημένων κενών για τις δηλώσεις.</p>
