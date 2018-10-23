@@ -30,6 +30,7 @@ class LoginForm extends Model
             [['username', 'password', 'specialty'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
+            ['rememberMe', 'default', 'value' => 0],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
