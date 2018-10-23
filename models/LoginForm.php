@@ -63,7 +63,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || ($this->_user->identity !== null) && (strcasecmp(strtr($this->_user->identity, [' ' => '']), strtr($this->password, [' ' => ''])) !== 0) || ($this->_user->identity === null && !$user->validateAdmin($this->password))) {
+            if (!$user || (($this->_user->identity !== null) && (strcasecmp(strtr($this->_user->identity, [' ' => '']), strtr($this->password, [' ' => ''])) !== 0)) || ($this->_user->identity === null && !$user->validateAdmin($this->password))) {
                 $this->addError($attribute, 'Λανθασμένα στοιχεία πρόσβασης.');
             }
         }
@@ -76,7 +76,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            $tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $tmp = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 2 : 0);
             if ($tmp) {
                 Yii::info('Successful login', 'user.login');
             } else {
