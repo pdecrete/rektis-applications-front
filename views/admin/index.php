@@ -2,6 +2,7 @@
 
 use yii\bootstrap\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 
@@ -80,6 +81,30 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::a(Html::icon('list') . ' Κενά', Url::to(['view-choices']), ['class' => 'btn btn-primary']) ?>
                         </p>
                         <p>Προβολή καταχωρημένων κενών για τις δηλώσεις.</p>
+
+                        <hr/>
+                        <?php if ($admin) : ?>
+                        <p>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή περιοχών από CSV', Url::to(['admin/import-prefectures']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                        </p>
+                        <?php endif; ?>
+                        <?php if ($admin) : ?>
+                        <p>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή κενών από CSV', Url::to(['admin/import-choices']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                        </p>
+                        <?php endif; ?>
+                        <?php if ($admin) : ?>
+                        <p>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή αναπληρωτών από CSV', Url::to(['admin/import-teachers']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                        </p>
+                        <?php endif; ?>
+                        <?php if ($admin) : ?>
+                        <p>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή προτιμήσεων από CSV', Url::to(['admin/import-preferences']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                        </p>
+                        <p>Οι παραπάνω λειτουργίες γεμίζουν τους 4 βασικούς πίνακες του frontend από .csv του backend για τη δυνατότητα υποβολής αιτήσεων.</p>
+                        <?php endif; ?>
+                        
 
                     </div>
                 </div>
