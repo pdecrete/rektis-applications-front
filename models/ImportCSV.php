@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
-class ApplicantImport extends Model{
+class ImportCSV extends Model{
     public $file;
     
     public function rules(){
