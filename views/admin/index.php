@@ -85,22 +85,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         <hr/>
                         <?php if ($admin) : ?>
                         <p>
-                            <?= Html::a(Html::icon('save') . ' Εισαγωγή περιοχών από CSV', Url::to(['admin/import-prefectures']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή περιοχών από CSV', Url::to(['admin/ImportCSV']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
                         </p>
                         <?php endif; ?>
                         <?php if ($admin) : ?>
                         <p>
-                            <?= Html::a(Html::icon('save') . ' Εισαγωγή κενών από CSV', Url::to(['admin/import-choices']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή κενών από CSV', Url::to(['admin/ImportCSV']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
                         </p>
                         <?php endif; ?>
                         <?php if ($admin) : ?>
                         <p>
-                            <?= Html::a(Html::icon('save') . ' Εισαγωγή αναπληρωτών από CSV', Url::to(['admin/import-teachers']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή αναπληρωτών από CSV', Url::to(['admin/ImportCSV']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
                         </p>
                         <?php endif; ?>
                         <?php if ($admin) : ?>
                         <p>
-                            <?= Html::a(Html::icon('save') . ' Εισαγωγή προτιμήσεων από CSV', Url::to(['admin/import-preferences']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
+                            <?= Html::a(Html::icon('save') . ' Εισαγωγή προτιμήσεων από CSV', Url::to(['admin/ImportCSV']), ['class' => 'btn btn-primary', 'data-method' => 'POST']) ?>
                         </p>
                         <p>Οι παραπάνω λειτουργίες γεμίζουν τους 4 βασικούς πίνακες του frontend από .csv του backend για τη δυνατότητα υποβολής αιτήσεων.</p>
                         <?php endif; ?>
