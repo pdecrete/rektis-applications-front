@@ -4,10 +4,16 @@ namespace app\controllers;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 use app\models\Application;
 use app\models\Applicant;
 use app\models\Choice;
 use app\models\Prefecture;
+use app\models\PrefectureImport;
+use app\models\ChoiceImport;
+use app\models\ApplicantImport;
+use app\models\PrefecturesPreference;
+use app\models\PrefecturesPreferenceImport;
 use League\Csv\Writer;
 use yii\data\ArrayDataProvider;
 use kartik\mpdf\Pdf;
@@ -169,6 +175,186 @@ class AdminController extends \yii\web\Controller
         \Yii::$app->end();
     }
 
+    public function actionImportPrefectures()
+    {
+        Yii::trace('Applications import prefectures from CSV', 'admin');
+        $model = new \app\models\PrefectureImport;
+
+        if($model->load(Yii::$app->request->post())){
+            $file = UploadedFile::getInstance($model,'file');
+            $filename = 'Data.'.$file->extension;
+            $upload = $file->saveAs('uploads/'.$filename);
+            if($upload){
+                define('CSV_PATH','uploads/');
+                $csv_file = CSV_PATH . $filename;
+                $filecsv = file($csv_file);
+                print_r($filecsv);
+                $x = 1;
+                foreach($filecsv as $data){
+                    if ($x++ != 1) {
+                    $modelnew = new Prefecture;
+                    $row = explode(",",$data);
+                    $index = $row[0];
+                    $region = $row[1];
+                    $pref = $row[2];
+                    $ref = $row[3];
+                    $modelnew->id = $index;
+                    $modelnew->region = str_replace('"', '', $region);
+                    $modelnew->prefecture = str_replace('"', '', $pref);
+                    $modelnew->reference = $ref;
+                    $modelnew->save(false);
+                    }
+                }
+                unlink('uploads/'.$filename);
+                return $this->redirect(['index']);
+            }
+        }else{
+            return $this->render('ImportPrefectures',['model'=>$model]);
+        }
+    }
+    
+    public function actionImportChoices()
+    {
+        Yii::trace('Applications import positions from CSV', 'admin');    
+        $model = new ChoiceImport();
+        \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
+        if($model->load(Yii::$app->request->post())){
+            $file = UploadedFile::getInstance($model,'file');
+            $filename = 'Data.'.$file->extension;
+            $upload = $file->saveAs('uploads/'.$filename);
+            if($upload){
+                define('CSV_PATH','uploads/');
+                $csv_file = CSV_PATH . $filename;
+                $filecsv = file($csv_file);
+                //print_r($filecsv);
+                $x = 1;
+                foreach($filecsv as $data){
+                    if ($x++ != 1) {
+                    $modelnew = new Choice();
+                    $row = explode(",",$data);
+                    $index = $row[0];
+                    $position = $row[1];
+                    $specialty = $row[2];
+                    $school_type = $row[3];
+                    $prefecture = $row[4];                    
+                    $count = $row[8];                    
+                    $reference = $row[10];                    
+                    
+                    $modelnew->id = $index;
+                    $modelnew->position = str_replace('"', '', $position);
+                    $modelnew->specialty = str_replace('"', '', $specialty);
+                    $modelnew->school_type = $school_type;
+                    $modelnew->prefecture_id = $prefecture;
+                    $modelnew->count = $count;
+                    $modelnew->reference = $reference;
+                    //echo '<pre>'.print_r().'</pre>';die();                    
+                    $modelnew->save(false);
+                    }
+                    \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
+                }
+                unlink('uploads/'.$filename);
+                return $this->redirect(['index']);
+            }
+        }else{
+            return $this->render('ImportChoices',['model'=>$model]);
+        }        
+        return $this->redirect(['index']);
+    }
+    public function actionImportTeachers()
+    {
+        Yii::trace('Applications import teachers from CSV', 'admin');    
+        $model = new ApplicantImport();
+        \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
+        if($model->load(Yii::$app->request->post())){
+            $file = UploadedFile::getInstance($model,'file');
+            $filename = 'Data.'.$file->extension;
+            $upload = $file->saveAs('uploads/'.$filename);
+            if($upload){
+                define('CSV_PATH','uploads/');
+                $csv_file = CSV_PATH . $filename;
+                $filecsv = file($csv_file);
+                //print_r($filecsv);
+                $x = 1;
+                foreach($filecsv as $data){
+                    if ($x++ != 1) {
+                    $modelnew = new Applicant();
+                    $row = explode(",",$data);
+                    $index = $row[0];
+                    $specialty = $row[1];
+                    $vat = $row[2];                    
+                    $adt = $row[3];
+                    $reference = $row[4];                    
+                    
+                    $modelnew->id = $index;
+                    $modelnew->specialty = str_replace('"', '', $specialty);
+                    $modelnew->vat = $vat;
+                    $modelnew->identity = str_replace('"', '', $adt);
+                    $modelnew->reference = $reference;
+                    $modelnew->state = 0;
+                    $modelnew->points = NULL;
+                    $modelnew->agreedterms = NULL;
+                    $modelnew->statets = NULL;
+                    //echo '<pre>'.print_r($modelnew).'</pre>';die();                    
+                    $modelnew->save(FALSE);
+                    }
+                    \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
+                }
+                unlink('uploads/'.$filename);
+                return $this->redirect(['index']);
+            }
+        }else{
+            return $this->render('ImportApplicants',['model'=>$model]);
+        }                
+        return $this->redirect(['index']);
+    }
+    public function actionImportPreferences()
+    {
+        Yii::trace('Applications import preferences from CSV', 'admin');   
+        $model = new PrefecturesPreferenceImport();
+        \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
+        if($model->load(Yii::$app->request->post())){
+            $file = UploadedFile::getInstance($model,'file');
+            $filename = 'Data.'.$file->extension;
+            $upload = $file->saveAs('uploads/'.$filename);
+            if($upload){
+                define('CSV_PATH','uploads/');
+                $csv_file = CSV_PATH . $filename;
+                $filecsv = file($csv_file);
+                //print_r($filecsv);
+                $x = 1;
+                foreach($filecsv as $data){
+                    if ($x++ != 1) {
+                    $modelnew = new PrefecturesPreference();
+                    $row = explode(",",$data);
+                    $index = $row[0];
+                    $teacherid = $row[1];
+                    $prefectureid = $row[2];
+                    $school_type = $row[4];
+                    $order = $row[5];                    
+                    $reference = $row[6];                    
+                    
+                    $modelnew->id = $index;
+                    $modelnew->applicant_id = $teacherid;
+                    $modelnew->prefect_id = $prefectureid;
+                    $modelnew->school_type = $school_type;
+                    $modelnew->order = $order;
+                    //echo '<pre>'.print_r().'</pre>';die();                    
+                    $modelnew->save(false);
+                    }
+                    \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 1')->execute();
+                    
+                }
+                unlink('uploads/'.$filename);
+                return $this->redirect(['index']);
+            }
+        }else{
+            return $this->render('ImportChoices',['model'=>$model]);
+        }                
+        return $this->redirect(['index']);
+    }
+    
+
+    
     public function actionPrintNoApplicationCandidates()
     {
         Yii::trace('No application candidates print', 'admin');
