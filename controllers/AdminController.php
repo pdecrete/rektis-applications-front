@@ -9,11 +9,8 @@ use app\models\Application;
 use app\models\Applicant;
 use app\models\Choice;
 use app\models\Prefecture;
-use app\models\PrefectureImport;
-use app\models\ChoiceImport;
-use app\models\ApplicantImport;
+use app\models\ImportCSV;
 use app\models\PrefecturesPreference;
-use app\models\PrefecturesPreferenceImport;
 use League\Csv\Writer;
 use yii\data\ArrayDataProvider;
 use kartik\mpdf\Pdf;
@@ -178,7 +175,7 @@ class AdminController extends \yii\web\Controller
     public function actionImportPrefectures()
     {
         Yii::trace('Applications import prefectures from CSV', 'admin');
-        $model = new \app\models\PrefectureImport;
+        $model = new ImportCSV();
 
         if($model->load(Yii::$app->request->post())){
             $file = UploadedFile::getInstance($model,'file');
@@ -209,14 +206,14 @@ class AdminController extends \yii\web\Controller
                 return $this->redirect(['index']);
             }
         }else{
-            return $this->render('ImportPrefectures',['model'=>$model]);
+            return $this->render('ImportCSV',['model'=>$model]);
         }
     }
     
     public function actionImportChoices()
     {
         Yii::trace('Applications import positions from CSV', 'admin');    
-        $model = new ChoiceImport();
+        $model = new ImportCSV();
         \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
         if($model->load(Yii::$app->request->post())){
             $file = UploadedFile::getInstance($model,'file');
@@ -256,14 +253,14 @@ class AdminController extends \yii\web\Controller
                 return $this->redirect(['index']);
             }
         }else{
-            return $this->render('ImportChoices',['model'=>$model]);
+            return $this->render('ImportCSV',['model'=>$model]);
         }        
         return $this->redirect(['index']);
     }
     public function actionImportTeachers()
     {
         Yii::trace('Applications import teachers from CSV', 'admin');    
-        $model = new ApplicantImport();
+        $model = new ImportCSV();
         \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
         if($model->load(Yii::$app->request->post())){
             $file = UploadedFile::getInstance($model,'file');
@@ -303,14 +300,14 @@ class AdminController extends \yii\web\Controller
                 return $this->redirect(['index']);
             }
         }else{
-            return $this->render('ImportApplicants',['model'=>$model]);
+            return $this->render('ImportCSV',['model'=>$model]);
         }                
         return $this->redirect(['index']);
     }
     public function actionImportPreferences()
     {
         Yii::trace('Applications import preferences from CSV', 'admin');   
-        $model = new PrefecturesPreferenceImport();
+        $model = new ImportCSV();
         \Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0')->execute();
         if($model->load(Yii::$app->request->post())){
             $file = UploadedFile::getInstance($model,'file');
@@ -348,7 +345,7 @@ class AdminController extends \yii\web\Controller
                 return $this->redirect(['index']);
             }
         }else{
-            return $this->render('ImportChoices',['model'=>$model]);
+            return $this->render('ImportCSV',['model'=>$model]);
         }                
         return $this->redirect(['index']);
     }
