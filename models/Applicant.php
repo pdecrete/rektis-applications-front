@@ -108,7 +108,7 @@ class Applicant extends \yii\db\ActiveRecord
         $this->phone = '';
 
         try {
-            $reference = \Yii::$app->crypt->decrypt($this->reference);
+            $reference = \Yii::$app->crypt->decrypt(trim($this->reference));
             $more_data = json_decode($reference, true);
             if ($more_data) {
                 foreach (['firstname', 'lastname', 'fathername','email', 'phone'] as $fieldname) {
