@@ -18,7 +18,7 @@ foreach ($data as $idx => $userdata):
 
     ?>
     <htmlpagefooter name="Footer<?php echo $idx; ?>">
-        <p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb} :: <?php echo $userdata['user']->firstname, ' ', $userdata['user']->lastname; ?><br><img src="<?php echo $actionlogo; ?>"></p>
+        <p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb} :: <?php echo $userdata['user']->firstname, ' ', $userdata['user']->lastname; ?><br></p>
     </htmlpagefooter>
     <sethtmlpagefooter name="Footer<?php echo $idx; ?>" value="on" />
     <h3 style="text-align: center;"><?= Html::encode($this->title) ?></h3>
@@ -38,7 +38,8 @@ foreach ($data as $idx => $userdata):
                 <td colspan="2"><h4>E-mail: <strong><?= $userdata['user']->email ?></strong></h4></td>
             </tr>
             <tr>
-                <td colspan="3"><h4>Θέμα: <strong>Δήλωση Τοποθέτησης Αναπληρωτή/τριας</strong></h4></td>
+                <!--<td colspan="3"><h4>Θέμα: <strong>Δήλωση Τοποθέτησης Αναπληρωτή/τριας</strong></h4></td>-->
+                    <td colspan="3"><h4>Θέμα: <strong>Δήλωση Τοποθέτησης</strong></h4></td>
             </tr>
             <tr>
                 <td colspan="3"><h4>Ημερομηνία υποβολής: 

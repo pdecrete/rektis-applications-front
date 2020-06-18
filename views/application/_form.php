@@ -30,7 +30,8 @@ $this->registerJs($data_collect_js, View::POS_HEAD);
             <?php foreach ($models as $prefect_name => $st_choices): ?>
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <?php echo 'ΝΟΜΟΣ ', $prefect_name ?>
+                    <!--<?php echo 'ΝΟΜΟΣ ', $prefect_name ?>-->
+                        <?php echo 'ΠΕΡΙΟΧΗ ΔΙΟΡΙΣΜΟΥ: ', $prefect_name?>
                 </div>
                 <div class="panel-body">
                     <?php foreach ($st_choices as $idx_school_type => $choices): ?>

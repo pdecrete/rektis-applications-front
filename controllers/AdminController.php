@@ -546,7 +546,7 @@ class AdminController extends \yii\web\Controller
             'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'], // leave it as failsafe, but it will be altered in view
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br></p>'], // leave it as failsafe, but it will be altered in view
             ]
         ]);
 
@@ -601,7 +601,7 @@ class AdminController extends \yii\web\Controller
             'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br></p>'],
             ]
         ]);
 

@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
         </tbody>
     </table>
+    <!--
     <div style="display: block; margin: auto; width:50%;">
         <?php
         $actionlogo = realpath(dirname(__FILE__) . '/../../web/images/logo.jpg');
@@ -57,4 +58,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
         ?>
     </div>
+    -->
 </div>

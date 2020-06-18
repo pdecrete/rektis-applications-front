@@ -165,7 +165,7 @@ class ApplicationController extends Controller
                 'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
                 'methods' => [
                     'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                    'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'], // leave it as failsafe, but it will be altered in view
+                    'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br></p>'], // leave it as failsafe, but it will be altered in view
                 ]
             ]);
             Yii::info('Generate PDF file for application', 'user.application');
@@ -460,7 +460,7 @@ class ApplicationController extends Controller
             'marginBottom' => Yii::$app->params['pdf']['marginBottom'],
             'methods' => [
                 'SetHeader' => ['<img src=\'' . $pdelogo . '\'>'],
-                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br><img src=\'' . $actionlogo . '\'></p>'],
+                'SetFooter' => ['<p style="text-align: center; border-top: 1px solid #ccc;">Σελίδα {PAGENO} από {nb}<br></p>'],
             ]
         ]);
         Yii::info('Generate PDF file for application', 'user.application');

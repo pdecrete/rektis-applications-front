@@ -54,9 +54,11 @@ if (!isset($has_applications)) {
                 <p>Ακυρώστε την αίτηση - δήλωση διαγράφοντας την οριστικά.</p>
                 <p><?= Html::a('<span class="glyphicon glyphicon-trash"></span> Διαγραφή', Url::to(['application/delete-my-application']), ['class' => 'btn btn-danger']) ?></p>
             <?php else : ?>
+                <!--
                 <h2>Υποβολή αρνητικής δήλωσης</h2>
                 <p>Υποβάλλετε δήλωση άρνησης πρόσληψης εδώ.</p>
                 <p><?= Html::a('<span class="glyphicon glyphicon-remove"></span> Αρνητική δήλωση', Url::to(['application/request-deny']), ['class' => 'btn btn-primary']) ?></p>
+                -->
             <?php endif; ?>
             </div>
         </div>
